@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">HydrogenPaymentSDK</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="hydrogen_logo">Hydrogen Logo</string>
+    <string name="payment_request">Payment Request</string>
+    <string name="expires_in_place_holder">Expires in: %1s</string>
+    <string name="customer_name_abrev">%1s</string>
+    <string name="single_string_place_holder">%1s</string>
+    <string name="amount_in_naira_place_holder">₦ %1s</string>
+    <string name="merchant_ref_place_holder">Merchant Ref: %1s</string>
+    <string name="select_payment_method">Select payment method</string>
+    <string name="choose_your_convenient_mode_of_payment">Choose your convenient mode of payment</string>
+    <string name="bank_transfer">Bank transfer</string>
+    <string name="secure_account_to_account_payments">Secure account to account payments</string>
+    <string name="select">Select</string>
+    <string name="pay_by_card">Pay by card</string>
+    <string name="easey_and_Secure_card_payment">Easy and secure card payments</string>
+    <string name="return_to_merchant">Return back to merchant</string>
+    <string name="powered_by">Powered by</string>
+    <string name="change_payment_method">Change payment method</string>
+</resources>

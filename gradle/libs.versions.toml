@@ -1,0 +1,65 @@
+[versions]
+agp = "8.4.1"
+kotlin = "1.9.0"
+androidDependencyVersion = "1.7.0"
+coreKtx = "1.15.0"
+junit = "4.13.2"
+junitVersion = "1.2.1"
+espressoCore = "3.6.1"
+appcompat = "1.7.0"
+material = "1.12.0"
+activity = "1.9.3"
+legacySupportV4 = "1.0.0"
+constraintlayout = "2.2.0"
+loggingInterceptorVersion = "4.9.0"
+dPrefsVersion = "1.0.0"
+roomVersion = "2.6.1"
+roomKtx = "2.6.1"
+coilVersion = "2.3.0"
+navArgsVersion = "2.5.3"
+lifeCycleVersion = "2.5.1"
+navVersion = "2.7.7"
+coroutinesVersion = "1.8.0"
+retrofitVersion = "2.9.0'"
+gsonConverter = "2.9.0"
+
+[libraries]
+androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
+junit = { group = "junit", name = "junit", version.ref = "junit" }
+androidx-junit = { group = "androidx.test.ext", name = "junit", version.ref = "junitVersion" }
+androidx-espresso-core = { group = "androidx.test.espresso", name = "espresso-core", version.ref = "espressoCore" }
+androidx-appcompat = { group = "androidx.appcompat", name = "appcompat", version.ref = "appcompat" }
+material = { group = "com.google.android.material", name = "material", version.ref = "material" }
+androidx-activity = { group = "androidx.activity", name = "activity", version.ref = "activity" }
+androidx-constraintlayout = { group = "androidx.constraintlayout", name = "constraintlayout", version.ref = "constraintlayout" }
+
+coroutines-dependency = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutinesVersion"}
+retrofit-dependency = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofitVersion"}
+gson-converter = { group = "com.squareup.retrofit2", name = "converter-gson", version.ref = "gsonConverter"}
+# Room Dependencies
+room-dependency = { group = "androidx.room", name = "room-runtime", version.ref = "roomVersion"}
+room-annotation-processor-dependency = { group = "androidx.room", name = "room-compiler", version.ref = "roomVersion"}
+androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "roomKtx" }
+life-cycle = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifeCycleVersion"}
+
+nav-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navVersion"}
+nav-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navVersion"}
+androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
+logging-interceptor-dependency = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptorVersion"}
+# CHNAGE THIS TO ONLINE VERSION LATER ON
+dprefs-library = { group = "com.dsofttech.dprefs", name = "dPrefs", version.ref = "dPrefsVersion"}
+coil-dependency = { group = "io.coil-kt", name = "coil", version.ref = "coilVersion" }
+view-model-kts = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifeCycleVersion"}
+view-model-save-state-instance = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifeCycleVersion"}
+activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidDependencyVersion" }
+fragment-ktx = { group = "androidx.fragment", name = "fragment-ktx", version.ref = "androidDependencyVersion" }
+fragment-nav = { group = "androidx.navigation", name = "navigation-fragment-ktx", version.ref = "navArgsVersion" }
+ui-nav = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navArgsVersion" }
+
+# Class Path Dependencies
+nav-args-dependency = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navArgsVersion"}
+
+[plugins]
+android-application = { id = "com.android.application", version.ref = "agp" }
+jetbrains-kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
+

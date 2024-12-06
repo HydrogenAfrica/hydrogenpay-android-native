@@ -1,0 +1,55 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.HydrogenPaymentSDK" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+    </style>
+
+    <style name="Theme.HydrogenPaymentSDK" parent="Base.Theme.HydrogenPaymentSDK" />
+    <style name="heading_exo" parent="Base.Theme.HydrogenPaymentSDK">
+        <item name="android:textSize">@dimen/dimen_14sp</item>
+        <item name="android:fontFamily">@font/exo_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="heading_poppins" parent="Base.Theme.HydrogenPaymentSDK">
+        <item name="android:textSize">@dimen/dimen_14sp</item>
+        <item name="android:fontFamily">@font/poppins_bold</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="sub_heading_poppins" parent="Base.Theme.HydrogenPaymentSDK">
+        <item name="android:textSize">@dimen/dimen_10sp</item>
+        <item name="android:fontFamily">@font/poppins</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+    <style name="ErrorTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@android:color/holo_red_light</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="HelperTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="HintTextAppearance" parent="TextAppearance.AppCompat">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">10sp</item>
+    </style>
+
+    <style name="EditTextThemeOverlay" parent="ThemeOverlay.AppCompat">
+        <item name="colorAccent">@color/light_grey</item>
+    </style>
+
+    <style name="EditTextThemeOverlayLoginPage" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">
+        <item name="colorAccent">@color/light_grey</item>
+        <item name="passwordToggleTint">@color/grey</item>
+        <item name="boxStrokeColor">@color/black</item>
+        <item name="boxBackgroundColor">@color/light_grey</item>
+        <item name="boxCornerRadiusBottomEnd">@dimen/dimen_5dp</item>
+        <item name="boxCornerRadiusBottomStart">@dimen/dimen_5dp</item>
+        <item name="boxCornerRadiusTopEnd">@dimen/dimen_5dp</item>
+        <item name="boxCornerRadiusTopStart">@dimen/dimen_5dp</item>
+    </style>
+</resources>
