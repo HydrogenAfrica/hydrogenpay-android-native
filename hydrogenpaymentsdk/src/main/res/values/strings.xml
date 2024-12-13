@@ -76,4 +76,7 @@
     <string name="okay">Okay</string>
     <string name="do_you_really_want_to_delete_card">Are you sure you want to delete this card?</string>
     <string name="click_yes_or_no_to_confirm_card_deletion">This card has already been saved. Please verify your details or try adding a different card.</string>
+    <string name="billing_information">Billing Information</string>
+    <string name="first_name">First name *</string>
+    <string name="last_name">Last name*</string>
 </resources>
