@@ -58,6 +58,29 @@ dependencies {
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    // Dependencies
+    implementation(libs.otp.view)
+    implementation(libs.coroutines.dependency)
+    implementation(libs.retrofit.dependency)
+    implementation(libs.gson.converter)
+    implementation(libs.nav.fragment)
+    implementation(libs.nav.ui)
+    implementation(libs.androidx.legacy.support.v4)
+    implementation(libs.logging.interceptor.dependency)
+    implementation(libs.dprefs.library)
+    // Room
+    implementation(libs.androidx.room.ktx)
+    kapt(libs.room.annotation.processor.dependency)
+    implementation(libs.room.dependency)
+    implementation(libs.life.cycle)
+
+    implementation(libs.coil.dependency)
+    implementation(libs.view.model.kts)
+    implementation(libs.view.model.save.state.instance)
+    implementation(libs.activity.ktx)
+    implementation(libs.fragment.ktx)
+    implementation(libs.fragment.nav)
+    implementation(libs.ui.nav)
 }
 afterEvaluate {
     publishing {
