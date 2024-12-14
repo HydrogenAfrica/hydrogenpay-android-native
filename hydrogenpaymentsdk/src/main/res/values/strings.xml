@@ -79,4 +79,10 @@
     <string name="billing_information">Billing Information</string>
     <string name="first_name">First name *</string>
     <string name="last_name">Last name*</string>
+    <string name="address">Address *</string>
+    <string name="country_code">Country code *</string>
+    <string name="locality">Locality*</string>
+    <string name="postal_code">Postal code*</string>
+    <string name="email">Email*</string>
+    <string name="administrative_area_state_province">Administrative Area (State/Province)*</string>
 </resources>
