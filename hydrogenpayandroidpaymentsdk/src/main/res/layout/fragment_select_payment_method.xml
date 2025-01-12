@@ -14,7 +14,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:paddingHorizontal="@dimen/dimen_15dp">
+        android:paddingHorizontal="@dimen/dimen_15dp"
+        android:paddingVertical="@dimen/dimen_25dp">
 
         <ImageView
             android:id="@+id/imageView"

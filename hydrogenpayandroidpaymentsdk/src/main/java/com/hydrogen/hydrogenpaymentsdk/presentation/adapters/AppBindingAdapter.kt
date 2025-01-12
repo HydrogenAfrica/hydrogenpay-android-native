@@ -6,6 +6,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -19,39 +20,29 @@ import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.toSentenceCase
 @BindingAdapter("android:transferTo")
 fun TextView.transferTo(inputString: String?) {
     inputString?.let {
-        val spannableString = SpannableString(it)
+        val totalString = context.getString(R.string.transfer_to_1s, it)
+        val spannableString = SpannableString(totalString)
         spannableString.apply {
             setSpan(
                 ForegroundColorSpan(Color.BLACK),
                 13,
-                it.length,
+                totalString.length,
                 Spannable.SPAN_EXCLUSIVE_INCLUSIVE
             )
             setSpan(
                 StyleSpan(Typeface.BOLD),
                 13,
-                it.length,
+                totalString.length,
                 Spannable.SPAN_EXCLUSIVE_INCLUSIVE
             )
             setSpan(
-                ForegroundColorSpan(
-                    ResourcesCompat.getColor(
-                        this@transferTo.resources,
-                        R.color.light_black,
-                        this@transferTo.context.theme
-                    )
-                ),
-                1,
-                13,
-                Spannable.SPAN_INCLUSIVE_INCLUSIVE
-            )
-            setSpan(
-                CustomFontSpan(ResourcesCompat.getFont(this@transferTo.context, R.font.exo_medium)),
-                1,
+                CustomFontSpan(ResourcesCompat.getFont(this@transferTo.context, R.font.exo)),
+                0,
                 13,
                 Spannable.SPAN_INCLUSIVE_INCLUSIVE
             )
         }
+        text = spannableString
     }
 }
 

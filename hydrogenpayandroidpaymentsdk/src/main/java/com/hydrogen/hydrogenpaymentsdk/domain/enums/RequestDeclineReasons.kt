@@ -1,4 +1,4 @@
-package com.hydrogen.hydrogenpaymentsdk.domain.models
+package com.hydrogen.hydrogenpaymentsdk.domain.enums
 
 enum class RequestDeclineReasons(val reason: String) {
     CANCELLED("CANCELLED"),

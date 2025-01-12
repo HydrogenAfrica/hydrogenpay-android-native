@@ -15,7 +15,8 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/white"
-        android:padding="@dimen/dimen_15dp">
+        android:paddingHorizontal="@dimen/dimen_15dp"
+        android:paddingVertical="@dimen/dimen_25dp">
 
         <ImageView
             android:id="@+id/imageView"
@@ -195,7 +196,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/exo_bold"
                 android:textSize="@dimen/dimen_12sp"
-                android:transferTo="@{`Transfer to: Access Bank`}"
+                android:transferTo="@{appViewModel.bankTransferResponseState.content.bankName}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -206,15 +207,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_20dp"
-                android:layout_marginEnd="@dimen/dimen_10dp"
                 android:drawablePadding="@dimen/dimen_10dp"
-                android:text="@{appViewModel.bankTransferResponseState.content.virtualAccountNo}"
                 android:fontFamily="@font/exo_bold"
+                android:text="@{appViewModel.bankTransferResponseState.content.virtualAccountNo}"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dimen_24sp"
-                app:drawableRightCompat="@drawable/copy"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                android:drawableEnd="@drawable/copy"
+                app:layout_constraintEnd_toEndOf="@+id/textView12"
+                app:layout_constraintStart_toStartOf="@+id/textView12"
                 app:layout_constraintTop_toBottomOf="@+id/textView12"
                 tools:text="0897563421" />
 
@@ -226,8 +226,8 @@
                 android:fontFamily="@font/poppins_bold"
                 android:text="@{appViewModel.bankTransferResponseState.content.virtualAccountName}"
                 android:textSize="@dimen/dimen_12sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="@+id/textView13"
+                app:layout_constraintStart_toStartOf="@+id/textView13"
                 app:layout_constraintTop_toBottomOf="@+id/textView13"
                 tools:text="Damilola Groceries - HydrogenPay" />
 

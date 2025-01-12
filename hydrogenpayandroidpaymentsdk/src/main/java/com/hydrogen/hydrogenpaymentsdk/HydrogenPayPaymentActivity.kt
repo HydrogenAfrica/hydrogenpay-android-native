@@ -15,7 +15,7 @@ import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.HydrogenPayPaymentA
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
-import com.hydrogen.hydrogenpaymentsdk.domain.models.RequestDeclineReasons
+import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_EXTRA_TAG
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay

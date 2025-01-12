@@ -1,6 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -20,7 +21,10 @@ import androidx.navigation.fragment.findNavController
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentBankTransferBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
+import com.hydrogen.hydrogenpaymentsdk.domain.enums.DrawablePosition
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.copyToClipboard
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.handleDrawableRightClick
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -95,6 +99,15 @@ class BankTransferFragment : Fragment() {
             val action =
                 BankTransferFragmentDirections.actionBankTransferFragmentToTransactionReceiptDetailsFragment()
             findNavController().navigate(action)
+        }
+
+        // Copy Account number to clipboard
+        accountNumberTxtView.setOnClickListener {
+            copyToClipboard(
+                requireContext(),
+                getString(R.string.account_number_copied),
+                accountNumberTxtView.text.toString()
+            )
         }
     }
 
