@@ -24,4 +24,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "HydrogenPaymentSDK"
 include(":app")
-include(":hydrogenpaymentsdk")
+include(":hydrogenpayandroidpaymentsdk")

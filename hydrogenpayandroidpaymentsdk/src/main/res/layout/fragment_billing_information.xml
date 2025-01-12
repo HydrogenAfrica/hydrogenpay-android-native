@@ -1,0 +1,545 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".presentation.BillingInformationFragment">
+
+    <data>
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white"
+        android:padding="@dimen/dimen_15dp">
+
+        <ImageView
+            android:id="@+id/imageView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/hydrogen_logo"
+            android:src="@drawable/hydrogen_icon"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/imageView"
+            app:layout_constraintTop_toBottomOf="@+id/imageView">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/textView"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_20dp"
+                    android:fontFamily="@font/exo_bold"
+                    android:text="@string/billing_information"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/dimen_18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/grey_drawable_bg"
+                    android:fontFamily="@font/exo_bold"
+                    android:paddingHorizontal="@dimen/dimen_10dp"
+                    android:paddingVertical="@dimen/dimen_4dp"
+                    android:text="@string/expires_in_place_holder"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView"
+                    tools:text="Expires in: 15:00" />
+
+                <View
+                    android:id="@+id/horizontal_line"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:layout_marginBottom="@dimen/dimen_3dp"
+                    android:background="@color/grey"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView" />
+
+                <TextView
+                    android:id="@+id/textView39"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/first_name"
+                    app:layout_constraintStart_toStartOf="@+id/horizontal_line"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/card_expiry_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:layout_marginEnd="@dimen/dimen_8dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:hintTextColor="@color/darker_grey"
+                    app:layout_constraintEnd_toStartOf="@id/guideline3"
+                    app:layout_constraintStart_toStartOf="@id/horizontal_line"
+                    app:layout_constraintTop_toBottomOf="@+id/textView39">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/card_expiry_tiet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.5" />
+
+                <TextView
+                    android:id="@+id/textView40"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_8dp"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/last_name"
+                    app:layout_constraintStart_toEndOf="@+id/guideline3"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/cvv_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:hintAnimationEnabled="false"
+                    app:layout_constraintEnd_toEndOf="@id/horizontal_line"
+                    app:layout_constraintStart_toStartOf="@id/textView40"
+                    app:layout_constraintTop_toBottomOf="@+id/textView40">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/cvv_tiet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLength="3"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/textView38"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/country"
+                    app:layout_constraintStart_toStartOf="@+id/card_expiry_til"
+                    app:layout_constraintTop_toBottomOf="@+id/card_expiry_til" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/select_a_category_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:layout_constraintEnd_toEndOf="@id/horizontal_line"
+                    app:layout_constraintStart_toStartOf="@id/card_expiry_til"
+                    app:layout_constraintTop_toBottomOf="@+id/textView38">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/amount"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/textView41"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/address"
+                    app:layout_constraintStart_toStartOf="@+id/select_a_category_til"
+                    app:layout_constraintTop_toBottomOf="@+id/select_a_category_til" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/address_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/textView41"
+                    app:layout_constraintTop_toBottomOf="@+id/textView41">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/address"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/country_code"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/country"
+                    app:layout_constraintEnd_toStartOf="@id/guideline5"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="@+id/address_til"
+                    app:layout_constraintTop_toBottomOf="@+id/address_til" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/country_code_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:layout_marginEnd="@dimen/dimen_8dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:hintTextColor="@color/darker_grey"
+                    app:layout_constraintEnd_toStartOf="@id/guideline5"
+                    app:layout_constraintStart_toStartOf="@id/country_code"
+                    app:layout_constraintTop_toBottomOf="@+id/country_code">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/country_code_tiet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <androidx.constraintlayout.widget.Guideline
+                    android:id="@+id/guideline5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    app:layout_constraintGuide_percent="0.2" />
+
+                <TextView
+                    android:id="@+id/phone_num"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_8dp"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/phone_number"
+                    app:layout_constraintStart_toEndOf="@+id/guideline5"
+                    app:layout_constraintTop_toBottomOf="@+id/address_til" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/phone_num_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:hintAnimationEnabled="false"
+                    app:layout_constraintEnd_toEndOf="@id/horizontal_line"
+                    app:layout_constraintStart_toStartOf="@id/phone_num"
+                    app:layout_constraintTop_toBottomOf="@+id/phone_num">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/phone_num_tiet"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLength="3"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/admin_area_tv"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/administrative_area_state_province"
+                    app:layout_constraintStart_toStartOf="@+id/select_a_category_til"
+                    app:layout_constraintTop_toBottomOf="@+id/phone_num_til" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/admin_area_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/admin_area_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/admin_area_tv">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/admin_area"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/email_tv"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/email"
+                    app:layout_constraintStart_toStartOf="@+id/admin_area_til"
+                    app:layout_constraintTop_toBottomOf="@+id/admin_area_til" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/email_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/email_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/email_tv">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/email"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/postal_code_tv"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/postal_code"
+                    app:layout_constraintStart_toStartOf="@+id/email_til"
+                    app:layout_constraintTop_toBottomOf="@+id/email_til" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/postal_code_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/postal_code_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/postal_code_tv">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/postal_code"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <TextView
+                    android:id="@+id/locality_tv"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/locality"
+                    app:layout_constraintStart_toStartOf="@+id/postal_code_til"
+                    app:layout_constraintTop_toBottomOf="@+id/postal_code_til" />
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/locality_til"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_3dp"
+                    android:gravity="center_vertical"
+                    android:theme="@style/EditTextThemeOverlay"
+                    app:errorTextAppearance="@style/ErrorTextAppearance"
+                    app:helperTextTextAppearance="@style/HelperTextAppearance"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@id/locality_tv"
+                    app:layout_constraintTop_toBottomOf="@+id/locality_tv">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/locality"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:inputType="text"
+                        android:maxLines="1"
+                        android:singleLine="true"
+                        android:textColorHighlight="@color/light_grey"
+                        tools:ignore="LabelFor" />
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <android.widget.Button
+                    android:id="@+id/button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_30dp"
+                    android:background="@drawable/simple_btn_bg"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="@string/submit"
+                    android:textColor="@color/hydrogen_yellow"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="@+id/locality_til"
+                    app:layout_constraintTop_toBottomOf="@+id/locality_til" />
+
+                <ImageView
+                    android:id="@+id/imageView11"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_12dp"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:scaleType="fitXY"
+                    android:src="@drawable/compliant_partner"
+                    app:layout_constraintEnd_toStartOf="@+id/imageView8"
+                    app:layout_constraintHorizontal_bias="0.0"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/button" />
+
+                <ImageView
+                    android:id="@+id/imageView8"
+                    android:layout_width="wrap_content"
+                    android:layout_height="@dimen/dimen_10dp"
+                    android:layout_marginEnd="@dimen/dimen_2dp"
+                    android:scaleType="fitEnd"
+                    android:src="@drawable/hydrogen_icon"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView17"
+                    app:layout_constraintEnd_toStartOf="@+id/textView17"
+                    app:layout_constraintHorizontal_bias="1.0"
+                    app:layout_constraintStart_toEndOf="@+id/textView16" />
+
+                <TextView
+                    android:id="@+id/textView17"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/payment_services_company_limited"
+                    android:textSize="@dimen/dimen_8sp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/imageView11"
+                    app:layout_constraintVertical_bias="0.0" />
+
+                <TextView
+                    android:id="@+id/textView16"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:fontFamily="@font/poppins_bold"
+                    android:text="@string/licenced_by_cbn"
+                    android:textSize="@dimen/dimen_8sp"
+                    app:drawableStartCompat="@drawable/cbn_logo"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageView11" />
+
+                <ImageView
+                    android:id="@+id/imageView12"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="@dimen/dimen_20dp"
+                    android:layout_marginTop="@dimen/dimen_60dp"
+                    android:src="@drawable/back_to_merchant_btn"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="@+id/button"
+                    app:layout_constraintStart_toStartOf="@+id/button"
+                    app:layout_constraintTop_toBottomOf="@+id/textView16"
+                    app:layout_constraintVertical_bias="1.0" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

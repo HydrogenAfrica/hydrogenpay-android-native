@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/hydrogen_pay_payment_sdk_nav_graph"
+    app:startDestination="@id/selectPaymentMethodFragment">
+
+    <fragment
+        android:id="@+id/transactionProcessingFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.TransactionProcessingFragment"
+        android:label="fragment_transaction_processing"
+        tools:layout="@layout/fragment_transaction_processing" />
+    <fragment
+        android:id="@+id/bankTransferFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.BankTransferFragment"
+        android:label="fragment_bank_transfer"
+        tools:layout="@layout/fragment_bank_transfer" >
+        <action
+            android:id="@+id/action_bankTransferFragment_to_transactionReceiptDetailsFragment"
+            app:destination="@id/transactionReceiptDetailsFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/OTPCodeFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.OTPCodeFragment"
+        android:label="fragment_o_t_p_code"
+        tools:layout="@layout/fragment_o_t_p_code" />
+    <fragment
+        android:id="@+id/selectPaymentMethodFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.SelectPaymentMethodFragment"
+        android:label="fragment_select_payment_method"
+        tools:layout="@layout/fragment_select_payment_method" >
+        <action
+            android:id="@+id/action_selectPaymentMethodFragment_to_bankTransferFragment"
+            app:destination="@id/bankTransferFragment"
+            app:enterAnim="@android:anim/slide_out_right"
+            app:exitAnim="@android:anim/slide_in_left"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_selectPaymentMethodFragment_to_cardPaymentFragment"
+            app:destination="@id/cardPaymentFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/billingInformationFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.BillingInformationFragment"
+        android:label="fragment_billing_information"
+        tools:layout="@layout/fragment_billing_information" />
+    <fragment
+        android:id="@+id/cardAlreadyExistFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.CardAlreadyExistFragment"
+        android:label="fragment_card_already_exist"
+        tools:layout="@layout/fragment_card_already_exist" />
+    <fragment
+        android:id="@+id/cardPaymentFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.CardPaymentFragment"
+        android:label="fragment_card_payment"
+        tools:layout="@layout/fragment_card_payment" >
+        <action
+            android:id="@+id/action_cardPaymentFragment_to_OTPCodeFragment"
+            app:destination="@id/OTPCodeFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/changePaymentMethodConfirmationFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.ChangePaymentMethodConfirmationFragment"
+        android:label="fragment_change_payment_method_confirmation"
+        tools:layout="@layout/fragment_change_payment_method_confirmation" />
+    <fragment
+        android:id="@+id/contactDetailsFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.ContactDetailsFragment"
+        android:label="fragment_contact_details"
+        tools:layout="@layout/fragment_contact_details" />
+    <fragment
+        android:id="@+id/deleteSavedCardConfirmationFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.DeleteSavedCardConfirmationFragment"
+        android:label="fragment_delete_saved_card_confirmation"
+        tools:layout="@layout/fragment_delete_saved_card_confirmation" />
+    <fragment
+        android:id="@+id/savedCardsFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.SavedCardsFragment"
+        android:label="fragment_saved_cards"
+        tools:layout="@layout/fragment_saved_cards" />
+    <fragment
+        android:id="@+id/transactionFailedFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.TransactionFailedFragment"
+        android:label="fragment_transaction_failed"
+        tools:layout="@layout/fragment_transaction_failed" />
+    <fragment
+        android:id="@+id/transactionReceiptDetailsFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.TransactionReceiptDetailsFragment"
+        android:label="fragment_transaction_receipt_details"
+        tools:layout="@layout/fragment_transaction_receipt_details" />
+</navigation>
