@@ -5,9 +5,6 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
-import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesIoDispatchers
-import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesPayByTransferUseCase
-import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesPaymentConfirmationUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
@@ -22,7 +19,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AppViewModel (
+class AppViewModel(
     private val payByTransferUseCase: PayByTransferUseCase,
     private val paymentConfirmationUseCase: PaymentConfirmationUseCase,
     private val ioDispatcher: CoroutineDispatcher,
@@ -50,8 +47,8 @@ class AppViewModel (
         viewModelScope.launch {
             countdownTimerUseCase.timeLeft.collect { remainingTime ->
                 val minutes = remainingTime / 60
-                val seconds = remainingTime % 60
-                _timeLeft.value = "$minutes:$seconds"
+                val seconds = (remainingTime % 60).let { if (it < 10) "0$it" else "$it" }
+                _timeLeft.update { "$minutes:$seconds" }
             }
         }
     }

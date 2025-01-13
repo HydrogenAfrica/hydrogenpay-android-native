@@ -9,13 +9,12 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/white_80">
+        android:layout_height="wrap_content">
 
         <ImageView
             android:id="@+id/imageView11"
-            android:layout_width="@dimen/dimen_35dp"
-            android:layout_height="@dimen/dimen_35dp"
+            android:layout_width="@dimen/dimen_40dp"
+            android:layout_height="@dimen/dimen_40dp"
             android:layout_margin="@dimen/dimen_20dp"
             android:contentDescription="@string/loader_image"
             app:layout_constraintBottom_toBottomOf="parent"

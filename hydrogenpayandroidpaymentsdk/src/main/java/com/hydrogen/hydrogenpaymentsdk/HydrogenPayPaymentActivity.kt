@@ -17,6 +17,7 @@ import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_TIME_15_MIN
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_EXTRA_TAG
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
 
@@ -42,14 +43,12 @@ class HydrogenPayPaymentActivity : AppCompatActivity() {
         } catch (e: Exception) {
             null
         }
-        payByTransferRequest?.let { viewModel.setBankTransferRequest(it) }
-            ?: cancelByGoingBackToMerchantApp(
-                RequestDeclineReasons.INVALID_ARGUMENT_PROVIDED.reason
-            )
-
-//        val payByTransferRequest =
-//            PayByTransferRequest(50, "Dev Test", "oloyedeadebayoolawale@gmail.com")
-//        viewModel.setBankTransferRequest(payByTransferRequest)
+        payByTransferRequest?.let {
+            viewModel.setBankTransferRequest(it)
+            viewModel.startTimer(INT_TIME_15_MIN)
+        } ?: cancelByGoingBackToMerchantApp(
+            RequestDeclineReasons.INVALID_ARGUMENT_PROVIDED.reason
+        )
     }
 
     companion object {

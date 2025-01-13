@@ -7,6 +7,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class CountdownTimerUseCase {
@@ -30,7 +31,7 @@ class CountdownTimerUseCase {
         job = CoroutineScope(Dispatchers.Default).launch {
             while (_timeLeft.value > 0) {
                 delay(1000L)
-                _timeLeft.value -= 1
+                _timeLeft.update { (_timeLeft.value - 1) }
             }
             pause() // Auto-pause when the timer reaches zero
         }
@@ -44,6 +45,6 @@ class CountdownTimerUseCase {
 
     fun reset() {
         pause()
-        _timeLeft.value = 0
+        _timeLeft.update { 0 }
     }
 }
