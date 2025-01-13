@@ -1,7 +1,6 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,6 +10,7 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
+import androidx.core.content.ContextCompat
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -21,10 +21,10 @@ import androidx.navigation.fragment.findNavController
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentBankTransferBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
-import com.hydrogen.hydrogenpaymentsdk.domain.enums.DrawablePosition
+import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.copyToClipboard
-import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.handleDrawableRightClick
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -39,7 +39,7 @@ class BankTransferFragment : Fragment() {
     private lateinit var makePaymentButton: Button
 
     private val viewModel: AppViewModel by activityViewModels {
-        AppViewModelProviderFactory()
+        AppViewModelProviderFactory(HydrogenPayDiModule)
     }
 
     override fun onCreateView(
@@ -80,22 +80,31 @@ class BankTransferFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.timeLeft.collectLatest {
-                    timer.text = it
+                    timer.expiresIn(it)
                 }
             }
         }
 
         // Start checking for transaction status
-        observeLiveData(viewModel.paymentConfirmation, {
+        observeLiveData(viewModel.paymentConfirmation, null, {
+            makePaymentButton.isEnabled = false
+            makePaymentButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.lighter_dark))
             infoTextView.visibility = View.GONE
             checkingPaymentProgress.visibility = View.VISIBLE
         },
-            { Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show() }) {
+            {
+                Toast.makeText(requireContext(),  "$it ${getString(R.string.try_again)}", Toast.LENGTH_LONG).show()
+                makePaymentButton.isEnabled = true
+                makePaymentButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.hydrogen_yellow))
+                infoTextView.visibility = View.VISIBLE
+                checkingPaymentProgress.visibility = View.GONE
+            }) {
             Toast.makeText(
                 requireContext(),
                 getString(R.string.payment_successful),
-                Toast.LENGTH_SHORT
+                Toast.LENGTH_LONG
             ).show()
+            viewModel.pauseTimer()
             val action =
                 BankTransferFragmentDirections.actionBankTransferFragmentToTransactionReceiptDetailsFragment()
             findNavController().navigate(action)

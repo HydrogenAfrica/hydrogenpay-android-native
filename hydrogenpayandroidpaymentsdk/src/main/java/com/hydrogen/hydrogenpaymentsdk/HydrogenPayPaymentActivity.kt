@@ -4,27 +4,35 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.dsofttech.dprefs.utils.DPrefs
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.HydrogenPayPaymentActivityBinding
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
+import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
-import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_TIME_15_MIN
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_TIME_15_MIN
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_EXTRA_TAG
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_TIMER_DONE_VALUE
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 
 class HydrogenPayPaymentActivity : AppCompatActivity() {
     private lateinit var binding: HydrogenPayPaymentActivityBinding
     private val viewModel: AppViewModel by viewModels {
-        AppViewModelProviderFactory()
+        AppViewModelProviderFactory(HydrogenPayDiModule)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,10 +53,39 @@ class HydrogenPayPaymentActivity : AppCompatActivity() {
         }
         payByTransferRequest?.let {
             viewModel.setBankTransferRequest(it)
-            viewModel.startTimer(INT_TIME_15_MIN)
+            viewModel.startTimer(LONG_TIME_15_MIN)
         } ?: cancelByGoingBackToMerchantApp(
             RequestDeclineReasons.INVALID_ARGUMENT_PROVIDED.reason
         )
+
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.timeLeft.collectLatest {
+                    if (it == STRING_TIMER_DONE_VALUE) {
+                        Toast.makeText(
+                            this@HydrogenPayPaymentActivity,
+                            getString(R.string.time_out),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                        cancelByGoingBackToMerchantApp(RequestDeclineReasons.TIME_OUT.reason)
+                    }
+                }
+
+                viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.collectLatest {
+                    if (it == 0L) {
+                        val intent = Intent()
+                        intent.putExtra(
+                            HydrogenPay.HYDROGEN_PAY_RESULT_KEY,
+                            providesGson().toJson(viewModel.getReceiptPayload())
+                        )
+                        this.apply {
+                            setResult(Activity.RESULT_OK, intent)
+                            finish()
+                        }
+                    }
+                }
+            }
+        }
     }
 
     companion object {

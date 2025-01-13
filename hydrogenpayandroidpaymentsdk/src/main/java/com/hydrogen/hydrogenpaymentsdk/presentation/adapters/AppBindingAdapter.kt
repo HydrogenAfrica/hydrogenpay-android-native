@@ -6,7 +6,6 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.widget.Button
 import android.widget.TextView
 import androidx.core.content.ContextCompat
@@ -70,9 +69,9 @@ fun TextView.formatAmountWithCommas(num: Int?) {
 
 @BindingAdapter("android:toggleTextColorWithEnabledState")
 fun Button.toggleTextColorWithEnabledState(string: String) {
-    if (this.isEnabled == true) {
+    if (this.isEnabled) {
         setTextColor(ContextCompat.getColor(context, R.color.hydrogen_yellow))
     } else {
-        setTextColor(ContextCompat.getColor(context, R.color.hydrogen_yellow))
+        setTextColor(ContextCompat.getColor(context, R.color.lighter_dark))
     }
 }

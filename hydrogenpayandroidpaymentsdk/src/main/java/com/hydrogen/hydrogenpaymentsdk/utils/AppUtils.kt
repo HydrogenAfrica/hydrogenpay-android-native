@@ -6,18 +6,28 @@ import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
-import android.util.Log
+import android.text.Spannable
+import android.text.SpannableString
+import android.text.style.ForegroundColorSpan
+import android.text.style.StyleSpan
 import android.view.MotionEvent
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import com.google.android.material.textfield.TextInputEditText
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.DrawablePosition
+import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.CustomFontSpan
+import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.transferTo
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.Locale
 
 internal object AppUtils {
@@ -43,17 +53,34 @@ internal object AppUtils {
 
     fun <T> LifecycleOwner.observeLiveData(
         liveData: LiveData<ViewState<T>>,
-        doWhenLoading: () -> Unit,
+        loaderDialog: Dialog?,
+        doWhenLoading: (() -> Unit)?,
         doOnError: (errorMessage: String) -> Unit,
         doOnSuccess: (result: T?) -> Unit
     ) {
         liveData.observe(this) {
             when (it.status) {
-                Status.LOADING -> doWhenLoading.invoke()
-                Status.ERROR -> doOnError.invoke(it.message)
-                Status.SUCCESS -> doOnSuccess.invoke(it.content)
+                Status.LOADING -> {
+                    loaderDialog?.show()
+                    doWhenLoading?.invoke()
+                }
+
+                Status.ERROR -> {
+                    loaderDialog?.cancel()
+                    loaderDialog?.dismiss()
+                    doOnError.invoke(it.message)
+                }
+
+                Status.SUCCESS -> {
+                    loaderDialog?.cancel()
+                    loaderDialog?.dismiss()
+                    doOnSuccess.invoke(it.content)
+                }
+
                 else -> {
                     if (it.status != Status.INITIAL_DEFAULT) {
+                        loaderDialog?.cancel()
+                        loaderDialog?.dismiss()
                         doOnError.invoke(it.message)
                     }
                 }
@@ -71,30 +98,7 @@ internal object AppUtils {
     }
 
     @SuppressLint("ClickableViewAccessibility")
-    fun TextView.handleDrawableRightClick(
-        drawablePosition: DrawablePosition = DrawablePosition.LEFT,
-        actionToRun: () -> Unit
-    ) {
-        setOnTouchListener { _, event ->
-            val position = if (drawablePosition == DrawablePosition.LEFT) 0 else 2
-            if (event.action == MotionEvent.ACTION_UP) {
-                val drawable = compoundDrawablesRelative[position] // Get the right drawable
-                if (drawable != null) {
-                    val drawableWidth = drawable.bounds.width()
-                    // Check if the touch is within the bounds of the right drawable
-                    if (event.rawX >= (right - drawableWidth - paddingEnd)) {
-                        // Handle the click on the drawable
-                        actionToRun.invoke()
-                        return@setOnTouchListener true
-                    }
-                }
-            }
-            return@setOnTouchListener false
-        }
-    }
-
-    @SuppressLint("ClickableViewAccessibility")
-    fun TextView.handleEditTextDrawableClick(
+    fun TextInputEditText.handleEditTextDrawableClick(
         drawablePosition: DrawablePosition = DrawablePosition.LEFT,
         actionToRun: () -> Unit
     ) {
@@ -116,5 +120,72 @@ internal object AppUtils {
         clipBoard.setPrimaryClip(clip)
         Toast.makeText(context, label, Toast.LENGTH_SHORT)
             .show()
+    }
+
+    fun formatTransactionDateTime(inputTime: String): String {
+        try {
+            // Truncate the milliseconds to three digits if necessary
+            val normalizedInputTime = inputTime.replace(Regex("\\.\\d{3}\\d*")) { matchResult ->
+                ".${matchResult.value.substring(1, 4)}"
+            }
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
+
+            // Parse the input time
+            val date = inputFormat.parse(normalizedInputTime) ?: return "Invalid date"
+
+            // Extract day, month, year, and time components
+            val calendar = Calendar.getInstance().apply { time = date }
+            val day = calendar.get(Calendar.DAY_OF_MONTH)
+
+            // Determine the ordinal suffix for the day
+            val dayWithSuffix = when {
+                day in 11..13 -> "${day}th"
+                day % 10 == 1 -> "${day}st"
+                day % 10 == 2 -> "${day}nd"
+                day % 10 == 3 -> "${day}rd"
+                else -> "${day}th"
+            }
+
+            // Format month, year, and time
+            val monthYearFormat = SimpleDateFormat("MMM. yyyy", Locale.getDefault())
+            val timeFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+
+            val formattedMonthYear = monthYearFormat.format(date)
+            val formattedTime = timeFormat.format(date)
+
+            // Combine into the desired format
+            return "$dayWithSuffix $formattedMonthYear | $formattedTime"
+        } catch (e: Exception) {
+            e.printStackTrace()
+            return "Invalid date format"
+        }
+    }
+
+    fun TextView.expiresIn(timeLeft: String?) {
+        timeLeft?.let {
+            val totalString = context.getString(R.string.expires_in_place_holder, it)
+            val spannableString = SpannableString(totalString)
+            spannableString.apply {
+                setSpan(
+                    ForegroundColorSpan(Color.BLACK),
+                    12,
+                    totalString.length,
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+                setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    12,
+                    totalString.length,
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+                setSpan(
+                    CustomFontSpan(ResourcesCompat.getFont(this@expiresIn.context, R.font.exo_bold)),
+                    12,
+                    totalString.length,
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+            text = spannableString
+        }
     }
 }

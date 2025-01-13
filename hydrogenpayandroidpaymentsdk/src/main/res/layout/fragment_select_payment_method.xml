@@ -43,7 +43,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:background="@drawable/grey_drawable_bg"
-            android:fontFamily="@font/exo_bold"
             android:paddingHorizontal="@dimen/dimen_10dp"
             android:paddingVertical="@dimen/dimen_4dp"
             android:text="@string/expires_in_place_holder"

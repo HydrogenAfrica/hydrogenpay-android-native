@@ -1,6 +1,6 @@
 package com.hydrogen.hydrogenpaymentsdk.domain.models
 
-data class PaymentConfirmationResponse(
+data class HydrogenPayPaymentTransactionReceipt(
     val amount: String,
     val chargedAmount: String,
     val createdAt: String,
@@ -16,5 +16,9 @@ data class PaymentConfirmationResponse(
     val status: String,
     val transactionRef: String,
     val transactionStatus: String,
-    val vat: String
+    val vat: String,
+    val bankName: String,
+    val accountName: String,
+    val accountNumber: String,
+    val merchantName: String
 )

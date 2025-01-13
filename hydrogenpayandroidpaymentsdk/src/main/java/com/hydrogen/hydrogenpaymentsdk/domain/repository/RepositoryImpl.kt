@@ -1,8 +1,10 @@
 package com.hydrogen.hydrogenpaymentsdk.domain.repository
 
+import android.util.Log
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.HydrogenPaymentGateWayApiService
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationRequestDTO
+import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
@@ -45,6 +47,8 @@ class RepositoryImpl(
             val response = apiService.paymentConfirmation(request)
             emit(networkUtil.getServerResponse(response))
         }.map { data ->
+
+            Log.d("CONFIRMATION_LOG", providesGson().toJson(data.content?.data ?: "null data"))
             val result = data.content?.data?.toDomain()
             ViewState(
                 status = data.status,
@@ -54,6 +58,7 @@ class RepositoryImpl(
         }.retry(LONG_NETWORK_RETRY_TIME) {
             return@retry it is SocketTimeoutException || it is IOException
         }.catch {
+            Log.d("CONFIRMATION_LOG_ERROR", it.localizedMessage!!)
             val handledException = networkUtil.handleError<PaymentConfirmationResponse>(it)
             emit(handledException)
         }

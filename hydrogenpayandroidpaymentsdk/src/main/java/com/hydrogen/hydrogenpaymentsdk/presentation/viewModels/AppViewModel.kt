@@ -5,13 +5,18 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.usecases.countdownTimer.CountdownTimerUseCase
 import com.hydrogen.hydrogenpaymentsdk.usecases.payByTransfer.PayByTransferUseCase
 import com.hydrogen.hydrogenpaymentsdk.usecases.paymentConfirmation.PaymentConfirmationUseCase
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_TIME_15_SECS
+import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.getReceiptPayload
 import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +32,11 @@ class AppViewModel(
 ) : ViewModel() {
     private val _timeLeft: MutableStateFlow<String> = MutableStateFlow("")
     val timeLeft: StateFlow<String> = _timeLeft.asStateFlow()
+
+    private val _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment: MutableStateFlow<Long> =
+        MutableStateFlow(0)
+    val timeLeftToRedirectToMerchantAppAfterSuccessfulPayment: StateFlow<Long> =
+        _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.asStateFlow()
 
     private val _bankTransferRequest: MutableLiveData<PayByTransferRequest> = MutableLiveData()
     val bankTransferRequest get() = _bankTransferRequest
@@ -53,7 +63,7 @@ class AppViewModel(
         }
     }
 
-    fun startTimer(minutes: Int) = countdownTimerUseCase.start(minutes)
+    fun startTimer(minutes: Long) = countdownTimerUseCase.start(minutes)
     fun pauseTimer() = countdownTimerUseCase.pause()
     fun resumeTimer() = countdownTimerUseCase.resume()
     fun resetTimer() = countdownTimerUseCase.reset()
@@ -73,12 +83,33 @@ class AppViewModel(
         viewModelScope.launch(ioDispatcher) {
             paymentConfirmationUseCase.confirmPayment(_bankTransferResponseState.value!!.content!!.transactionRef)
                 .collectLatest {
-                    _paymentConfirmation.value = it
+                    _paymentConfirmation.postValue(it)
                 }
         }
     }
 
     fun setBankTransferRequest(bankTransferRequest: PayByTransferRequest) {
         _bankTransferRequest.value = bankTransferRequest
+    }
+
+    fun startRedirectTimer(redirectTime: Long = LONG_TIME_15_SECS) {
+        viewModelScope.launch(Dispatchers.Default) {
+            _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.update { redirectTime }
+            while (redirectTime > 0) {
+                delay(1000L)
+                _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.update { (_timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.value - 1) }
+            }
+        }
+    }
+
+    fun getReceiptPayload(): HydrogenPayPaymentTransactionReceipt =
+        _paymentConfirmation.value!!.content!!.getReceiptPayload(
+            _bankTransferResponseState.value!!.content!!,
+            _bankTransferRequest.value!!.customerName
+        )
+
+    override fun onCleared() {
+        super.onCleared()
+        countdownTimerUseCase.reset()
     }
 }

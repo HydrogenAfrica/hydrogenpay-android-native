@@ -22,8 +22,10 @@ import androidx.navigation.fragment.findNavController
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentSelectPaymentMethodBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
+import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getLoadingAlertDialog
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay.HYDROGEN_PAY_RESULT_KEY
@@ -38,7 +40,7 @@ class SelectPaymentMethodFragment : Fragment() {
     private lateinit var backToMerchantAppBtn: ImageView
     private lateinit var timer: TextView
     private val viewModel: AppViewModel by activityViewModels {
-        AppViewModelProviderFactory()
+        AppViewModelProviderFactory(HydrogenPayDiModule)
     }
 
     override fun onCreateView(
@@ -79,13 +81,9 @@ class SelectPaymentMethodFragment : Fragment() {
         // Select pay by bank transfer
         bankTransfer.setOnClickListener {
             viewModel.payByTransfer()
-            observeLiveData(viewModel.bankTransferResponseState, {
-                loaderAlertDialog?.show()
-            }, {
+            observeLiveData(viewModel.bankTransferResponseState, loaderAlertDialog, null, {
                 Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
             }) {
-                loaderAlertDialog?.cancel()
-                loaderAlertDialog?.dismiss()
                 val action =
                     SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToBankTransferFragment()
                 findNavController().navigate(action)
@@ -102,7 +100,7 @@ class SelectPaymentMethodFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.timeLeft.collectLatest {
-                    timer.text = it
+                    timer.expiresIn(it)
                 }
             }
         }

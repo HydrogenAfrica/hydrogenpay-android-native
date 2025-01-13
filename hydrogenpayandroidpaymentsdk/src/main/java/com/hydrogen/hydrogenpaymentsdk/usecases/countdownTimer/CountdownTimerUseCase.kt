@@ -18,16 +18,21 @@ class CountdownTimerUseCase {
     private var job: Job? = null
     private var isPaused = false
 
-    fun start(minutes: Int) {
+    /**
+     * Starts the timer
+     *
+     * @param [minutes] time in milliseconds
+     * */
+    fun start(minutes: Long) {
         reset()
-        val totalSeconds = minutes * 60
+        val totalSeconds = (minutes / 1000).toInt() * 60
         _timeLeft.value = totalSeconds
         resume()
     }
 
     fun resume() {
-        if (job != null || isPaused) return
-        isPaused = false
+//        if (job != null || isPaused) return
+//        isPaused = false
         job = CoroutineScope(Dispatchers.Default).launch {
             while (_timeLeft.value > 0) {
                 delay(1000L)

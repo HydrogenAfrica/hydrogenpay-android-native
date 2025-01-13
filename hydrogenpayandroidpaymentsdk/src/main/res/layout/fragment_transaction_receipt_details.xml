@@ -5,7 +5,9 @@
     tools:context=".presentation.TransactionReceiptDetailsFragment">
 
     <data>
-
+        <variable
+            name="appViewModel"
+            type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -52,12 +54,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
+                android:text="@{appViewModel.paymentConfirmation.content.paidAt}"
                 android:textSize="@dimen/dimen_10sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView6"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.0"
                 app:layout_constraintStart_toStartOf="@+id/textView14"
-                tools:text="12th Sep. 2023 | 12:23pm" />
+                tools:text="12th Sep. 2023 | 12:23 pm" />
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.core.widget.NestedScrollView
@@ -104,6 +107,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_20dp"
                     android:textAlignment="textEnd"
+                    android:text="@{appViewModel.bankTransferRequest.customerName}"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView21"
@@ -136,6 +140,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
+                    android:text="@{appViewModel.paymentConfirmation.content.transactionRef}"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
                     app:layout_constraintTop_toTopOf="@+id/textView19"
@@ -167,7 +172,7 @@
                     style="@style/heading_poppins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/amount_in_naira_place_holder"
+                    android:text="@{String.format(@string/amount_in_naira_place_holder, appViewModel.paymentConfirmation.content.chargedAmount)"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
@@ -201,6 +206,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
+                    android:text="@{appViewModel.paymentConfirmation.content.narration}"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
                     app:layout_constraintTop_toTopOf="@+id/textView26"
@@ -246,6 +252,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_20dp"
                     android:textAlignment="textEnd"
+                    android:text="@{appViewModel.bankTransferResponseState.content.bankName}"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintTop_toTopOf="@+id/textView29"
@@ -278,6 +285,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
+                    android:text="@{appViewModel.bankTransferResponseState.content.virtualAccountNo}"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView30"
                     app:layout_constraintTop_toTopOf="@+id/textView31"
@@ -310,6 +318,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
+                    android:text="@{appViewModel.bankTransferResponseState.content.virtualAccountName}"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView32"
                     app:layout_constraintTop_toTopOf="@+id/textView33"
