@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
@@ -26,6 +27,7 @@ import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_TIME_15_MIN
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_EXTRA_TAG
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_TIMER_DONE_VALUE
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -71,7 +73,8 @@ class HydrogenPayPaymentActivity : AppCompatActivity() {
                     }
                 }
 
-                viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.collectLatest {
+                viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.collect {
+                    Log.d("TIME_LEFT_TO_REDIRECT", it.toString())
                     if (it == 0L) {
                         val intent = Intent()
                         intent.putExtra(

@@ -15,4 +15,6 @@ interface SharedPrefsManagerContract {
     fun retrieveBooleanFromSharedPrefs(key: String): Boolean
     fun retrieveLongFromSharedPrefs(key: String, defaultValue: Long? = null): Long
     fun retrieveDoubleFromSharedPrefs(key: String, defaultValue: Double? = null): Double
+
+    fun deletePrefs(key: String)
 }

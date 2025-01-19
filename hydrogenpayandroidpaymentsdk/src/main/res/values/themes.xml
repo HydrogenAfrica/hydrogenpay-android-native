@@ -52,4 +52,8 @@
         <item name="boxCornerRadiusTopEnd">@dimen/dimen_5dp</item>
         <item name="boxCornerRadiusTopStart">@dimen/dimen_5dp</item>
     </style>
+    <style name="topDialogAnimation" parent="Base.Theme.HydrogenPaymentSDK">
+        <item name="android:backgroundDimEnabled">false</item>
+        <item name="android:windowEnterAnimation">@anim/slide_down_from_top_anim</item>
+    </style>
 </resources>

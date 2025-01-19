@@ -23,6 +23,8 @@ coroutinesVersion = "1.8.0"
 retrofitVersion = "2.9.0'"
 gsonConverter = "2.9.0"
 otpViewVersion = "3.1.0"
+ballon_version = "1.6.11"
+shimmer_effect_version = "0.5.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -47,6 +49,11 @@ nav-fragment = { group = "androidx.navigation", name = "navigation-fragment-ktx"
 nav-ui = { group = "androidx.navigation", name = "navigation-ui-ktx", version.ref = "navVersion"}
 androidx-legacy-support-v4 = { group = "androidx.legacy", name = "legacy-support-v4", version.ref = "legacySupportV4" }
 logging-interceptor-dependency = { group = "com.squareup.okhttp3", name = "logging-interceptor", version.ref = "loggingInterceptorVersion"}
+
+# BALLON
+balloon-alert-dependency = { group = "com.github.skydoves", name = "balloon", version.ref = "ballon_version"}
+# FACEBOOK SHIMMER EFFECT
+shimmer-effect-dependency = { group = "com.facebook.shimmer", name = "shimmer", version.ref = "shimmer_effect_version"}
 # CHNAGE THIS TO ONLINE VERSION LATER ON
 dprefs-library = { group = "com.dsofttech.dprefs", name = "dPrefs", version.ref = "dPrefsVersion"}
 coil-dependency = { group = "io.coil-kt", name = "coil", version.ref = "coilVersion" }

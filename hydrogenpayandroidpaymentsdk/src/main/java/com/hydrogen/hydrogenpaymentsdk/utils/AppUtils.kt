@@ -1,6 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
 import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Dialog
 import android.content.ClipData
 import android.content.ClipboardManager
@@ -12,17 +13,20 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.view.Gravity
 import android.view.MotionEvent
+import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
 import com.google.android.material.textfield.TextInputEditText
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.DrawablePosition
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.CustomFontSpan
-import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.transferTo
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import java.text.NumberFormat
@@ -179,7 +183,12 @@ internal object AppUtils {
                     Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                 )
                 setSpan(
-                    CustomFontSpan(ResourcesCompat.getFont(this@expiresIn.context, R.font.exo_bold)),
+                    CustomFontSpan(
+                        ResourcesCompat.getFont(
+                            this@expiresIn.context,
+                            R.font.exo_bold
+                        )
+                    ),
                     12,
                     totalString.length,
                     Spannable.SPAN_EXCLUSIVE_INCLUSIVE
@@ -187,5 +196,29 @@ internal object AppUtils {
             }
             text = spannableString
         }
+    }
+
+    fun Fragment.createAlertModal(rootView: ViewGroup?) {
+        val dialog = AlertDialog.Builder(requireContext()).create()
+        val dialogView = layoutInflater.inflate(R.layout.alert_modal_layout, rootView)
+        val closeIcon = dialogView.findViewById<ImageView>(R.id.close_alert)
+        closeIcon.setOnClickListener { dialog.dismiss() }
+        dialog.apply {
+            setView(dialogView)
+            setCancelable(false)
+        }
+
+        // Set the dialog window to appear at the top
+        dialog.window?.apply {
+            setGravity(Gravity.TOP) // Align to the top
+            setBackgroundDrawableResource(android.R.color.transparent) // Make the background blend
+            attributes = attributes?.apply {
+                y = 50 // Adjust margin from the top of the screen
+            }
+            setWindowAnimations(R.style.topDialogAnimation)
+            setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
+        }
+
+        dialog.show()
     }
 }

@@ -9,9 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -19,24 +17,27 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.RecyclerView
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
-import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentSelectPaymentMethodBinding
+import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentSelectPaymentMethodNewBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
+import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.PaymentMethodsAdapter
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_PAYMENT
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_TRANSFER
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getLoadingAlertDialog
-import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay.HYDROGEN_PAY_RESULT_KEY
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class SelectPaymentMethodFragment : Fragment() {
-    private lateinit var binding: FragmentSelectPaymentMethodBinding
+    private lateinit var paymentMethodsAdapter: PaymentMethodsAdapter
+    private lateinit var binding: FragmentSelectPaymentMethodNewBinding
     private var loaderAlertDialog: Dialog? = null
-    private lateinit var bankTransfer: ConstraintLayout
-    private lateinit var payByCard: ConstraintLayout
+    private lateinit var paymentMethodRv: RecyclerView
     private lateinit var backToMerchantAppBtn: ImageView
     private lateinit var timer: TextView
     private val viewModel: AppViewModel by activityViewModels {
@@ -54,9 +55,24 @@ class SelectPaymentMethodFragment : Fragment() {
                     cancelByGoingBackToMerchantApp()
                 }
             })
+        paymentMethodsAdapter = PaymentMethodsAdapter {
+            when (it.name) {
+                STRING_TRANSFER -> {
+                    val action =
+                        SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToBankTransferFragment()
+                    findNavController().navigate(action)
+                }
+
+                STRING_CARD_PAYMENT -> {
+                    val action =
+                        SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToCardPaymentFragment()
+                    findNavController().navigate(action)
+                }
+            }
+        }
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_select_payment_method,
+            R.layout.fragment_select_payment_method_new,
             container,
             false
         )
@@ -78,24 +94,28 @@ class SelectPaymentMethodFragment : Fragment() {
             cancelByGoingBackToMerchantApp()
         }
 
-        // Select pay by bank transfer
-        bankTransfer.setOnClickListener {
-            viewModel.payByTransfer()
-            observeLiveData(viewModel.bankTransferResponseState, loaderAlertDialog, null, {
-                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-            }) {
-                val action =
-                    SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToBankTransferFragment()
-                findNavController().navigate(action)
-            }
+        paymentMethodRv.apply {
+            adapter = paymentMethodsAdapter
         }
 
-        // Select pay by card
-        payByCard.setOnClickListener {
-            val action =
-                SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToCardPaymentFragment()
-            findNavController().navigate(action)
-        }
+//        // Select pay by bank transfer
+//        bankTransfer.setOnClickListener {
+//            viewModel.payByTransfer()
+//            observeLiveData(viewModel.bankTransferResponseState, loaderAlertDialog, null, {
+//                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
+//            }) {
+//                val action =
+//                    SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToBankTransferFragment()
+//                findNavController().navigate(action)
+//            }
+//        }
+//
+//        // Select pay by card
+//        payByCard.setOnClickListener {
+//            val action =
+//                SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToCardPaymentFragment()
+//            findNavController().navigate(action)
+//        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -108,10 +128,9 @@ class SelectPaymentMethodFragment : Fragment() {
 
     private fun initViews() {
         with(binding) {
-            bankTransfer = bankTransferContentL
-            payByCard = payByCardConstraintL
             backToMerchantAppBtn = imageView4
             timer = textView2
+            paymentMethodRv = recyclerView
         }
     }
 

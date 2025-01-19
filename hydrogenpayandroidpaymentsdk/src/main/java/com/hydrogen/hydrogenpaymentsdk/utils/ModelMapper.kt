@@ -1,10 +1,16 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePaymentDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentMethodDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsDto
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
+import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
+import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
+import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatTransactionDateTime
 
 object ModelMapper {
@@ -26,10 +32,10 @@ object ModelMapper {
             formatTransactionDateTime(createdAt),
             currency,
             customerEmail,
-            description,
+            description ?: "",
             fees.toString(),
             id,
-            narration,
+            narration ?: "",
             formatTransactionDateTime(paidAt),
             paymentType,
             recurringCardToken,
@@ -49,7 +55,7 @@ object ModelMapper {
             createdAt,
             currency,
             customerEmail,
-            description,
+            description ?: "",
             fees,
             id,
             narration,
@@ -65,4 +71,57 @@ object ModelMapper {
             payByTransferResponse.virtualAccountNo,
             merchantName
         )
+
+    fun InitiatePaymentDto.toDomain(): PaymentTransactionCredentials =
+        PaymentTransactionCredentials(transactionRef, url, getTransactionId(), getTransactionMode())
+
+    fun TransactionDetailsDto.toDomain(): TransactionDetails =
+        TransactionDetails(
+            amount,
+            bankDiscountValue,
+            bankDiscountedAmount,
+            billingMessage,
+            callBackUrl,
+            canRetry,
+            currency,
+            currencyInfo,
+            customerEmail,
+            customerFeePercentage,
+            description,
+            discountAmount,
+            discountPercentage,
+            frequency,
+            isBankDiscountEnabled,
+            isCardSpecificDiscount,
+            isRecurring,
+            isRecurringActive,
+            merchantInfo,
+            merchantRef,
+            merchantServiceFee,
+            orderId,
+            otpOrBankTransferTimeoutLeft,
+            paymentId,
+            serviceFees,
+            timeoutLeft,
+            totalAmount,
+            transactionId,
+            transactionMode,
+            transactionType,
+            vatFee,
+            vatPercentage
+        )
+
+    fun PaymentMethodDto.toDomain(): PaymentMethod = PaymentMethod(
+        alias,
+        description,
+        displayOrder,
+        id,
+        image,
+        isActive,
+        isPageReroute,
+        name,
+        providerId,
+        transactionLimit,
+        type
+    )
 }

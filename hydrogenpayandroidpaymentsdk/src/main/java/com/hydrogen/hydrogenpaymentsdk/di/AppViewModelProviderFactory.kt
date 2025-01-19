@@ -13,6 +13,7 @@ internal class AppViewModelProviderFactory(
             return AppViewModel(
                 hydrogenPayDiModule.providesPayByTransferUseCase(),
                 hydrogenPayDiModule.providesPaymentConfirmationUseCase(),
+                hydrogenPayDiModule.providesInitiatePaymentUseCase(),
                 hydrogenPayDiModule.providesIoDispatchers(),
                 hydrogenPayDiModule.providesCountdownTimerUseCase()
             ) as T

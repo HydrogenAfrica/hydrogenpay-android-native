@@ -24,6 +24,7 @@ import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.copyToClipboard
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.createAlertModal
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
 import kotlinx.coroutines.flow.collectLatest

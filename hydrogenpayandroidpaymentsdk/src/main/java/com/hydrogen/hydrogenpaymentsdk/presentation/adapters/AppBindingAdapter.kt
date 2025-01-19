@@ -7,10 +7,13 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
+import coil.load
+import coil.transform.CircleCropTransformation
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatNumberWithCommas
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getCustomerNameInitials
@@ -42,6 +45,22 @@ fun TextView.transferTo(inputString: String?) {
             )
         }
         text = spannableString
+    }
+}
+
+@BindingAdapter("android:loadImageFromUrl")
+fun ImageView.loadImageFromUrl(imageUrl: String?) {
+    imageUrl?.let {
+        this.load(imageUrl) {
+            crossfade(true)
+            placeholder(R.drawable.image_pre_load_place_holder)
+            transformations(CircleCropTransformation())
+        }
+    } ?: run {
+        this.load(R.drawable.image_pre_load_place_holder) {
+            crossfade(true)
+            transformations(CircleCropTransformation())
+        }
     }
 }
 

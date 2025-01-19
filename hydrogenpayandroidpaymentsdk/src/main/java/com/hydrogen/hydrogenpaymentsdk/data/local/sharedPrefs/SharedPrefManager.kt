@@ -43,4 +43,8 @@ class SharedPrefManager() : SharedPrefsManagerContract {
     override fun retrieveDoubleFromSharedPrefs(key: String, defaultValue: Double?): Double =
         defaultValue?.let { sharedPrefObject.getDouble(key, it) }
             ?: run { sharedPrefObject.getDouble(key) }
+
+    override fun deletePrefs(key: String) {
+        sharedPrefObject.removePref(key)
+    }
 }

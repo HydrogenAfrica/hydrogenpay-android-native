@@ -6,7 +6,7 @@ data class PaymentConfirmationResponse(
     val createdAt: String,
     val currency: String,
     val customerEmail: String,
-    val description: String,
+    val description: String? = "",
     val fees: String,
     val id: String,
     val narration: String,

@@ -1,6 +1,8 @@
 package com.hydrogen.hydrogenpaymentsdk.data.remote.interceptors
 
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorisedRequest
+import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorizedRequestModeHeader
+import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.AUTH_TOKEN
 import okhttp3.Interceptor
 import okhttp3.Request
@@ -8,6 +10,7 @@ import okhttp3.Response
 import retrofit2.Invocation
 
 internal class AuthInterceptor(
+    private val sessionManager: SessionManagerContract
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
         val requestBuilder: Request.Builder = chain.request().newBuilder()
@@ -36,6 +39,11 @@ internal class AuthInterceptor(
         when (annotation) {
             is AuthorisedRequest -> {
                 requestBuilder.addHeader("Authorization", "Bearer $AUTH_TOKEN")
+            }
+
+            is AuthorizedRequestModeHeader -> {
+                val mode = sessionManager.getSessionTransactionCredentials()
+                requestBuilder.addHeader("mode", mode!!.transactionMode)
             }
 
             else -> {

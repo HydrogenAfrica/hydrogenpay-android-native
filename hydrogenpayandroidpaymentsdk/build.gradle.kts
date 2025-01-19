@@ -71,6 +71,10 @@ dependencies {
     kapt(libs.room.annotation.processor.dependency)
     implementation(libs.room.dependency)
     implementation(libs.life.cycle)
+    // Balloon
+    implementation(libs.balloon.alert.dependency)
+    // Shimmer Effect
+    implementation(libs.shimmer.effect.dependency)
 
     implementation(libs.coil.dependency)
     implementation(libs.view.model.kts)

@@ -8,11 +8,14 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
+import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
+import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
+import com.hydrogen.hydrogenpaymentsdk.usecases.InitiatePaymentUseCase
+import com.hydrogen.hydrogenpaymentsdk.usecases.PayByTransferUseCase
+import com.hydrogen.hydrogenpaymentsdk.usecases.PaymentConfirmationUseCase
 import com.hydrogen.hydrogenpaymentsdk.usecases.countdownTimer.CountdownTimerUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.payByTransfer.PayByTransferUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.paymentConfirmation.PaymentConfirmationUseCase
-import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_TIME_15_SECS
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_TIME_15_SEC
 import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.getReceiptPayload
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -27,9 +30,15 @@ import kotlinx.coroutines.launch
 class AppViewModel(
     private val payByTransferUseCase: PayByTransferUseCase,
     private val paymentConfirmationUseCase: PaymentConfirmationUseCase,
+    private val initiatePaymentUseCase: InitiatePaymentUseCase,
     private val ioDispatcher: CoroutineDispatcher,
     private val countdownTimerUseCase: CountdownTimerUseCase
 ) : ViewModel() {
+    private val _paymentMethodsAndTransactionDetails: MutableStateFlow<ViewState<Pair<List<PaymentMethod>?, TransactionDetails?>>> =
+        MutableStateFlow(ViewState.initialDefault(null))
+    val paymentMethodsAndTransactionDetails: StateFlow<ViewState<Pair<List<PaymentMethod>?, TransactionDetails?>>> =
+        _paymentMethodsAndTransactionDetails.asStateFlow()
+
     private val _timeLeft: MutableStateFlow<String> = MutableStateFlow("")
     val timeLeft: StateFlow<String> = _timeLeft.asStateFlow()
 
@@ -56,7 +65,7 @@ class AppViewModel(
     private fun observeTimer() {
         viewModelScope.launch {
             countdownTimerUseCase.timeLeft.collect { remainingTime ->
-                val minutes = remainingTime / 60
+                val minutes = (remainingTime / 60).let { if (it < 10) "0$it" else "$it" }
                 val seconds = (remainingTime % 60).let { if (it < 10) "0$it" else "$it" }
                 _timeLeft.update { "$minutes:$seconds" }
             }
@@ -71,7 +80,7 @@ class AppViewModel(
     fun payByTransfer() {
         _bankTransferResponseState.value = ViewState.loading(null)
         viewModelScope.launch(ioDispatcher) {
-            payByTransferUseCase.payByTransfer(bankTransferRequest.value!!)
+            payByTransferUseCase.invoke(bankTransferRequest.value!!)
                 .collectLatest {
                     _bankTransferResponseState.postValue(it)
                 }
@@ -81,7 +90,7 @@ class AppViewModel(
     fun confirmPayment() {
         _paymentConfirmation.value = ViewState.loading(null)
         viewModelScope.launch(ioDispatcher) {
-            paymentConfirmationUseCase.confirmPayment(_bankTransferResponseState.value!!.content!!.transactionRef)
+            paymentConfirmationUseCase.invoke(_bankTransferResponseState.value!!.content!!.transactionRef)
                 .collectLatest {
                     _paymentConfirmation.postValue(it)
                 }
@@ -92,13 +101,22 @@ class AppViewModel(
         _bankTransferRequest.value = bankTransferRequest
     }
 
-    fun startRedirectTimer(redirectTime: Long = LONG_TIME_15_SECS) {
+    fun startRedirectTimer(redirectTime: Long = LONG_TIME_15_SEC) {
         viewModelScope.launch(Dispatchers.Default) {
             _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.update { redirectTime }
-            while (redirectTime > 0) {
+            while (_timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.value > 0) {
                 delay(1000L)
                 _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.update { (_timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.value - 1) }
             }
+        }
+    }
+
+    fun initiatePayment() {
+        viewModelScope.launch(ioDispatcher) {
+            initiatePaymentUseCase.invoke(_bankTransferRequest.value!!)
+                .collect {
+                    _paymentMethodsAndTransactionDetails.update { it }
+                }
         }
     }
 

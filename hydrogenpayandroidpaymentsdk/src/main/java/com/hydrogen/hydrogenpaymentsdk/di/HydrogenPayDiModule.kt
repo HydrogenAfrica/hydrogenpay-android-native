@@ -1,17 +1,18 @@
 package com.hydrogen.hydrogenpaymentsdk.di
 
 import com.google.gson.Gson
+import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManager
+import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SharedPrefManager
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SharedPrefsManagerContract
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.HydrogenPaymentGateWayApiService
 import com.hydrogen.hydrogenpaymentsdk.data.remote.interceptors.AuthInterceptor
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.Repository
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.RepositoryImpl
+import com.hydrogen.hydrogenpaymentsdk.usecases.InitiatePaymentUseCase
+import com.hydrogen.hydrogenpaymentsdk.usecases.PayByTransferUseCase
+import com.hydrogen.hydrogenpaymentsdk.usecases.PaymentConfirmationUseCase
 import com.hydrogen.hydrogenpaymentsdk.usecases.countdownTimer.CountdownTimerUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.payByTransfer.PayByTransferUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.payByTransfer.PayByTransferUseCaseImpl
-import com.hydrogen.hydrogenpaymentsdk.usecases.paymentConfirmation.PaymentConfirmationUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.paymentConfirmation.PaymentConfirmationUseCaseImpl
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.BASE_URL
 import com.hydrogen.hydrogenpaymentsdk.utils.NetworkUtil
 import kotlinx.coroutines.CoroutineDispatcher
@@ -28,7 +29,9 @@ internal object HydrogenPayDiModule {
     private fun providesLoggingInterceptor(): Interceptor = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
     }
-    private fun providesAuthInterceptor(): Interceptor = AuthInterceptor()
+
+    private fun providesAuthInterceptor(): Interceptor =
+        AuthInterceptor(providesSessionManagerContract())
 
     private fun providesOkHttpClient(): OkHttpClient = OkHttpClient.Builder()
         .readTimeout(20, TimeUnit.SECONDS)
@@ -49,8 +52,14 @@ internal object HydrogenPayDiModule {
     private fun providesSharedPrefManager(
     ): SharedPrefManager = SharedPrefManager()
 
+    private fun providesSessionManager(): SessionManager =
+        SessionManager(providesSharedPrefs(), providesGson())
+
     private fun providesApiService(): HydrogenPaymentGateWayApiService =
         providesRetrofit().create(HydrogenPaymentGateWayApiService::class.java)
+
+    fun providesInitiatePaymentUseCase(): InitiatePaymentUseCase =
+        InitiatePaymentUseCase(providesRepository())
 
     fun providesGson(): Gson = Gson()
 
@@ -59,14 +68,23 @@ internal object HydrogenPayDiModule {
     fun providesIoDispatchers(): CoroutineDispatcher = Dispatchers.IO
     fun providesCountdownTimerUseCase(): CountdownTimerUseCase = CountdownTimerUseCase()
 
-    fun providesSharedPrefs(): SharedPrefsManagerContract = providesSharedPrefManager()
+    private fun providesSharedPrefs(): SharedPrefsManagerContract = providesSharedPrefManager()
 
-    private fun providesRepository(): Repository = RepositoryImpl(providesApiService(), providesNetworkUtil())
-    fun providesPayByTransferUseCase(): PayByTransferUseCase = PayByTransferUseCaseImpl(
+    private fun providesRepository(): Repository =
+        RepositoryImpl(
+            providesApiService(),
+            providesNetworkUtil(),
+            providesSessionManagerContract()
+        )
+
+    fun providesPayByTransferUseCase(): PayByTransferUseCase = PayByTransferUseCase(
         providesRepository()
     )
 
-    fun providesPaymentConfirmationUseCase(): PaymentConfirmationUseCase = PaymentConfirmationUseCaseImpl(
-        providesRepository()
-    )
+    fun providesPaymentConfirmationUseCase(): PaymentConfirmationUseCase =
+        PaymentConfirmationUseCase(
+            providesRepository()
+        )
+
+    fun providesSessionManagerContract(): SessionManagerContract = providesSessionManager()
 }

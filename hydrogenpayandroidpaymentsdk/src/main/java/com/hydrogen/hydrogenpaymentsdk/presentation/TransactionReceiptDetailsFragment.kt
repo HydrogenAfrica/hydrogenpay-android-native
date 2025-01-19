@@ -12,6 +12,7 @@ import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentTransaction
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.createAlertModal
 
 class TransactionReceiptDetailsFragment : Fragment() {
     private lateinit var binding: FragmentTransactionReceiptDetailsBinding
@@ -36,5 +37,6 @@ class TransactionReceiptDetailsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         viewModel.startRedirectTimer()
+        createAlertModal(null)
     }
 }

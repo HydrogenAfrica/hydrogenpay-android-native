@@ -172,7 +172,7 @@
                     style="@style/heading_poppins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{String.format(@string/amount_in_naira_place_holder, appViewModel.paymentConfirmation.content.chargedAmount)"
+                    android:text="@{String.format(@string/amount_in_naira_place_holder, appViewModel.paymentConfirmation.content.chargedAmount)}"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
