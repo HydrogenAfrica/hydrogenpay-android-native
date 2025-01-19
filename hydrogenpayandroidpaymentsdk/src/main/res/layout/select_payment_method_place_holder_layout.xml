@@ -5,7 +5,6 @@
     android:layout_height="wrap_content"
     app:shimmer_auto_start="true"
     app:shimmer_duration="1500"
-    app:shimmer_repeat_count="30"
     app:shimmer_shape="linear">
 
     <androidx.constraintlayout.widget.ConstraintLayout
