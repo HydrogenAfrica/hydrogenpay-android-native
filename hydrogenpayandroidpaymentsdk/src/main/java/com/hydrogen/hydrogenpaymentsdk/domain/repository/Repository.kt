@@ -1,5 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.domain.repository
 
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsRequest
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
@@ -18,8 +20,8 @@ interface Repository {
     ): Flow<ViewState<PaymentTransactionCredentials?>>
 
     fun payByTransfer(
-        transferDetails: PayByTransferRequest
-    ): Flow<ViewState<PayByTransferResponse?>>
+        transferDetails: InitiatePayByTransferRequest
+    ): Flow<ViewState<InitiatePayByTransferResponse?>>
 
     fun confirmPayment(
         transactionReference: String

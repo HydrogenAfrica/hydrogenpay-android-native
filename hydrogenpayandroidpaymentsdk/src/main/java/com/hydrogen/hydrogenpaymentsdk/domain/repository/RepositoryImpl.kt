@@ -4,6 +4,8 @@ import android.util.Log
 import com.google.gson.Gson
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.HydrogenPaymentGateWayApiService
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationRequestDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsRequest
@@ -39,7 +41,7 @@ internal class RepositoryImpl(
             ) as ViewState<PaymentTransactionCredentials?>
         }.retryAndCatchExceptions(networkUtil)
 
-    override fun payByTransfer(transferDetails: PayByTransferRequest): Flow<ViewState<PayByTransferResponse?>> =
+    override fun payByTransfer(transferDetails: InitiatePayByTransferRequest): Flow<ViewState<InitiatePayByTransferResponse?>> =
         flow {
             val response = apiService.payByTransfer(transferDetails)
             emit(networkUtil.getServerResponse(response))
@@ -49,7 +51,7 @@ internal class RepositoryImpl(
                 status = data.status,
                 content = result,
                 message = data.message
-            ) as ViewState<PayByTransferResponse?>
+            ) as ViewState<InitiatePayByTransferResponse?>
         }.retryAndCatchExceptions(networkUtil)
 
     override fun confirmPayment(transactionReference: String): Flow<ViewState<PaymentConfirmationResponse?>> =

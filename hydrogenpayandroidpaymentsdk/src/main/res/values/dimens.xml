@@ -40,4 +40,6 @@
     <dimen name="dimen_16dp">16dp</dimen>
     <dimen name="dimen_9sp">9sp</dimen>
     <dimen name="dimen_32dp">32dp</dimen>
+    <dimen name="dimen_120dp">120dp</dimen>
+    <dimen name="dimen_150dp">150dp</dimen>
 </resources>

@@ -1,15 +1,17 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiateBankTransferResponseDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePaymentDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentMethodDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsDto
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
-import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
+import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatTransactionDateTime
 
@@ -46,7 +48,7 @@ object ModelMapper {
         )
 
     fun PaymentConfirmationResponse.getReceiptPayload(
-        payByTransferResponse: PayByTransferResponse,
+        payByTransferResponse: InitiatePayByTransferResponse,
         merchantName: String
     ): HydrogenPayPaymentTransactionReceipt =
         HydrogenPayPaymentTransactionReceipt(
@@ -66,9 +68,9 @@ object ModelMapper {
             transactionRef,
             transactionStatus,
             vat,
-            payByTransferResponse.bankName,
-            payByTransferResponse.virtualAccountName,
-            payByTransferResponse.virtualAccountNo,
+            "",
+            payByTransferResponse.virtualAcctName,
+            payByTransferResponse.virtualAcctName,
             merchantName
         )
 
@@ -124,4 +126,12 @@ object ModelMapper {
         transactionLimit,
         type
     )
+
+    fun InitiateBankTransferResponseDto.toDomain(): InitiatePayByTransferResponse =
+        InitiatePayByTransferResponse(
+            response_data.expiry_datetime,
+            response_data.request_id,
+            response_data.virtual_acct_name,
+            response_data.virtual_acct_no
+        )
 }

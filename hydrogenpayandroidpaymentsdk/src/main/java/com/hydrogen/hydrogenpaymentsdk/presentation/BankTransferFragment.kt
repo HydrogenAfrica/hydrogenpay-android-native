@@ -22,9 +22,11 @@ import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentBankTransferBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
+import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
+import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldSomeParts
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.copyToClipboard
-import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.createAlertModal
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
 import kotlinx.coroutines.flow.collectLatest
@@ -38,6 +40,10 @@ class BankTransferFragment : Fragment() {
     private lateinit var infoTextView: TextView
     private lateinit var checkingPaymentProgress: ConstraintLayout
     private lateinit var makePaymentButton: Button
+    private lateinit var customerInitials: TextView
+    private lateinit var customerName: TextView
+    private lateinit var merchantRefId: TextView
+    private lateinit var transactionAmount: TextView
 
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
@@ -111,6 +117,32 @@ class BankTransferFragment : Fragment() {
             findNavController().navigate(action)
         }
 
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.paymentMethodsAndTransactionDetails.collect { data ->
+                    data.content?.let {
+                        it.second?.let { transactionDetails ->
+                            val formattedMerchantRefId = getString(
+                                R.string.merchant_ref_place_holder,
+                                transactionDetails.merchantRef
+                            )
+                            customerName.customerNameInSentenceCase(transactionDetails.merchantInfo.merchantName)
+                            customerInitials.setCustomerInitials(transactionDetails.merchantInfo.merchantName)
+                            transactionAmount.text = getString(
+                                R.string.amount_in_naira_place_holder,
+                                transactionDetails.totalAmount
+                            )
+                            merchantRefId.boldSomeParts(
+                                formattedMerchantRefId,
+                                ((formattedMerchantRefId.length - transactionDetails.merchantRef.length)),
+                                formattedMerchantRefId.length
+                            )
+                        }
+                    }
+                }
+            }
+        }
+
         // Copy Account number to clipboard
         accountNumberTxtView.setOnClickListener {
             copyToClipboard(
@@ -129,6 +161,10 @@ class BankTransferFragment : Fragment() {
             checkingPaymentProgress = checkingPaymentL
             makePaymentButton = button
             timer = textView2
+            customerInitials = textView3
+            customerName = textView4
+            merchantRefId = textView6
+            transactionAmount = textView5
         }
     }
 }

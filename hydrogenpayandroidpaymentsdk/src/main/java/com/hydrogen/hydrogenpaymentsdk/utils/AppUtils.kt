@@ -199,6 +199,19 @@ internal object AppUtils {
         }
     }
 
+    fun TextView.boldSomeParts(text: String, startIndex: Int, endIndex: Int) {
+        val spannableString = SpannableString(text)
+        spannableString.apply {
+            setSpan(
+                StyleSpan(Typeface.BOLD),
+                startIndex,
+                endIndex,
+                Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+            )
+        }
+        this.text = spannableString
+    }
+
     fun Fragment.createAlertModal(rootView: ViewGroup?) {
         val dialog = AlertDialog.Builder(requireContext()).create()
         val dialogView = layoutInflater.inflate(R.layout.alert_modal_layout, rootView)

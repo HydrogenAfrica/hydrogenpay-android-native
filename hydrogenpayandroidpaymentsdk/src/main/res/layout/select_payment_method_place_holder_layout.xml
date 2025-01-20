@@ -27,7 +27,7 @@
         <View
             android:id="@+id/title_placeholder"
             android:layout_width="0dp"
-            android:layout_height="16dp"
+            android:layout_height="@dimen/dimen_16dp"
             android:layout_marginStart="@dimen/dimen_15dp"
             android:background="@color/lighter_dark"
             app:layout_constraintStart_toEndOf="@id/icon_placeholder"

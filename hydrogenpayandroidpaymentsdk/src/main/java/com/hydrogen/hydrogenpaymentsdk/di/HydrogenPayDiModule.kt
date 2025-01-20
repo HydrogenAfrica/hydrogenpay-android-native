@@ -78,12 +78,14 @@ internal object HydrogenPayDiModule {
         )
 
     fun providesPayByTransferUseCase(): PayByTransferUseCase = PayByTransferUseCase(
-        providesRepository()
+        providesRepository(),
+        providesSessionManagerContract()
     )
 
     fun providesPaymentConfirmationUseCase(): PaymentConfirmationUseCase =
         PaymentConfirmationUseCase(
-            providesRepository()
+            providesRepository(),
+            providesSessionManagerContract()
         )
 
     private fun providesSessionManagerContract(): SessionManagerContract = providesSessionManager()

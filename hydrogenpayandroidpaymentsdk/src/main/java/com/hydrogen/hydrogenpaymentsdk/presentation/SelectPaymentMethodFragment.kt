@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -18,18 +19,22 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
+import com.facebook.shimmer.ShimmerFrameLayout
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentSelectPaymentMethodBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
-import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.PaymentMethodsAdapter
+import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
+import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_PAYMENT
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_TRANSFER
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldSomeParts
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getLoadingAlertDialog
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay.HYDROGEN_PAY_RESULT_KEY
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -41,6 +46,13 @@ class SelectPaymentMethodFragment : Fragment() {
     private lateinit var paymentMethodRv: RecyclerView
     private lateinit var backToMerchantAppBtn: ImageView
     private lateinit var timer: TextView
+    private lateinit var merchantRefId: TextView
+    private lateinit var shimmerMerchantRefId: ShimmerFrameLayout
+    private lateinit var transactionAmount: TextView
+    private lateinit var shimmerTransactionAmount: ShimmerFrameLayout
+    private lateinit var merchantName: TextView
+    private lateinit var shimmerMerchantName: ShimmerFrameLayout
+    private lateinit var customerNameInitials: TextView
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
     }
@@ -59,9 +71,16 @@ class SelectPaymentMethodFragment : Fragment() {
         paymentMethodsAdapter = PaymentMethodsAdapter {
             when (it.name) {
                 STRING_TRANSFER -> {
-                    val action =
-                        SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToBankTransferFragment()
-                    findNavController().navigate(action)
+                    // Initiate Bank Transfer and navigate to Bank Transfer page on success
+                    viewModel.payByTransfer()
+                    observeLiveData(viewModel.bankTransferResponseState, loaderAlertDialog, null, {errorMessage ->
+                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
+                    }) {
+                        // Navigate to Bank Transfer Page
+                        val action =
+                            SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToBankTransferFragment()
+                        findNavController().navigate(action)
+                    }
                 }
 
                 STRING_CARD_PAYMENT -> {
@@ -77,11 +96,6 @@ class SelectPaymentMethodFragment : Fragment() {
             container,
             false
         )
-        binding.apply {
-            this.appViewModel = viewModel
-            lifecycleOwner = viewLifecycleOwner
-            executePendingBindings()
-        }
         return binding.root
     }
 
@@ -104,33 +118,34 @@ class SelectPaymentMethodFragment : Fragment() {
                 viewModel.paymentMethodsAndTransactionDetails.collectLatest { data ->
                     data.content?.let {
                         it.first?.let { paymentMethods ->
-                            paymentMethodsAdapter.updateData(paymentMethods) // Show loaded data
+                            it.second?.let { transactionDetails ->
+                                paymentMethodsAdapter.updateData(paymentMethods)
+                                val formattedMerchantRefId = getString(
+                                    R.string.merchant_ref_place_holder,
+                                    transactionDetails.merchantRef
+                                )
+                                transactionAmount.text = getString(
+                                    R.string.amount_in_naira_place_holder,
+                                    transactionDetails.totalAmount
+                                )
+                                merchantRefId.boldSomeParts(
+                                    formattedMerchantRefId,
+                                    ((formattedMerchantRefId.length - transactionDetails.merchantRef.length) + 1),
+                                    formattedMerchantRefId.length
+                                )
+                                customerNameInitials.setCustomerInitials(transactionDetails.merchantInfo.merchantName)
+                                merchantName.customerNameInSentenceCase(transactionDetails.merchantInfo.merchantName)
+                                shouldShowAmountAndMerchantRef(true)
+                            } ?: run { shouldShowAmountAndMerchantRef() }
                         } ?: run {
-                            paymentMethodsAdapter.updateData(emptyList()) // Start with shimmer
+                            // Continue shimmer effects
+                            paymentMethodsAdapter.updateData(emptyList())
+                            shouldShowAmountAndMerchantRef()
                         }
                     }
                 }
             }
         }
-
-//        // Select pay by bank transfer
-//        bankTransfer.setOnClickListener {
-//            viewModel.payByTransfer()
-//            observeLiveData(viewModel.bankTransferResponseState, loaderAlertDialog, null, {
-//                Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
-//            }) {
-//                val action =
-//                    SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToBankTransferFragment()
-//                findNavController().navigate(action)
-//            }
-//        }
-//
-//        // Select pay by card
-//        payByCard.setOnClickListener {
-//            val action =
-//                SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToCardPaymentFragment()
-//            findNavController().navigate(action)
-//        }
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -141,11 +156,36 @@ class SelectPaymentMethodFragment : Fragment() {
         }
     }
 
+    private fun shouldShowAmountAndMerchantRef(condition: Boolean = false) {
+        if (condition) {
+            shimmerMerchantRefId.visibility = View.INVISIBLE
+            merchantRefId.visibility = View.VISIBLE
+            shimmerTransactionAmount.visibility = View.INVISIBLE
+            transactionAmount.visibility = View.VISIBLE
+            shimmerMerchantName.visibility = View.INVISIBLE
+            merchantName.visibility = View.VISIBLE
+        } else {
+            shimmerMerchantRefId.visibility = View.VISIBLE
+            merchantRefId.visibility = View.INVISIBLE
+            shimmerTransactionAmount.visibility = View.VISIBLE
+            transactionAmount.visibility = View.INVISIBLE
+            shimmerMerchantName.visibility = View.VISIBLE
+            merchantName.visibility = View.INVISIBLE
+        }
+    }
+
     private fun initViews() {
         with(binding) {
             backToMerchantAppBtn = imageView4
             timer = textView2
             paymentMethodRv = recyclerView
+            transactionAmount = textView5
+            shimmerTransactionAmount = shimmerAmount
+            merchantRefId = textView6
+            shimmerMerchantRefId = shimmerMerchantRef
+            customerNameInitials = textView3
+            shimmerMerchantName = shimmerCustomerNameTextView
+            merchantName = textView4
         }
     }
 

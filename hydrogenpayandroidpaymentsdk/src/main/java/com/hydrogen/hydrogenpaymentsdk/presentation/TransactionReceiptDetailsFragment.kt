@@ -4,18 +4,25 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentTransactionReceiptDetailsBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
+import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.createAlertModal
+import kotlinx.coroutines.launch
 
 class TransactionReceiptDetailsFragment : Fragment() {
     private lateinit var binding: FragmentTransactionReceiptDetailsBinding
+    private lateinit var merchantName: TextView
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
     }
@@ -36,7 +43,23 @@ class TransactionReceiptDetailsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        initViews()
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.paymentMethodsAndTransactionDetails.collect { data ->
+                    data.content?.second?.let {
+                        merchantName.customerNameInSentenceCase(it.merchantInfo.merchantName)
+                    }
+                }
+            }
+        }
         viewModel.startRedirectTimer()
         createAlertModal(null)
+    }
+
+    private fun initViews() {
+        with(binding) {
+            merchantName = textView22
+        }
     }
 }

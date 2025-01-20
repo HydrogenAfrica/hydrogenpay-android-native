@@ -3,6 +3,8 @@ package com.hydrogen.hydrogenpaymentsdk.data.remote.apis
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorisedRequest
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorizedRequestModeHeader
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenServerResponse
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiateBankTransferResponseDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePaymentDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferResponseDto
@@ -36,11 +38,11 @@ interface HydrogenPaymentGateWayApiService {
         @Body transactionDetailsRequest: TransactionDetailsRequest
     ): Response<HydrogenServerResponse<TransactionDetailsDto>>
 
-    @POST("Merchant/initiate-bank-transfer")
-    @AuthorisedRequest
+    @POST("Payment/initiate-bank-transfer")
+    @AuthorizedRequestModeHeader
     suspend fun payByTransfer(
-        @Body transferDetails: PayByTransferRequest
-    ): Response<HydrogenServerResponse<PayByTransferResponseDto>>
+        @Body transferDetails: InitiatePayByTransferRequest
+    ): Response<HydrogenServerResponse<InitiateBankTransferResponseDto>>
 
     @POST("Merchant/initiate-bank-transfer")
     @AuthorisedRequest

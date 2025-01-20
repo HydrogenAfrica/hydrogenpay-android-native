@@ -6,9 +6,6 @@
 
     <data>
 
-        <variable
-            name="appViewModel"
-            type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -97,24 +94,39 @@
                         android:background="@drawable/customer_name_abrev_bg"
                         android:fontFamily="@font/exo_medium"
                         android:gravity="center_vertical|center_horizontal"
-                        android:setCustomerInitials="@{appViewModel.bankTransferRequest.customerName}"
                         android:textAllCaps="true"
                         android:textColor="@color/white"
                         android:textSize="@dimen/dimen_16sp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        tools:text="DG" />
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/shimmer_customerNameTextView"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="@dimen/dimen_15dp"
+                        app:layout_constraintBottom_toTopOf="@+id/textView5"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toEndOf="@+id/textView3"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <View
+                            android:layout_width="@dimen/dimen_120dp"
+                            android:layout_height="@dimen/dimen_16dp"
+                            android:background="@color/lighter_dark" />
+                    </com.facebook.shimmer.ShimmerFrameLayout>
 
                     <TextView
                         android:id="@+id/textView4"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="@dimen/dimen_15dp"
-                        android:customerNameInSentenceCase="@{appViewModel.bankTransferRequest.customerName}"
                         android:fontFamily="@font/exo_bold"
                         android:textColor="@color/black"
                         android:textSize="@dimen/dimen_14sp"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toTopOf="@+id/textView5"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -122,14 +134,30 @@
                         app:layout_constraintTop_toTopOf="parent"
                         tools:text="Damilola Groceries" />
 
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/shimmerAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toTopOf="@+id/textView6"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/textView4"
+                        app:layout_constraintTop_toBottomOf="@+id/textView4">
+
+                        <View
+                            android:layout_width="@dimen/dimen_120dp"
+                            android:layout_height="@dimen/dimen_16dp"
+                            android:background="@color/lighter_dark" />
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
                     <TextView
                         android:id="@+id/textView5"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/exo_bold"
-                        android:formatAmountWithCommas="@{appViewModel.bankTransferRequest.amount}"
                         android:textColor="@color/black"
                         android:textSize="@dimen/dimen_14sp"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toTopOf="@+id/textView6"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"
@@ -137,14 +165,30 @@
                         app:layout_constraintTop_toBottomOf="@+id/textView4"
                         tools:text="₦ 32,556.06" />
 
+                    <com.facebook.shimmer.ShimmerFrameLayout
+                        android:id="@+id/shimmerMerchant_ref"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.0"
+                        app:layout_constraintStart_toStartOf="@+id/textView4"
+                        app:layout_constraintTop_toBottomOf="@+id/textView5">
+
+                        <View
+                            android:layout_width="@dimen/dimen_150dp"
+                            android:layout_height="@dimen/dimen_16dp"
+                            android:background="@color/lighter_dark" />
+                    </com.facebook.shimmer.ShimmerFrameLayout>
+
                     <TextView
                         android:id="@+id/textView6"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:fontFamily="@font/exo_medium"
-                        android:text="@string/merchant_ref_place_holder"
                         android:textColor="@color/black"
                         android:textSize="@dimen/dimen_10sp"
+                        android:visibility="invisible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintHorizontal_bias="0.0"

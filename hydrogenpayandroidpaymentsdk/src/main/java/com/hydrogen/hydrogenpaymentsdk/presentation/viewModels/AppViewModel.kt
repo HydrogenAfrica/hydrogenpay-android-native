@@ -6,9 +6,9 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.google.gson.Gson
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
-import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
@@ -29,7 +29,7 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
-class AppViewModel(
+internal class AppViewModel(
     private val payByTransferUseCase: PayByTransferUseCase,
     private val paymentConfirmationUseCase: PaymentConfirmationUseCase,
     private val initiatePaymentUseCase: InitiatePaymentUseCase,
@@ -52,9 +52,9 @@ class AppViewModel(
     private val _bankTransferRequest: MutableLiveData<PayByTransferRequest> = MutableLiveData()
     val bankTransferRequest get() = _bankTransferRequest
 
-    private val _bankTransferResponseState: MutableLiveData<ViewState<PayByTransferResponse?>> =
+    private val _bankTransferResponseState: MutableLiveData<ViewState<InitiatePayByTransferResponse?>> =
         MutableLiveData(ViewState.initialDefault(null))
-    val bankTransferResponseState: LiveData<ViewState<PayByTransferResponse?>> get() = _bankTransferResponseState
+    val bankTransferResponseState: LiveData<ViewState<InitiatePayByTransferResponse?>> get() = _bankTransferResponseState
 
     private val _paymentConfirmation =
         MutableLiveData<ViewState<PaymentConfirmationResponse?>>(ViewState.initialDefault(null))
@@ -82,7 +82,7 @@ class AppViewModel(
     fun payByTransfer() {
         _bankTransferResponseState.value = ViewState.loading(null)
         viewModelScope.launch(ioDispatcher) {
-            payByTransferUseCase.invoke(bankTransferRequest.value!!)
+            payByTransferUseCase.invoke()
                 .collectLatest {
                     _bankTransferResponseState.postValue(it)
                 }
@@ -92,7 +92,7 @@ class AppViewModel(
     fun confirmPayment() {
         _paymentConfirmation.value = ViewState.loading(null)
         viewModelScope.launch(ioDispatcher) {
-            paymentConfirmationUseCase.invoke(_bankTransferResponseState.value!!.content!!.transactionRef)
+            paymentConfirmationUseCase.invoke()
                 .collectLatest {
                     _paymentConfirmation.postValue(it)
                 }
