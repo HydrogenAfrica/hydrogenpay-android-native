@@ -1,5 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.data.remote.interceptors
 
+import android.util.Log
+import com.google.gson.Gson
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorisedRequest
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorizedRequestModeHeader
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
@@ -43,6 +45,8 @@ internal class AuthInterceptor(
 
             is AuthorizedRequestModeHeader -> {
                 val mode = sessionManager.getSessionTransactionCredentials()
+
+                Log.d("DATA_SAVED_A", Gson().toJson(mode))
                 requestBuilder.addHeader("mode", mode!!.transactionMode)
             }
 

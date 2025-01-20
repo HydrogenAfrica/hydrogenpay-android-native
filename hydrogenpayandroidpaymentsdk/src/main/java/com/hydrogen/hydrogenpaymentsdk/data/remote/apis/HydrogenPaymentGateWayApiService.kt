@@ -19,12 +19,12 @@ import retrofit2.http.Query
 
 interface HydrogenPaymentGateWayApiService {
     @POST("Merchant/initiate-payment")
+    @AuthorisedRequest
     suspend fun initiatePayment(
         @Body initiateTransferRequest: PayByTransferRequest
     ): Response<HydrogenServerResponse<InitiatePaymentDto>>
 
     @GET("Payment/get-payment-methods")
-    @AuthorisedRequest
     @AuthorizedRequestModeHeader
     suspend fun getPaymentMethod(
         @Query("transactionId") transactionId: String

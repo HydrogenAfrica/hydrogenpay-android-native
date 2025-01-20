@@ -59,7 +59,7 @@ internal object HydrogenPayDiModule {
         providesRetrofit().create(HydrogenPaymentGateWayApiService::class.java)
 
     fun providesInitiatePaymentUseCase(): InitiatePaymentUseCase =
-        InitiatePaymentUseCase(providesRepository())
+        InitiatePaymentUseCase(providesRepository(), providesNetworkUtil())
 
     fun providesGson(): Gson = Gson()
 
@@ -86,5 +86,5 @@ internal object HydrogenPayDiModule {
             providesRepository()
         )
 
-    fun providesSessionManagerContract(): SessionManagerContract = providesSessionManager()
+    private fun providesSessionManagerContract(): SessionManagerContract = providesSessionManager()
 }

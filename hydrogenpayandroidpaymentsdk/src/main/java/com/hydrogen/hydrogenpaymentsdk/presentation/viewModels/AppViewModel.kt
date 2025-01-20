@@ -1,9 +1,11 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation.viewModels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.gson.Gson
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
@@ -34,9 +36,9 @@ class AppViewModel(
     private val ioDispatcher: CoroutineDispatcher,
     private val countdownTimerUseCase: CountdownTimerUseCase
 ) : ViewModel() {
-    private val _paymentMethodsAndTransactionDetails: MutableStateFlow<ViewState<Pair<List<PaymentMethod>?, TransactionDetails?>>> =
+    private val _paymentMethodsAndTransactionDetails: MutableStateFlow<ViewState<Pair<List<PaymentMethod>?, TransactionDetails?>?>> =
         MutableStateFlow(ViewState.initialDefault(null))
-    val paymentMethodsAndTransactionDetails: StateFlow<ViewState<Pair<List<PaymentMethod>?, TransactionDetails?>>> =
+    val paymentMethodsAndTransactionDetails: StateFlow<ViewState<Pair<List<PaymentMethod>?, TransactionDetails?>?>> =
         _paymentMethodsAndTransactionDetails.asStateFlow()
 
     private val _timeLeft: MutableStateFlow<String> = MutableStateFlow("")
@@ -114,8 +116,9 @@ class AppViewModel(
     fun initiatePayment() {
         viewModelScope.launch(ioDispatcher) {
             initiatePaymentUseCase.invoke(_bankTransferRequest.value!!)
-                .collect {
-                    _paymentMethodsAndTransactionDetails.update { it }
+                .collect { result ->
+                    Log.d("DATA_SAVED_B", Gson().toJson(result))
+                    _paymentMethodsAndTransactionDetails.update { result }
                 }
         }
     }

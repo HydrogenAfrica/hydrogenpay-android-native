@@ -14,7 +14,7 @@ data class TransactionDetails(
     val currencyInfo: CurrencyInfo,
     val customerEmail: String,
     val customerFeePercentage: Int,
-    val description: String,
+    val description: String? = "",
     val discountAmount: String,
     val discountPercentage: Int,
     val frequency: String?,

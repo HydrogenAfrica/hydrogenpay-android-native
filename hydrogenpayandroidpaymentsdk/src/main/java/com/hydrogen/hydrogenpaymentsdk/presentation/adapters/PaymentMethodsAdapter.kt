@@ -22,7 +22,7 @@ class PaymentMethodsAdapter(
     private var data: MutableList<PaymentMethod> = mutableListOf()
 
     @SuppressLint("NotifyDataSetChanged")
-    fun updateData(newData: ArrayList<PaymentMethod>) {
+    fun updateData(newData: List<PaymentMethod>) {
         val diff = GenericRecyclerViewDiffUtil(newData, data)
         val diffResult = DiffUtil.calculateDiff(diff)
         isLoading = false

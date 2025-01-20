@@ -12,7 +12,10 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
+import coil.ImageLoader
+import coil.decode.SvgDecoder
 import coil.load
+import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatNumberWithCommas
@@ -48,17 +51,27 @@ fun TextView.transferTo(inputString: String?) {
     }
 }
 
-@BindingAdapter("android:loadImageFromUrl")
-fun ImageView.loadImageFromUrl(imageUrl: String?) {
+@BindingAdapter("android:loadImageFromPaymentMethodsImageUrl")
+fun ImageView.loadImageFromPaymentMethodsImageUrl(imageUrl: String?) {
     imageUrl?.let {
-        this.load(imageUrl) {
-            crossfade(true)
-            placeholder(R.drawable.image_pre_load_place_holder)
-            transformations(CircleCropTransformation())
-        }
+        val imageLoader = ImageLoader.Builder(context)
+            .components {
+                add(SvgDecoder.Factory())
+            }
+            .build()
+
+        val request = ImageRequest.Builder(context)
+            .data(it)
+            .placeholder(R.drawable.image_pre_load_place_holder)
+            .error(R.drawable.image_pre_load_place_holder)
+            .target(this)
+            .build()
+
+        imageLoader.enqueue(request)
     } ?: run {
-        this.load(R.drawable.image_pre_load_place_holder) {
+        load(R.drawable.image_pre_load_place_holder) {
             crossfade(true)
+            error(R.drawable.image_pre_load_place_holder)
             transformations(CircleCropTransformation())
         }
     }

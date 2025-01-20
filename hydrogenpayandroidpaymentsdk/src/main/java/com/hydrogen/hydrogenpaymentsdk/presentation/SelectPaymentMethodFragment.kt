@@ -23,6 +23,7 @@ import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentSelectPayme
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
+import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.PaymentMethodsAdapter
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_PAYMENT
@@ -96,6 +97,20 @@ class SelectPaymentMethodFragment : Fragment() {
 
         paymentMethodRv.apply {
             adapter = paymentMethodsAdapter
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.paymentMethodsAndTransactionDetails.collectLatest { data ->
+                    data.content?.let {
+                        it.first?.let { paymentMethods ->
+                            paymentMethodsAdapter.updateData(paymentMethods) // Show loaded data
+                        } ?: run {
+                            paymentMethodsAdapter.updateData(emptyList()) // Start with shimmer
+                        }
+                    }
+                }
+            }
         }
 
 //        // Select pay by bank transfer

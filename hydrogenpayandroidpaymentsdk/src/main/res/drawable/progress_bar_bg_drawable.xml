@@ -24,8 +24,8 @@
             of the shape-->
         <gradient
             android:angle="0"
-            android:endColor="#00ffffff"
-            android:startColor="@color/hydrogen_yellow"
+            android:endColor="@color/hydrogen_yellow"
+            android:startColor="#00ffffff"
             android:type="sweep"
             android:useLevel="false" />
     </shape>

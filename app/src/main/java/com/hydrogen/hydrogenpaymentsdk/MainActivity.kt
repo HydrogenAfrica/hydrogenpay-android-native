@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity() {
         enableEdgeToEdge()
          binding = DataBindingUtil.setContentView(this, R.layout.calling_app_main_activity)
         initViews()
-        val payByTransferRequest = PayByTransferRequest(50, "Dev Test", "oloyedeadebayoolawale@gmail.com")
+        val payByTransferRequest = PayByTransferRequest(5000, "Dev Test", "oloyedeadebayoolawale@gmail.com", "https://hydrogenpay.com")
         button.setOnClickListener {
          HydrogenPay.launch(paymentLauncher, this, payByTransferRequest)
         }

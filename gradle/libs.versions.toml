@@ -57,6 +57,7 @@ shimmer-effect-dependency = { group = "com.facebook.shimmer", name = "shimmer", 
 # CHNAGE THIS TO ONLINE VERSION LATER ON
 dprefs-library = { group = "com.dsofttech.dprefs", name = "dPrefs", version.ref = "dPrefsVersion"}
 coil-dependency = { group = "io.coil-kt", name = "coil", version.ref = "coilVersion" }
+coil-svg-dependency = { group = "io.coil-kt", name = "coil-svg", version.ref = "coilVersion" }
 view-model-kts = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-ktx", version.ref = "lifeCycleVersion"}
 view-model-save-state-instance = { group = "androidx.lifecycle", name = "lifecycle-viewmodel-savedstate", version.ref = "lifeCycleVersion"}
 activity-ktx = { group = "androidx.activity", name = "activity-ktx", version.ref = "androidDependencyVersion" }

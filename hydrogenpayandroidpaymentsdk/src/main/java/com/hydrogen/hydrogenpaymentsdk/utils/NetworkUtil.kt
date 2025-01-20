@@ -1,5 +1,6 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
+import android.util.Log
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenServerResponse
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_SUCCESSFUL_SERVER_OPERATION_STATUS_CODE
@@ -31,18 +32,22 @@ class NetworkUtil {
     fun <T> handleError(e: Throwable): ViewState<T?> =
         when (e) {
             is SocketTimeoutException -> {
+                Log.d("ERROR_COMING", e.localizedMessage ?: "SocketTimeout Exception")
                 ViewState.timeOut(null)
             }
 
             is HttpException -> {
+                Log.d("ERROR_COMING", e.localizedMessage ?: "IO Exception")
                 ViewState.serverError(null)
             }
 
             is IOException -> {
+                Log.d("ERROR_COMING", e.localizedMessage ?: "Network timeout")
                 ViewState.error(null, "Network timeout")
             }
 
             else -> {
+                Log.d("ERROR_COMING", e.localizedMessage ?: "Null was here")
                 ViewState.error(null)
             }
         }

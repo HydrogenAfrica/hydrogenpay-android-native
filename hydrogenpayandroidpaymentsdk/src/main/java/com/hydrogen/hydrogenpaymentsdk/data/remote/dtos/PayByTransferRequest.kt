@@ -15,6 +15,7 @@ data class PayByTransferRequest(
     val amount: Int,
     val customerName: String,
     val email: String,
+    val callback: String,
     val transactionRef: String? = null,
     val currency: String? = null,
     val description: String? = null,

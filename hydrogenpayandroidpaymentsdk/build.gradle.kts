@@ -77,6 +77,7 @@ dependencies {
     implementation(libs.shimmer.effect.dependency)
 
     implementation(libs.coil.dependency)
+    implementation(libs.coil.svg.dependency)
     implementation(libs.view.model.kts)
     implementation(libs.view.model.save.state.instance)
     implementation(libs.activity.ktx)

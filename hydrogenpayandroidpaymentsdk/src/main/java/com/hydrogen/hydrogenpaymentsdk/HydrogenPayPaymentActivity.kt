@@ -56,6 +56,7 @@ class HydrogenPayPaymentActivity : AppCompatActivity() {
         payByTransferRequest?.let {
             viewModel.setBankTransferRequest(it)
             viewModel.startTimer(LONG_TIME_15_MIN)
+            viewModel.initiatePayment()
         } ?: cancelByGoingBackToMerchantApp(
             RequestDeclineReasons.INVALID_ARGUMENT_PROVIDED.reason
         )
