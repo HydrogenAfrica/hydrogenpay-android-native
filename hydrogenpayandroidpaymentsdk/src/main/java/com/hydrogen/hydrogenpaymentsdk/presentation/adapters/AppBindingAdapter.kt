@@ -6,6 +6,7 @@ import android.text.Spannable
 import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -16,8 +17,10 @@ import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.load
 import coil.request.ImageRequest
+import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.dpToPx
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatNumberWithCommas
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getCustomerNameInitials
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.toSentenceCase
@@ -65,6 +68,21 @@ fun ImageView.loadImageFromPaymentMethodsImageUrl(imageUrl: String?) {
             .placeholder(R.drawable.image_pre_load_place_holder)
             .error(R.drawable.image_pre_load_place_holder)
             .target(this)
+            .listener(
+                onStart = {
+                    Log.d("IMAGE_LOADING_TAG", "Image loading started")
+                },
+                onError = { _, errorResult ->
+                    Log.e(
+                        "IMAGE_LOADING_TAG",
+                        "Image loading failed: ${errorResult.throwable.localizedMessage}",
+                        errorResult.throwable
+                    )
+                },
+                onSuccess = { _, _ ->
+                    Log.d("IMAGE_LOADING_TAG", "Image loaded successfully")
+                }
+            )
             .build()
 
         imageLoader.enqueue(request)
