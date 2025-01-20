@@ -19,7 +19,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
-import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentSelectPaymentMethodNewBinding
+import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentSelectPaymentMethodBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 
 class SelectPaymentMethodFragment : Fragment() {
     private lateinit var paymentMethodsAdapter: PaymentMethodsAdapter
-    private lateinit var binding: FragmentSelectPaymentMethodNewBinding
+    private lateinit var binding: FragmentSelectPaymentMethodBinding
     private var loaderAlertDialog: Dialog? = null
     private lateinit var paymentMethodRv: RecyclerView
     private lateinit var backToMerchantAppBtn: ImageView
@@ -72,7 +72,7 @@ class SelectPaymentMethodFragment : Fragment() {
         }
         binding = DataBindingUtil.inflate(
             inflater,
-            R.layout.fragment_select_payment_method_new,
+            R.layout.fragment_select_payment_method,
             container,
             false
         )
