@@ -43,6 +43,7 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import java.util.TimeZone
 import kotlin.math.roundToLong
 
 internal object AppUtils {
@@ -143,7 +144,9 @@ internal object AppUtils {
             val normalizedInputTime = inputTime.replace(Regex("\\.\\d{3}\\d*")) { matchResult ->
                 ".${matchResult.value.substring(1, 4)}"
             }
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
+            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault()).apply {
+                timeZone = TimeZone.getTimeZone("UTC")
+            }
 
             // Parse the input time
             val date = inputFormat.parse(normalizedInputTime) ?: return "Invalid date"
