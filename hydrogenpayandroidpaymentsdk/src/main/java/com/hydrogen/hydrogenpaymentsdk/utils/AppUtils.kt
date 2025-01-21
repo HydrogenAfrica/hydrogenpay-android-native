@@ -249,8 +249,9 @@ internal object AppUtils {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 timeStateFlow.collectLatest {
+                    val time = if (it > 9) it.toString() else "0$it"
                     progressBar.progress = getPercentage(it, 15L).toInt()
-                    val text = getString(R.string.you_will_be_redirected, it.toString())
+                    val text = getString(R.string.you_will_be_redirected, time)
                     infoBodyText.boldSomeParts(text, 44, text.length.minus(9))
                 }
             }

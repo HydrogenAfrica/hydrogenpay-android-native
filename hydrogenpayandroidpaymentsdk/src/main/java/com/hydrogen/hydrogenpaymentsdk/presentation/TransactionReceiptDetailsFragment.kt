@@ -1,13 +1,12 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
+import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -21,7 +20,7 @@ import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.createAlertModal
-import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class TransactionReceiptDetailsFragment : Fragment() {
@@ -35,8 +34,33 @@ class TransactionReceiptDetailsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        activity?.onBackPressedDispatcher?.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    viewLifecycleOwner.lifecycleScope.launch {
+                        viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                            viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.collectLatest {
+                                val time = if (it > 9) it.toString() else "0$it"
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.you_will_be_redirected, time),
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
+                    }
+                }
+            }
+        )
+
         // Inflate the layout for this fragment
-        binding = DataBindingUtil.inflate(inflater, R.layout.fragment_transaction_receipt_details, container, false)
+        binding = DataBindingUtil.inflate(
+            inflater,
+            R.layout.fragment_transaction_receipt_details,
+            container,
+            false
+        )
         binding.apply {
             appViewModel = viewModel
             lifecycleOwner = viewLifecycleOwner
@@ -59,7 +83,8 @@ class TransactionReceiptDetailsFragment : Fragment() {
         }
 
         viewModel.startRedirectTimer()
-        val infoModal = createAlertModal(null, viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment)
+        val infoModal =
+            createAlertModal(null, viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment)
         infoModal?.show()
 
         viewLifecycleOwner.lifecycleScope.launch {
