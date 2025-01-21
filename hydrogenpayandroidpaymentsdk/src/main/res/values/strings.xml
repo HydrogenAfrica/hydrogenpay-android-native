@@ -91,4 +91,5 @@
     <string name="account_number_copied">Account number copied</string>
     <string name="time_out">Time out</string>
     <string name="you_will_be_redirected">You will be redirected to Merchant\'s app in %1s.</string>
+    <string name="balloon_text_place_holder"> Purchase amount:&#160; ₦ %1s \nService charge: &#160; ₦ %2s &#160; &#160; &#160; &#160; &#160; \nVAT &#160; %3s%% : ₦ %4s &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&#160; \nDiscount: &#160; ₦ %5s &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; </string>
 </resources>

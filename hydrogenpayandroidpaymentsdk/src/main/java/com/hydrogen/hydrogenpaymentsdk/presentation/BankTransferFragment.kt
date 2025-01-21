@@ -22,13 +22,16 @@ import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentBankTransferBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
+import com.hydrogen.hydrogenpaymentsdk.domain.enums.DrawablePosition
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldSomeParts
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.copyToClipboard
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getTransactionDetailsForBalloon
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
+import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.getBalloon
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -44,6 +47,7 @@ class BankTransferFragment : Fragment() {
     private lateinit var customerName: TextView
     private lateinit var merchantRefId: TextView
     private lateinit var transactionAmount: TextView
+    private lateinit var infoIcon: ImageView
 
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
@@ -151,6 +155,19 @@ class BankTransferFragment : Fragment() {
                 accountNumberTxtView.text.toString()
             )
         }
+
+        infoIcon.setOnClickListener {
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                    viewModel.paymentMethodsAndTransactionDetails.collect { it1 ->
+                        it1.content?.let { data ->
+                            val transaction = getTransactionDetailsForBalloon(data.second!!, requireContext())
+                            it.getBalloon(transaction, DrawablePosition.LEFT)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun initViews() {
@@ -165,6 +182,7 @@ class BankTransferFragment : Fragment() {
             customerName = textView4
             merchantRefId = textView6
             transactionAmount = textView5
+            infoIcon = imageView14
         }
     }
 }

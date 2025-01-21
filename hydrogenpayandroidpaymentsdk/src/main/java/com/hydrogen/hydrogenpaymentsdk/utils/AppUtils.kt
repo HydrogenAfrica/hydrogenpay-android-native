@@ -27,6 +27,7 @@ import androidx.lifecycle.LiveData
 import com.google.android.material.textfield.TextInputEditText
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.DrawablePosition
+import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.CustomFontSpan
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
@@ -107,7 +108,7 @@ internal object AppUtils {
         drawablePosition: DrawablePosition = DrawablePosition.LEFT,
         actionToRun: () -> Unit
     ) {
-        val position = if (drawablePosition == DrawablePosition.LEFT) 0 else 2
+        val position = drawablePosition.code
         setOnTouchListener { _, event ->
             if (event.action == MotionEvent.ACTION_UP) {
                 if (event.rawX >= (right - compoundDrawablesRelative[position].bounds.width())) {
@@ -242,5 +243,27 @@ internal object AppUtils {
             dp.toFloat(),
             context.resources.displayMetrics
         ).toInt()
+    }
+
+    fun getTransactionDetailsForBalloon(
+        transactionDetails: TransactionDetails,
+        context: Context
+    ): String {
+        val purchaseAmount = transactionDetails.amount
+        val serviceCharge = transactionDetails.serviceFees
+        val vatPercent = transactionDetails.vatPercentage.toString()
+        val vatAmount = transactionDetails.vatFee
+        val discount = transactionDetails.discountAmount
+
+        val text = context.getString(
+            R.string.balloon_text_place_holder,
+            purchaseAmount,
+            serviceCharge,
+            vatPercent,
+            vatAmount,
+            discount
+        )
+
+        return text
     }
 }
