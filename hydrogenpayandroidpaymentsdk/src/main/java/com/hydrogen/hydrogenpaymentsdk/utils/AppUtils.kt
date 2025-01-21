@@ -22,8 +22,12 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.google.android.material.progressindicator.CircularProgressIndicator
 import com.google.android.material.textfield.TextInputEditText
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.DrawablePosition
@@ -31,10 +35,15 @@ import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.CustomFontSpan
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getPercentage
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.launch
 import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
+import kotlin.math.roundToLong
 
 internal object AppUtils {
     fun String.getCustomerNameInitials(): String {
@@ -213,14 +222,35 @@ internal object AppUtils {
         this.text = spannableString
     }
 
-    fun Fragment.createAlertModal(rootView: ViewGroup?) {
-        val dialog = AlertDialog.Builder(requireContext()).create()
+    fun getPercentage(numerator: Long, denominator: Long): Long {
+        // Handle case where denominator is 0 to avoid division by zero
+        if (denominator == 0L) {
+            throw IllegalArgumentException("Denominator cannot be zero")
+        }
+        // Calculate percentage, round to nearest whole number, and return as Long
+        return ((numerator.toDouble() / denominator.toDouble()) * 100).roundToLong()
+    }
+
+    fun Fragment.createAlertModal(rootView: ViewGroup?, timeStateFlow: StateFlow<Long>): AlertDialog? {
+        val dialog = AlertDialog.Builder(requireContext(), R.style.full_screen_dialog_theme).create()
         val dialogView = layoutInflater.inflate(R.layout.alert_modal_layout, rootView)
         val closeIcon = dialogView.findViewById<ImageView>(R.id.close_alert)
+        val infoBodyText = dialogView.findViewById<TextView>(R.id.textView52)
+        val progressBar = dialogView.findViewById<CircularProgressIndicator>(R.id.time_left_progress)
         closeIcon.setOnClickListener { dialog.dismiss() }
         dialog.apply {
             setView(dialogView)
             setCancelable(false)
+        }
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                timeStateFlow.collectLatest {
+                    progressBar.progress = getPercentage(it, 15L).toInt()
+                    val text = getString(R.string.you_will_be_redirected, it.toString())
+                    infoBodyText.boldSomeParts(text, 44, text.length.minus(9))
+                }
+            }
         }
 
         // Set the dialog window to appear at the top
@@ -234,7 +264,7 @@ internal object AppUtils {
             setLayout(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT)
         }
 
-        dialog.show()
+        return dialog
     }
 
     fun dpToPx(dp: Int, context: Context): Int {

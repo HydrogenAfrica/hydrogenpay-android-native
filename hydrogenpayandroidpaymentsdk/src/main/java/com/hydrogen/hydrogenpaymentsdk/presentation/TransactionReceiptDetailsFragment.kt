@@ -1,6 +1,9 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,6 +21,7 @@ import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.createAlertModal
+import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
 import kotlinx.coroutines.launch
 
 class TransactionReceiptDetailsFragment : Fragment() {
@@ -53,8 +57,21 @@ class TransactionReceiptDetailsFragment : Fragment() {
                 }
             }
         }
+
         viewModel.startRedirectTimer()
-        createAlertModal(null)
+        val infoModal = createAlertModal(null, viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment)
+        infoModal?.show()
+
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.collect {
+                    if (it == 0L) {
+                        infoModal?.dismiss()
+                        infoModal?.cancel()
+                    }
+                }
+            }
+        }
     }
 
     private fun initViews() {

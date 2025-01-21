@@ -23,7 +23,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/dimen_8dp"
-        android:text="@string/you_will_be_redirected"
         android:textColor="@color/on_success_text_color"
         android:textSize="@dimen/dimen_10sp"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -34,14 +33,29 @@
         app:layout_constraintTop_toBottomOf="@+id/textView11"
         app:layout_constraintVertical_bias="0.0" />
 
+    <com.google.android.material.progressindicator.CircularProgressIndicator
+        android:id="@+id/time_left_progress"
+        android:layout_height="@dimen/dimen_30dp"
+        android:layout_width="@dimen/dimen_30dp"
+        android:progress="70"
+        app:indicatorColor="@color/on_success_text_color_lighter"
+        app:indicatorSize="@dimen/dimen_30dp"
+        app:trackColor="@color/lighter_dark"
+        app:trackCornerRadius="5dp"
+        app:trackThickness="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.0" />
+
     <ImageView
         android:id="@+id/close_alert"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:contentDescription="@string/close"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0"
+        app:layout_constraintBottom_toBottomOf="@+id/time_left_progress"
+        app:layout_constraintEnd_toEndOf="@+id/time_left_progress"
+        app:layout_constraintTop_toTopOf="@+id/time_left_progress"
+        app:layout_constraintStart_toStartOf="@+id/time_left_progress"
         app:srcCompat="@drawable/close" />
 </androidx.constraintlayout.widget.ConstraintLayout>

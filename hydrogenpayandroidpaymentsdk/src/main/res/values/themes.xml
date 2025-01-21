@@ -56,4 +56,13 @@
         <item name="android:backgroundDimEnabled">false</item>
         <item name="android:windowEnterAnimation">@anim/slide_down_from_top_anim</item>
     </style>
+
+    <style name="full_screen_dialog_theme" parent="Base.Theme.HydrogenPaymentSDK">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <!-- No backgrounds, titles or window float -->
+        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowNoTitle">true</item>
+        <item name="android:windowIsFloating">false</item>
+    </style>
 </resources>

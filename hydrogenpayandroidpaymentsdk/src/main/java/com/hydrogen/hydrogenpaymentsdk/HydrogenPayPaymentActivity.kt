@@ -73,10 +73,13 @@ class HydrogenPayPaymentActivity : AppCompatActivity() {
                         cancelByGoingBackToMerchantApp(RequestDeclineReasons.TIME_OUT.reason)
                     }
                 }
+            }
+        }
 
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.STARTED) {
                 viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.collect {
-                    Log.d("TIME_LEFT_TO_REDIRECT", it.toString())
-                    if (it == 0L) {
+                    if (it == -1L) {
                         val intent = Intent()
                         intent.putExtra(
                             HydrogenPay.HYDROGEN_PAY_RESULT_KEY,

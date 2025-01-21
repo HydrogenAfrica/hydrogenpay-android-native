@@ -45,7 +45,7 @@ internal class AppViewModel(
     val timeLeft: StateFlow<String> = _timeLeft.asStateFlow()
 
     private val _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment: MutableStateFlow<Long> =
-        MutableStateFlow(0)
+        MutableStateFlow(-2L) // Set standby time to -2L
     val timeLeftToRedirectToMerchantAppAfterSuccessfulPayment: StateFlow<Long> =
         _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.asStateFlow()
 
@@ -106,7 +106,7 @@ internal class AppViewModel(
     fun startRedirectTimer(redirectTime: Long = LONG_TIME_15_SEC) {
         viewModelScope.launch(Dispatchers.Default) {
             _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.update { redirectTime }
-            while (_timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.value > 0) {
+            while (_timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.value >= 0) {
                 delay(1000L)
                 _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.update { (_timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.value - 1) }
             }
@@ -117,7 +117,6 @@ internal class AppViewModel(
         viewModelScope.launch(ioDispatcher) {
             initiatePaymentUseCase.invoke(_bankTransferRequest.value!!)
                 .collect { result ->
-                    Log.d("DATA_SAVED_B", Gson().toJson(result))
                     _paymentMethodsAndTransactionDetails.update { result }
                 }
         }

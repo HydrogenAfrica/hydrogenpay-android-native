@@ -16,4 +16,5 @@
     <color name="success">#E0F8F6</color>
     <color name="on_success_text_color">#037A7A</color>
     <color name="light_yellow">#FEF9CC</color>
+    <color name="on_success_text_color_lighter">#00B2A9</color>
 </resources>
