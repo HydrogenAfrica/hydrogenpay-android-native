@@ -1,4 +1,4 @@
-package com.hydrogen.hydrogenpaymentsdk.usecases
+package com.hydrogen.hydrogenpaymentsdk.domain.usecases
 
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse

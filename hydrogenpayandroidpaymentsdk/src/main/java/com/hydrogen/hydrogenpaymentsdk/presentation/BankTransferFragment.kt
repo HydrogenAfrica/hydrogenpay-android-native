@@ -22,16 +22,14 @@ import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentBankTransferBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
-import com.hydrogen.hydrogenpaymentsdk.domain.enums.DrawablePosition
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldSomeParts
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.copyToClipboard
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
-import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getTransactionDetailsForBalloon
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
-import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.getBalloon
+import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.getTransactionInfoBalloon
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -85,7 +83,7 @@ class BankTransferFragment : Fragment() {
         }
 
         makePaymentButton.setOnClickListener {
-            viewModel.confirmPayment()
+            viewModel.getBankTransferStatus()
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -97,28 +95,43 @@ class BankTransferFragment : Fragment() {
         }
 
         // Start checking for transaction status
-        observeLiveData(viewModel.paymentConfirmation, null, {
+        observeLiveData(viewModel.bankTransferStatus, null, {
             makePaymentButton.isEnabled = false
-            makePaymentButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.lighter_dark))
+            makePaymentButton.setTextColor(
+                ContextCompat.getColor(
+                    requireContext(),
+                    R.color.lighter_dark
+                )
+            )
             infoTextView.visibility = View.GONE
             checkingPaymentProgress.visibility = View.VISIBLE
         },
             {
-                Toast.makeText(requireContext(),  "$it ${getString(R.string.try_again)}", Toast.LENGTH_LONG).show()
-                makePaymentButton.isEnabled = true
-                makePaymentButton.setTextColor(ContextCompat.getColor(requireContext(), R.color.hydrogen_yellow))
-                infoTextView.visibility = View.VISIBLE
-                checkingPaymentProgress.visibility = View.GONE
+                Toast.makeText(
+                    requireContext(),
+                    "$it ${getString(R.string.try_again)}",
+                    Toast.LENGTH_LONG
+                ).show()
+                enableCheckPaymentStatusButton()
             }) {
-            Toast.makeText(
-                requireContext(),
-                getString(R.string.payment_successful),
-                Toast.LENGTH_LONG
-            ).show()
-            viewModel.pauseTimer()
-            val action =
-                BankTransferFragmentDirections.actionBankTransferFragmentToTransactionReceiptDetailsFragment()
-            findNavController().navigate(action)
+            if (it != null && it.status.contains("pending", true)) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.payment_successful),
+                    Toast.LENGTH_LONG
+                ).show()
+                viewModel.pauseTimer()
+                val action =
+                    BankTransferFragmentDirections.actionBankTransferFragmentToTransactionReceiptDetailsFragment()
+                findNavController().navigate(action)
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.payment_is_still_pending),
+                    Toast.LENGTH_LONG
+                ).show()
+                enableCheckPaymentStatusButton()
+            }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -161,13 +174,24 @@ class BankTransferFragment : Fragment() {
                 viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                     viewModel.paymentMethodsAndTransactionDetails.collect { it1 ->
                         it1.content?.let { data ->
-                            val transaction = getTransactionDetailsForBalloon(data.second!!, requireContext())
-                            it.getBalloon(transaction, DrawablePosition.LEFT)
+                            it.getTransactionInfoBalloon(data.second!!)
                         }
                     }
                 }
             }
         }
+    }
+
+    private fun enableCheckPaymentStatusButton() {
+        makePaymentButton.isEnabled = true
+        makePaymentButton.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.hydrogen_yellow
+            )
+        )
+        infoTextView.visibility = View.VISIBLE
+        checkingPaymentProgress.visibility = View.GONE
     }
 
     private fun initViews() {

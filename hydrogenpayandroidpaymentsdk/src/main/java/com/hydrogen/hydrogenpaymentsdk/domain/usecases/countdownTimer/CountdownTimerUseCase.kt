@@ -1,4 +1,4 @@
-package com.hydrogen.hydrogenpaymentsdk.usecases.countdownTimer
+package com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer
 
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

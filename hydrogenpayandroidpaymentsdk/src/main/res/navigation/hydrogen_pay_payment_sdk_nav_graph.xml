@@ -39,14 +39,18 @@
             app:enterAnim="@android:anim/slide_out_right"
             app:exitAnim="@android:anim/slide_in_left"
             app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/selectPaymentMethodFragment"
+            app:popUpToInclusive="false" />
         <action
             android:id="@+id/action_selectPaymentMethodFragment_to_cardPaymentFragment"
             app:destination="@id/cardPaymentFragment"
             app:enterAnim="@android:anim/slide_in_left"
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/selectPaymentMethodFragment"
+            app:popUpToInclusive="false" />
     </fragment>
     <fragment
         android:id="@+id/billingInformationFragment"

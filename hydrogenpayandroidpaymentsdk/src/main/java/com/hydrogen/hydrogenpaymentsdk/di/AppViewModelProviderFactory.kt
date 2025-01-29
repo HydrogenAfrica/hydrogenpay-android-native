@@ -15,7 +15,8 @@ internal class AppViewModelProviderFactory(
                 hydrogenPayDiModule.providesPaymentConfirmationUseCase(),
                 hydrogenPayDiModule.providesInitiatePaymentUseCase(),
                 hydrogenPayDiModule.providesIoDispatchers(),
-                hydrogenPayDiModule.providesCountdownTimerUseCase()
+                hydrogenPayDiModule.providesCountdownTimerUseCase(),
+                hydrogenPayDiModule.providesGetBankTransferStatusUseCase()
             ) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")

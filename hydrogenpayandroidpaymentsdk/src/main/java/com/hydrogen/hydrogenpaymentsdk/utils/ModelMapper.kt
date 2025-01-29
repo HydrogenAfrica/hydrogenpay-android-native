@@ -1,12 +1,15 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.BankTransferStatusDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiateBankTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePaymentDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentMethodDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsDto
+import com.hydrogen.hydrogenpaymentsdk.domain.enums.PaymentType
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
@@ -45,6 +48,29 @@ object ModelMapper {
             transactionRef,
             transactionStatus,
             vat.toString()
+        )
+
+    fun BankTransferStatusDto.toDomain(
+        transactionDetails: TransactionDetails,
+        initiatePaymentRequest: PayByTransferRequest
+    ): PaymentConfirmationResponse =
+        PaymentConfirmationResponse(
+            transactionDetails.amount,
+            transactionDetails.totalAmount,
+            submitTimeUtc,
+            transactionDetails.currencyInfo.currencySymbol,
+            transactionDetails.customerEmail,
+            transactionDetails.description,
+            transactionDetails.serviceFees,
+            transactionDetails.transactionId,
+            initiatePaymentRequest.description ?: "",
+            completedTimeUtc,
+            PaymentType.BANK_TRANSFER.typeName,
+            recurringCardToken ?: "",
+            "$status<==>$responseDescription",
+            transactionReference,
+            transactionStatus,
+            transactionDetails.vatFee
         )
 
     fun PaymentConfirmationResponse.getReceiptPayload(

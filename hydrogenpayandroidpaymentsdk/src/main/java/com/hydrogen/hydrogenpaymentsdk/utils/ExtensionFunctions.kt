@@ -1,12 +1,15 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
 import android.view.View
+import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.findViewTreeLifecycleOwner
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.DrawablePosition
+import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_NETWORK_RETRY_TIME
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldAmountsInTransactionDetailsBalloonTexts
 import com.skydoves.balloon.ArrowOrientation
 import com.skydoves.balloon.ArrowPositionRules
 import com.skydoves.balloon.Balloon
@@ -49,7 +52,7 @@ object ExtensionFunctions {
             lifecycleOwner = findViewTreeLifecycleOwner()
         }
 
-        return when (balloonAlignment) {
+        when (balloonAlignment) {
             DrawablePosition.LEFT -> balloonBuilder.setArrowOrientation(ArrowOrientation.END)
                 .build().showAlignStart(this)
 
@@ -62,5 +65,42 @@ object ExtensionFunctions {
             DrawablePosition.TOP -> balloonBuilder.setArrowOrientation(ArrowOrientation.BOTTOM)
                 .build().showAlignTop(this)
         }
+    }
+
+    fun View.getTransactionInfoBalloon(transactionDetails: TransactionDetails) {
+        val balloonBuilder = Balloon.Builder(context).apply {
+            height = BalloonSizeSpec.WRAP
+            width = BalloonSizeSpec.WRAP
+            setIsVisibleArrow(true)
+            setArrowPositionRules(ArrowPositionRules.ALIGN_ANCHOR)
+            setLayout(R.layout.balloon_tool_tip_layout)
+            setTextColorResource(R.color.black)
+            arrowPositionRules = ArrowPositionRules.ALIGN_ANCHOR
+            setPadding(2)
+            autoDismissDuration = 7000L
+            backgroundColor = ContextCompat.getColor(context, R.color.white)
+            balloonAnimation = BalloonAnimation.ELASTIC
+            lifecycleOwner = findViewTreeLifecycleOwner()
+        }
+
+        val balloonBuild = balloonBuilder.setArrowOrientation(ArrowOrientation.END)
+            .build()
+        balloonBuild.getContentView().findViewById<TextView>(R.id.balloon_text)
+            .boldAmountsInTransactionDetailsBalloonTexts(
+                transactionDetails.amount,
+                transactionDetails.serviceFees,
+                transactionDetails.vatPercentage.toString(),
+                transactionDetails.vatFee,
+                transactionDetails.discountAmount
+            )
+//        balloonBuild.getContentView().findViewById<TextView>(R.id.balloon_text)
+//            .boldAmountsInTransactionDetailsBalloonTexts(
+//                "500",
+//                "50",
+//                "8.0",
+//                "90900",
+//                "10000"
+//            )
+        balloonBuild.showAlignStart(this)
     }
 }

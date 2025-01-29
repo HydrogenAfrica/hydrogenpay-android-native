@@ -1,4 +1,4 @@
-package com.hydrogen.hydrogenpaymentsdk.usecases
+package com.hydrogen.hydrogenpaymentsdk.domain.usecases
 
 import android.util.Log
 import com.google.gson.Gson

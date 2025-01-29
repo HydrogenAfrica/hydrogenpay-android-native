@@ -4,7 +4,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="hydrogen_logo">Hydrogen Logo</string>
     <string name="payment_request">Payment Request</string>
+    <string name="expires_in">Expires in: </string>
     <string name="expires_in_place_holder">Expires in: %1s</string>
+    <string name="sample_time_left">15:00</string>
     <string name="customer_name_abrev">%1s</string>
     <string name="single_string_place_holder">%1s</string>
     <string name="amount_in_naira_place_holder">₦ %1s</string>
@@ -91,5 +93,8 @@
     <string name="account_number_copied">Account number copied</string>
     <string name="time_out">Time out</string>
     <string name="you_will_be_redirected">You will be redirected to Merchant\'s app in %1s seconds.</string>
-    <string name="balloon_text_place_holder"> Purchase amount:&#160; ₦ %1s \nService charge: &#160; ₦ %2s &#160; &#160; &#160; &#160; &#160; \nVAT &#160; %3s%% : ₦ %4s &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&#160; \nDiscount: &#160; ₦ %5s &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; </string>
+    <string name="balloon_text_place_holder">Purchase amount:&#160;₦ %1s\nService charge: &#160; ₦ %2s &#160; &#160; &#160; &#160; &#160; &#160; \nVAT &#160; %3s%% : ₦ %4s &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160;&#160; \nDiscount: &#160; ₦ %5s &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; &#160; </string>
+    <string name="balloon_place_holder_text">Purchase amount:&#160;₦ %1s\nService charge: &#160; ₦ %2s \nVAT &#160; %3s%% : ₦ %4s &#160; \nDiscount: &#160; ₦ %5s </string>
+    <string name="balloon_sample_text">Purchase amount:&#160;₦ 35, 000.69 \nService charge: &#160; ₦ 305 \nVAT &#160; 7.5%% : ₦ 287 &#160; \nDiscount: &#160; ₦ 200 </string>
+    <string name="payment_is_still_pending">Payment is still pending</string>
 </resources>

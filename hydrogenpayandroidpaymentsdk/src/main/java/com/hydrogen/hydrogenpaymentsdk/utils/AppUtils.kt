@@ -181,19 +181,18 @@ internal object AppUtils {
 
     fun TextView.expiresIn(timeLeft: String?) {
         timeLeft?.let {
-            val totalString = context.getString(R.string.expires_in_place_holder, it)
-            val spannableString = SpannableString(totalString)
+            val spannableString = SpannableString(it)
             spannableString.apply {
                 setSpan(
                     ForegroundColorSpan(Color.BLACK),
-                    12,
-                    totalString.length,
+                    0,
+                    it.length,
                     Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                 )
                 setSpan(
                     StyleSpan(Typeface.BOLD),
-                    12,
-                    totalString.length,
+                    0,
+                    it.length,
                     Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                 )
                 setSpan(
@@ -203,8 +202,8 @@ internal object AppUtils {
                             R.font.exo_bold
                         )
                     ),
-                    12,
-                    totalString.length,
+                    0,
+                    it.length,
                     Spannable.SPAN_EXCLUSIVE_INCLUSIVE
                 )
             }
@@ -300,4 +299,83 @@ internal object AppUtils {
 
         return text
     }
+
+    /*
+    | --       17      --|2 |    | --      18      --  =|2| |---    7   ---|  |--4-|2| |---       15           ---|2|
+    Purchase amount:&#160;₦ %1s\nService charge: &#160; ₦ %2s \nVAT &#160; %3s%% : ₦ %4s &#160; \nDiscount: &#160; ₦ %5s
+    * */
+    fun TextView.boldAmountsInTransactionDetailsBalloonTexts2(purchaseAmount: String, serviceCharge: String, vatPercentage: String, vatAmount: String, discountAmount: String) {
+        val spannableString = SpannableString(this.context.getString(R.string.balloon_place_holder_text, purchaseAmount, serviceCharge, vatPercentage, vatAmount, discountAmount))
+        spannableString.apply {
+            // Bold Purchase Amount
+            setSpan(
+                StyleSpan(Typeface.BOLD),
+                17,
+                19 + purchaseAmount.length,
+                Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+            )
+            // Bold Service Charge Amount
+            setSpan(
+                StyleSpan(Typeface.BOLD),
+                37 + purchaseAmount.length,
+                40 + purchaseAmount.length + serviceCharge.length,
+                Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+            )
+            // Bold Vat amount
+            setSpan(
+                StyleSpan(Typeface.BOLD),
+                51 + purchaseAmount.length + serviceCharge.length + vatPercentage.length,
+                54 + purchaseAmount.length + serviceCharge.length + vatPercentage.length + vatAmount.length,
+                Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+            )
+            // Bold Discount Amount
+            setSpan(
+                StyleSpan(Typeface.BOLD),
+                69 + purchaseAmount.length + serviceCharge.length + vatPercentage.length + vatAmount.length,
+                73 + purchaseAmount.length + serviceCharge.length + vatPercentage.length + vatAmount.length + discountAmount.length,
+                Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+            )
+        }
+        this.text = spannableString
+    }
+
+    fun TextView.boldAmountsInTransactionDetailsBalloonTexts(
+        purchaseAmount: String,
+        serviceCharge: String,
+        vatPercentage: String,
+        vatAmount: String,
+        discountAmount: String
+    ) {
+        val fullText = this.context.getString(
+            R.string.balloon_place_holder_text,
+            purchaseAmount,
+            serviceCharge,
+            vatPercentage,
+            vatAmount,
+            discountAmount
+        )
+
+        val spannableString = SpannableString(fullText)
+
+        fun boldText(textToBold: String) {
+            val startIndex = fullText.indexOf(textToBold)
+            if (startIndex != -1) {
+                spannableString.setSpan(
+                    StyleSpan(Typeface.BOLD),
+                    startIndex,
+                    startIndex + textToBold.length,
+                    Spannable.SPAN_EXCLUSIVE_INCLUSIVE
+                )
+            }
+        }
+
+        // Apply bold styling dynamically
+        boldText(purchaseAmount)
+        boldText(serviceCharge)
+        boldText(vatAmount)
+        boldText(discountAmount)
+
+        this.text = spannableString
+    }
+
 }

@@ -46,19 +46,37 @@
             app:layout_constraintStart_toStartOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/change_payment_method_btn" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="@dimen/dimen_120dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/grey_drawable_bg"
-            android:fontFamily="@font/exo_bold"
-            android:paddingHorizontal="@dimen/dimen_10dp"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/dimen_15dp"
+            android:paddingEnd="@dimen/dimen_8dp"
             android:paddingVertical="@dimen/dimen_4dp"
-            android:text="@string/expires_in_place_holder"
-            android:textSize="@dimen/dimen_12sp"
+            android:background="@drawable/grey_drawable_bg"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView"
-            tools:text="Expires in: 15:00" />
+            app:layout_constraintTop_toTopOf="@+id/textView">
+
+            <TextView
+                android:id="@+id/textView_expires_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/exo_bold"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:text="@string/expires_in"
+                android:textSize="@dimen/dimen_12sp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/exo_bold"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:text="@string/sample_time_left"
+                android:textSize="@dimen/dimen_12sp" />
+        </LinearLayout>
 
         <View
             android:id="@+id/horizontal_line"
@@ -157,8 +175,8 @@
             style="@style/sub_heading_poppins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/card_number"
             android:layout_marginTop="@dimen/dimen_25dp"
+            android:text="@string/card_number"
             app:layout_constraintStart_toStartOf="@+id/cardView"
             app:layout_constraintTop_toBottomOf="@+id/cardView" />
 
@@ -194,8 +212,8 @@
             style="@style/sub_heading_poppins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/card_expiry"
             android:layout_marginTop="@dimen/dimen_25dp"
+            android:text="@string/card_expiry"
             app:layout_constraintStart_toStartOf="@+id/cardView"
             app:layout_constraintTop_toBottomOf="@+id/select_a_category_til" />
 
@@ -208,10 +226,10 @@
             android:layout_marginEnd="@dimen/dimen_8dp"
             android:gravity="center_vertical"
             android:hint="@string/mm_yy"
-            app:hintTextColor="@color/darker_grey"
             android:theme="@style/EditTextThemeOverlay"
             app:errorTextAppearance="@style/ErrorTextAppearance"
             app:helperTextTextAppearance="@style/HelperTextAppearance"
+            app:hintTextColor="@color/darker_grey"
             app:layout_constraintEnd_toStartOf="@id/guideline3"
             app:layout_constraintStart_toStartOf="@id/cardView"
             app:layout_constraintTop_toBottomOf="@+id/textView39">
@@ -240,9 +258,9 @@
             style="@style/sub_heading_poppins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/cvv"
-            android:layout_marginTop="@dimen/dimen_25dp"
             android:layout_marginStart="@dimen/dimen_8dp"
+            android:layout_marginTop="@dimen/dimen_25dp"
+            android:text="@string/cvv"
             app:layout_constraintStart_toEndOf="@+id/guideline3"
             app:layout_constraintTop_toBottomOf="@+id/select_a_category_til" />
 
@@ -253,12 +271,12 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_3dp"
             android:layout_marginEnd="@dimen/dimen_6dp"
-            app:hintAnimationEnabled="false"
             android:gravity="center_vertical"
             android:hint="@string/asteristks"
             android:theme="@style/EditTextThemeOverlay"
             app:errorTextAppearance="@style/ErrorTextAppearance"
             app:helperTextTextAppearance="@style/HelperTextAppearance"
+            app:hintAnimationEnabled="false"
             app:layout_constraintEnd_toEndOf="@id/select_a_category_til"
             app:layout_constraintStart_toStartOf="@id/textView40"
             app:layout_constraintTop_toBottomOf="@+id/textView40">
@@ -268,8 +286,8 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:maxLength="3"
                 android:inputType="numberPassword"
+                android:maxLength="3"
                 android:maxLines="1"
                 android:singleLine="true"
                 android:textColorHighlight="@color/light_grey"
@@ -280,8 +298,8 @@
             android:id="@+id/checkBox"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins"
             android:layout_marginTop="@dimen/dimen_20dp"
+            android:fontFamily="@font/poppins"
             android:text="@string/save_card_details_for_future_transactions"
             android:textColor="@color/black"
             android:textSize="@dimen/dimen_10sp"
@@ -317,8 +335,8 @@
             android:id="@+id/imageView11"
             android:layout_width="0dp"
             android:layout_height="@dimen/dimen_12dp"
-            android:scaleType="fitXY"
             android:layout_marginTop="@dimen/dimen_25dp"
+            android:scaleType="fitXY"
             android:src="@drawable/compliant_partner"
             app:layout_constraintEnd_toStartOf="@+id/imageView8"
             app:layout_constraintHorizontal_bias="0.0"
@@ -352,8 +370,8 @@
             android:id="@+id/textView16"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:fontFamily="@font/poppins_bold"
             android:layout_marginTop="@dimen/dimen_10dp"
+            android:fontFamily="@font/poppins_bold"
             android:text="@string/licenced_by_cbn"
             android:textSize="@dimen/dimen_8sp"
             app:drawableStartCompat="@drawable/cbn_logo"
@@ -364,9 +382,9 @@
             android:id="@+id/imageView12"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/dimen_10dp"
             android:src="@drawable/back_to_merchant_btn"
             app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginBottom="@dimen/dimen_10dp"
             app:layout_constraintEnd_toEndOf="@+id/button"
             app:layout_constraintStart_toStartOf="@+id/button"
             app:layout_constraintTop_toBottomOf="@+id/textView16"

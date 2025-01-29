@@ -1,22 +1,21 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation.viewModels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.gson.Gson
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransferStatusUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
-import com.hydrogen.hydrogenpaymentsdk.usecases.InitiatePaymentUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.PayByTransferUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.PaymentConfirmationUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.countdownTimer.CountdownTimerUseCase
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_TIME_15_SEC
 import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.getReceiptPayload
 import kotlinx.coroutines.CoroutineDispatcher
@@ -34,8 +33,13 @@ internal class AppViewModel(
     private val paymentConfirmationUseCase: PaymentConfirmationUseCase,
     private val initiatePaymentUseCase: InitiatePaymentUseCase,
     private val ioDispatcher: CoroutineDispatcher,
-    private val countdownTimerUseCase: CountdownTimerUseCase
+    private val countdownTimerUseCase: CountdownTimerUseCase,
+    private val getBankTransferStatusUseCase: GetBankTransferStatusUseCase
 ) : ViewModel() {
+    private val _bankTransferStatus: MutableLiveData<ViewState<PaymentConfirmationResponse?>> =
+        MutableLiveData(ViewState.initialDefault(null))
+    val bankTransferStatus: LiveData<ViewState<PaymentConfirmationResponse?>> get() = _bankTransferStatus
+
     private val _paymentMethodsAndTransactionDetails: MutableStateFlow<ViewState<Pair<List<PaymentMethod>?, TransactionDetails?>?>> =
         MutableStateFlow(ViewState.initialDefault(null))
     val paymentMethodsAndTransactionDetails: StateFlow<ViewState<Pair<List<PaymentMethod>?, TransactionDetails?>?>> =
@@ -83,7 +87,7 @@ internal class AppViewModel(
         _bankTransferResponseState.value = ViewState.loading(null)
         viewModelScope.launch(ioDispatcher) {
             payByTransferUseCase.invoke()
-                .collectLatest {
+                .collect {
                     _bankTransferResponseState.postValue(it)
                 }
         }
@@ -95,6 +99,22 @@ internal class AppViewModel(
             paymentConfirmationUseCase.invoke()
                 .collectLatest {
                     _paymentConfirmation.postValue(it)
+                }
+        }
+    }
+
+    fun getBankTransferStatus() {
+        _bankTransferStatus.value = ViewState.loading(null)
+        viewModelScope.launch(ioDispatcher) {
+            val transactionDetails = _paymentMethodsAndTransactionDetails.value.content!!.second!!
+            val initiatePaymentRequest = _bankTransferRequest.value!!
+            getBankTransferStatusUseCase.invoke(
+                transactionDetails.transactionId,
+                transactionDetails,
+                initiatePaymentRequest
+            )
+                .collectLatest {
+                    _bankTransferStatus.postValue(it)
                 }
         }
     }

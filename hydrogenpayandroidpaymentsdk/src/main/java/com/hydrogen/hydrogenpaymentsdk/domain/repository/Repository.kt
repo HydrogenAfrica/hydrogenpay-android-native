@@ -27,6 +27,12 @@ interface Repository {
         transactionReference: String
     ): Flow<ViewState<PaymentConfirmationResponse?>>
 
+    fun getBankTransferStatus(
+        transactionReference: String,
+        transactionDetails: TransactionDetails,
+        initiatePaymentRequest: PayByTransferRequest
+    ): Flow<ViewState<PaymentConfirmationResponse?>>
+
     fun getPaymentMethod(
         transactionId: String
     ): Flow<ViewState<List<PaymentMethod>?>>

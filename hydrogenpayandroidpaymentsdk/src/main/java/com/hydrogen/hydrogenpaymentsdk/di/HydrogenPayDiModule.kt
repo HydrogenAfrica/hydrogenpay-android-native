@@ -9,10 +9,11 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.HydrogenPaymentGateWayAp
 import com.hydrogen.hydrogenpaymentsdk.data.remote.interceptors.AuthInterceptor
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.Repository
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.RepositoryImpl
-import com.hydrogen.hydrogenpaymentsdk.usecases.InitiatePaymentUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.PayByTransferUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.PaymentConfirmationUseCase
-import com.hydrogen.hydrogenpaymentsdk.usecases.countdownTimer.CountdownTimerUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransferStatusUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.BASE_URL
 import com.hydrogen.hydrogenpaymentsdk.utils.NetworkUtil
 import kotlinx.coroutines.CoroutineDispatcher
@@ -86,6 +87,11 @@ internal object HydrogenPayDiModule {
         PaymentConfirmationUseCase(
             providesRepository(),
             providesSessionManagerContract()
+        )
+
+    fun providesGetBankTransferStatusUseCase(): GetBankTransferStatusUseCase =
+        GetBankTransferStatusUseCase(
+            providesRepository()
         )
 
     private fun providesSessionManagerContract(): SessionManagerContract = providesSessionManager()

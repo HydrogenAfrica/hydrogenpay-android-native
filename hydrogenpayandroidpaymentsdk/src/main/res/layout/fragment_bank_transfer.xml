@@ -49,18 +49,36 @@
             app:layout_constraintStart_toStartOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/change_payment_method_btn" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="@dimen/dimen_120dp"
             android:layout_height="wrap_content"
-            android:background="@drawable/grey_drawable_bg"
-            android:paddingHorizontal="@dimen/dimen_10dp"
+            android:orientation="horizontal"
+            android:paddingStart="@dimen/dimen_15dp"
+            android:paddingEnd="@dimen/dimen_8dp"
             android:paddingVertical="@dimen/dimen_4dp"
-            android:text="@string/expires_in_place_holder"
-            android:textSize="@dimen/dimen_12sp"
+            android:background="@drawable/grey_drawable_bg"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView"
-            tools:text="Expires in: 15:00" />
+            app:layout_constraintTop_toTopOf="@+id/textView">
+
+            <TextView
+                android:id="@+id/textView_expires_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:textColor="@color/black"
+                android:layout_weight="1"
+                android:text="@string/expires_in"
+                android:textSize="@dimen/dimen_12sp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:text="@string/sample_time_left"
+                android:textSize="@dimen/dimen_12sp" />
+        </LinearLayout>
 
         <View
             android:id="@+id/horizontal_line"
@@ -191,7 +209,7 @@
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/exo_bold"
                 android:textSize="@dimen/dimen_12sp"
-                android:transferTo="@{``}"
+                android:transferTo="@{`Access Bank`}"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"

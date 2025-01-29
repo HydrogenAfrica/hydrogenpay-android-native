@@ -1,15 +1,13 @@
 package com.hydrogen.hydrogenpaymentsdk.domain.repository
 
-import android.util.Log
-import com.google.gson.Gson
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.HydrogenPaymentGateWayApiService
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.GetBankTransferStatusRequestBody
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationRequestDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsRequest
-import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
@@ -67,6 +65,24 @@ internal class RepositoryImpl(
                 message = data.message
             ) as ViewState<PaymentConfirmationResponse?>
         }.retryAndCatchExceptions(networkUtil)
+
+    override fun getBankTransferStatus(
+        transactionReference: String,
+        transactionDetails: TransactionDetails,
+        initiatePaymentRequest: PayByTransferRequest
+    ): Flow<ViewState<PaymentConfirmationResponse?>> =
+        flow {
+            val request = GetBankTransferStatusRequestBody(transactionReference)
+            val response = apiService.checkBankTransferStatus(request)
+            emit(networkUtil.getServerResponse(response))
+        }.map { data ->
+            val result = data.content?.data?.toDomain(transactionDetails, initiatePaymentRequest)
+            ViewState(
+                status = data.status,
+                content = result,
+                message = data.message
+            ) as ViewState<PaymentConfirmationResponse?>
+        }
 
     override fun getPaymentMethod(transactionId: String): Flow<ViewState<List<PaymentMethod>?>> =
         flow {

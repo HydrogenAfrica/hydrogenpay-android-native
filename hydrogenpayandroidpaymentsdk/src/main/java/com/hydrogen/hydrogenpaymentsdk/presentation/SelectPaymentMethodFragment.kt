@@ -29,6 +29,7 @@ import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.PaymentMethodsAdapt
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_PAYMENT
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_TRANSFER
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldSomeParts
@@ -71,15 +72,28 @@ class SelectPaymentMethodFragment : Fragment() {
         paymentMethodsAdapter = PaymentMethodsAdapter {
             when (it.name) {
                 STRING_TRANSFER -> {
-                    // Initiate Bank Transfer and navigate to Bank Transfer page on success
-                    viewModel.payByTransfer()
-                    observeLiveData(viewModel.bankTransferResponseState, loaderAlertDialog, null, {errorMessage ->
-                        Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT).show()
-                    }) {
+                    if (viewModel.bankTransferResponseState.value!!.status == Status.SUCCESS) {
                         // Navigate to Bank Transfer Page
                         val action =
                             SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToBankTransferFragment()
                         findNavController().navigate(action)
+                    } else {
+                        // Initiate Bank Transfer and navigate to Bank Transfer page on success
+                        viewModel.payByTransfer()
+                        observeLiveData(
+                            viewModel.bankTransferResponseState,
+                            loaderAlertDialog,
+                            null,
+                            { errorMessage ->
+                                Toast.makeText(requireContext(), errorMessage, Toast.LENGTH_SHORT)
+                                    .show()
+                            }
+                        ) {
+                            // Navigate to Bank Transfer Page
+                            val action =
+                                SelectPaymentMethodFragmentDirections.actionSelectPaymentMethodFragmentToBankTransferFragment()
+                            findNavController().navigate(action)
+                        }
                     }
                 }
 

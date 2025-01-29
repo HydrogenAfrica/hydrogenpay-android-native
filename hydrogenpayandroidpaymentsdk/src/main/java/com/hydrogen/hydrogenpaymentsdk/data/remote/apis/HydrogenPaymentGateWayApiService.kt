@@ -2,6 +2,8 @@ package com.hydrogen.hydrogenpaymentsdk.data.remote.apis
 
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorisedRequest
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorizedRequestModeHeader
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.BankTransferStatusDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.GetBankTransferStatusRequestBody
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenServerResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiateBankTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferRequest
@@ -55,4 +57,10 @@ interface HydrogenPaymentGateWayApiService {
     suspend fun paymentConfirmation(
         @Body paymentConfirmationRequestDTO: PaymentConfirmationRequestDTO
     ): Response<HydrogenServerResponse<PaymentConfirmationDto>>
+
+    @POST("Payment/bank-transfer-status")
+    @AuthorizedRequestModeHeader
+    suspend fun checkBankTransferStatus(
+        @Body bankTransferStatusRequestBody: GetBankTransferStatusRequestBody
+    ): Response<HydrogenServerResponse<BankTransferStatusDto>>
 }
