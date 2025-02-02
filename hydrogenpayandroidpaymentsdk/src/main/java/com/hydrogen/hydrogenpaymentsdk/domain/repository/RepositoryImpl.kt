@@ -8,12 +8,14 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferRes
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationRequestDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsRequest
+import com.hydrogen.hydrogenpaymentsdk.domain.models.BankTransferStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.retryAndCatchExceptions
+import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.paymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.toDomain
 import com.hydrogen.hydrogenpaymentsdk.utils.NetworkUtil
 import kotlinx.coroutines.flow.Flow
@@ -30,7 +32,7 @@ internal class RepositoryImpl(
             val response = apiService.initiatePayment(initiatePaymentRequest)
             emit(networkUtil.getServerResponse(response))
         }.map { data ->
-            val result = data.content?.data?.toDomain()
+            val result = data.content?.data?.paymentConfirmationResponse()
             sessionManager.saveSessionTransactionCredentials(result!!)
             ViewState(
                 status = data.status,
@@ -44,7 +46,7 @@ internal class RepositoryImpl(
             val response = apiService.payByTransfer(transferDetails)
             emit(networkUtil.getServerResponse(response))
         }.map { data ->
-            val result = data.content?.data?.toDomain()
+            val result = data.content?.data?.paymentConfirmationResponse()
             ViewState(
                 status = data.status,
                 content = result,
@@ -58,7 +60,7 @@ internal class RepositoryImpl(
             val response = apiService.paymentConfirmation(request)
             emit(networkUtil.getServerResponse(response))
         }.map { data ->
-            val result = data.content?.data?.toDomain()
+            val result = data.content?.data?.paymentConfirmationResponse()
             ViewState(
                 status = data.status,
                 content = result,
@@ -70,18 +72,18 @@ internal class RepositoryImpl(
         transactionReference: String,
         transactionDetails: TransactionDetails,
         initiatePaymentRequest: PayByTransferRequest
-    ): Flow<ViewState<PaymentConfirmationResponse?>> =
+    ): Flow<ViewState<BankTransferStatus?>> =
         flow {
             val request = GetBankTransferStatusRequestBody(transactionReference)
             val response = apiService.checkBankTransferStatus(request)
             emit(networkUtil.getServerResponse(response))
         }.map { data ->
-            val result = data.content?.data?.toDomain(transactionDetails, initiatePaymentRequest)
+            val result = data.content?.data?.toDomain(transactionDetails)
             ViewState(
                 status = data.status,
                 content = result,
                 message = data.message
-            ) as ViewState<PaymentConfirmationResponse?>
+            ) as ViewState<BankTransferStatus?>
         }
 
     override fun getPaymentMethod(transactionId: String): Flow<ViewState<List<PaymentMethod>?>> =
@@ -89,7 +91,7 @@ internal class RepositoryImpl(
             val response = apiService.getPaymentMethod(transactionId)
             emit(networkUtil.getServerResponse(response))
         }.map { data ->
-            val result = data.content?.data?.map { it.toDomain() }
+            val result = data.content?.data?.map { it.paymentConfirmationResponse() }
             ViewState(
                 status = data.status,
                 content = result,
@@ -102,7 +104,7 @@ internal class RepositoryImpl(
             val response = apiService.getTransactionDetails(transactionDetailsRequest)
             emit(networkUtil.getServerResponse(response))
         }.map { data ->
-            val result = data.content?.data?.toDomain()
+            val result = data.content?.data?.paymentConfirmationResponse()
             ViewState(
                 status = data.status,
                 content = result,

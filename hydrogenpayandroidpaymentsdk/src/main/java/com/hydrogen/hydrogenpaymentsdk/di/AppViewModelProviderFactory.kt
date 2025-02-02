@@ -3,6 +3,7 @@ package com.hydrogen.hydrogenpaymentsdk.di
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel
 
 internal class AppViewModelProviderFactory(
     private val hydrogenPayDiModule: HydrogenPayDiModule
@@ -18,6 +19,9 @@ internal class AppViewModelProviderFactory(
                 hydrogenPayDiModule.providesCountdownTimerUseCase(),
                 hydrogenPayDiModule.providesGetBankTransferStatusUseCase()
             ) as T
+        }
+        else if (modelClass.isAssignableFrom(SetUpViewModel::class.java)) {
+            return SetUpViewModel(hydrogenPayDiModule.providesSetUpUseCase()) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

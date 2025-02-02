@@ -29,6 +29,7 @@ import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.PaymentMethodsAdapt
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_PAYMENT
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_TRANSFER
@@ -55,6 +56,9 @@ class SelectPaymentMethodFragment : Fragment() {
     private lateinit var shimmerMerchantName: ShimmerFrameLayout
     private lateinit var customerNameInitials: TextView
     private val viewModel: AppViewModel by activityViewModels {
+        AppViewModelProviderFactory(HydrogenPayDiModule)
+    }
+    private val setUpViewModel: SetUpViewModel by activityViewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
     }
 
@@ -110,6 +114,9 @@ class SelectPaymentMethodFragment : Fragment() {
             container,
             false
         )
+        binding.apply {
+            this.setUpViewModel = this@SelectPaymentMethodFragment.setUpViewModel
+        }
         return binding.root
     }
 

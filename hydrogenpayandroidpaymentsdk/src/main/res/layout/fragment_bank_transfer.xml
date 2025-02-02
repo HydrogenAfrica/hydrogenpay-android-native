@@ -9,6 +9,10 @@
         <variable
             name="appViewModel"
             type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel" />
+
+        <variable
+            name="setUpViewModel"
+            type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -50,13 +54,14 @@
             app:layout_constraintTop_toBottomOf="@+id/change_payment_method_btn" />
 
         <LinearLayout
+            android:id="@+id/linearLayout"
             android:layout_width="@dimen/dimen_120dp"
             android:layout_height="wrap_content"
+            android:background="@drawable/grey_drawable_bg"
             android:orientation="horizontal"
+            android:paddingVertical="@dimen/dimen_4dp"
             android:paddingStart="@dimen/dimen_15dp"
             android:paddingEnd="@dimen/dimen_8dp"
-            android:paddingVertical="@dimen/dimen_4dp"
-            android:background="@drawable/grey_drawable_bg"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/textView">
 
@@ -65,9 +70,9 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="start"
-                android:textColor="@color/black"
                 android:layout_weight="1"
                 android:text="@string/expires_in"
+                android:textColor="@color/black"
                 android:textSize="@dimen/dimen_12sp" />
 
             <TextView
@@ -80,6 +85,21 @@
                 android:textSize="@dimen/dimen_12sp" />
         </LinearLayout>
 
+        <TextView
+            android:id="@+id/textView53"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sandbox_txt_view_bg"
+            android:fontFamily="@font/exo_bold"
+            android:setIsTestTransaction="@{setUpViewModel.isSandBoxTransaction}"
+            android:text="@string/sandbox_transaction"
+            android:textAllCaps="true"
+            android:textColor="@color/deep_red"
+            android:textSize="@dimen/dimen_12sp"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            tools:visibility="visible" />
+
         <View
             android:id="@+id/horizontal_line"
             android:layout_width="match_parent"
@@ -89,7 +109,7 @@
             android:background="@color/grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/textView53" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
@@ -220,12 +240,12 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="@dimen/dimen_20dp"
+                android:drawableEnd="@drawable/copy"
                 android:drawablePadding="@dimen/dimen_10dp"
                 android:fontFamily="@font/exo_bold"
                 android:text="@{appViewModel.bankTransferResponseState.content.virtualAcctNo}"
                 android:textColor="@color/black"
                 android:textSize="@dimen/dimen_24sp"
-                android:drawableEnd="@drawable/copy"
                 app:layout_constraintEnd_toEndOf="@+id/textView12"
                 app:layout_constraintStart_toStartOf="@+id/textView12"
                 app:layout_constraintTop_toBottomOf="@+id/textView12"
@@ -255,19 +275,38 @@
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/merchant_name">
 
-                <TextView
-                    android:id="@+id/textView15"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/payment_info_tv_container"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center"
-                    android:drawablePadding="@dimen/dimen_5dp"
-                    android:fontFamily="@font/poppins"
-                    android:gravity="center"
-                    android:text="@string/bank_transfer_info"
-                    android:textAlignment="center"
-                    android:textSize="@dimen/dimen_10sp"
-                    android:visibility="visible"
-                    app:drawableStartCompat="@drawable/info" />
+                    android:visibility="visible">
+
+                    <ImageView
+                        android:id="@+id/infoIcon"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="@dimen/dimen_2dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/info"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textView15"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:fontFamily="@font/poppins"
+                        android:gravity="center"
+                        android:text="@string/bank_transfer_info"
+                        android:textAlignment="center"
+                        android:textSize="@dimen/dimen_10sp"
+                        android:visibility="visible"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="@+id/infoIcon"
+                        app:layout_constraintTop_toTopOf="parent" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:id="@+id/checking_payment_l"
@@ -294,9 +333,9 @@
                         style="?android:attr/progressBarStyleHorizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
+                        android:indeterminate="true"
                         android:progressBackgroundTint="@color/lighter_dark"
                         android:progressTint="@color/light_blue"
-                        android:indeterminate="true"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/textView18" />
@@ -325,11 +364,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_25dp"
-            android:enabled="true"
-            android:toggleTextColorWithEnabledState="@{@string/place_holder_str}"
             android:background="@drawable/submit_btn_state_toggle_bg"
+            android:enabled="true"
             android:fontFamily="@font/poppins_bold"
             android:text="@string/i_have_made_this_payment"
+            android:toggleTextColorWithEnabledState="@{@string/place_holder_str}"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />

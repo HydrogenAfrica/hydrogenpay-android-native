@@ -5,7 +5,9 @@
     tools:context=".presentation.SelectPaymentMethodFragment">
 
     <data>
-
+        <variable
+            name="setUpViewModel"
+            type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -47,13 +49,14 @@
                 app:layout_constraintTop_toBottomOf="@+id/imageView" />
 
             <LinearLayout
+                android:id="@+id/linearLayout"
                 android:layout_width="@dimen/dimen_120dp"
                 android:layout_height="wrap_content"
+                android:background="@drawable/grey_drawable_bg"
                 android:orientation="horizontal"
+                android:paddingVertical="@dimen/dimen_4dp"
                 android:paddingStart="@dimen/dimen_15dp"
                 android:paddingEnd="@dimen/dimen_8dp"
-                android:paddingVertical="@dimen/dimen_4dp"
-                android:background="@drawable/grey_drawable_bg"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="@+id/textView">
 
@@ -62,9 +65,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="start"
-                    android:textColor="@color/black"
                     android:layout_weight="1"
                     android:text="@string/expires_in"
+                    android:textColor="@color/black"
                     android:textSize="@dimen/dimen_12sp" />
 
                 <TextView
@@ -77,6 +80,21 @@
                     android:textSize="@dimen/dimen_12sp" />
             </LinearLayout>
 
+            <TextView
+                android:id="@+id/textView53"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/sandbox_txt_view_bg"
+                android:text="@string/sandbox_transaction"
+                android:textAllCaps="true"
+                android:setIsTestTransaction="@{setUpViewModel.isSandBoxTransaction}"
+                tools:visibility="visible"
+                android:fontFamily="@font/exo_bold"
+                android:textColor="@color/deep_red"
+                android:textSize="@dimen/dimen_12sp"
+                app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+                app:layout_constraintTop_toBottomOf="@+id/textView" />
+
             <View
                 android:id="@+id/horizontal_line"
                 android:layout_width="match_parent"
@@ -86,7 +104,7 @@
                 android:background="@color/grey"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/textView" />
+                app:layout_constraintTop_toBottomOf="@+id/textView53" />
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardView"

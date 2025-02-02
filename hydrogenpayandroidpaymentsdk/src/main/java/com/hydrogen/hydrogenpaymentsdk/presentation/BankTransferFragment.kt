@@ -25,6 +25,7 @@ import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldSomeParts
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.copyToClipboard
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
@@ -38,7 +39,7 @@ class BankTransferFragment : Fragment() {
     private lateinit var changePaymentMethodButton: ImageView
     private lateinit var timer: TextView
     private lateinit var accountNumberTxtView: TextView
-    private lateinit var infoTextView: TextView
+    private lateinit var transactionInfoTextViewContainer: ConstraintLayout
     private lateinit var checkingPaymentProgress: ConstraintLayout
     private lateinit var makePaymentButton: Button
     private lateinit var customerInitials: TextView
@@ -50,6 +51,9 @@ class BankTransferFragment : Fragment() {
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
     }
+    private val setUpViewModel: SetUpViewModel by activityViewModels {
+        AppViewModelProviderFactory(HydrogenPayDiModule)
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -59,11 +63,9 @@ class BankTransferFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.transaction_in_progress),
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    val action =
+                        BankTransferFragmentDirections.actionBankTransferFragmentToChangePaymentMethodConfirmationFragment2()
+                    findNavController().navigate(action)
                 }
             })
         // Inflate the layout for this fragment
@@ -71,6 +73,7 @@ class BankTransferFragment : Fragment() {
             DataBindingUtil.inflate(inflater, R.layout.fragment_bank_transfer, container, false)
         binding.apply {
             appViewModel = viewModel
+            this.setUpViewModel = this@BankTransferFragment.setUpViewModel
         }
         return binding.root
     }
@@ -79,7 +82,9 @@ class BankTransferFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         changePaymentMethodButton.setOnClickListener {
-            findNavController().popBackStack()
+            val action =
+                BankTransferFragmentDirections.actionBankTransferFragmentToChangePaymentMethodConfirmationFragment2()
+            findNavController().navigate(action)
         }
 
         makePaymentButton.setOnClickListener {
@@ -95,7 +100,7 @@ class BankTransferFragment : Fragment() {
         }
 
         // Start checking for transaction status
-        observeLiveData(viewModel.bankTransferStatus, null, {
+        observeLiveData(viewModel.bankTransferPaymentStatus, null, {
             makePaymentButton.isEnabled = false
             makePaymentButton.setTextColor(
                 ContextCompat.getColor(
@@ -103,7 +108,7 @@ class BankTransferFragment : Fragment() {
                     R.color.lighter_dark
                 )
             )
-            infoTextView.visibility = View.GONE
+            transactionInfoTextViewContainer.visibility = View.GONE
             checkingPaymentProgress.visibility = View.VISIBLE
         },
             {
@@ -113,8 +118,15 @@ class BankTransferFragment : Fragment() {
                     Toast.LENGTH_LONG
                 ).show()
                 enableCheckPaymentStatusButton()
-            }) {
-            if (it != null && it.status.contains("pending", true)) {
+            }) { transResp ->
+            if (transResp != null && transResp.status.contains("pending", true)) {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.payment_is_still_pending),
+                    Toast.LENGTH_LONG
+                ).show()
+                enableCheckPaymentStatusButton()
+            } else {
                 Toast.makeText(
                     requireContext(),
                     getString(R.string.payment_successful),
@@ -124,13 +136,6 @@ class BankTransferFragment : Fragment() {
                 val action =
                     BankTransferFragmentDirections.actionBankTransferFragmentToTransactionReceiptDetailsFragment()
                 findNavController().navigate(action)
-            } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.payment_is_still_pending),
-                    Toast.LENGTH_LONG
-                ).show()
-                enableCheckPaymentStatusButton()
             }
         }
 
@@ -190,7 +195,7 @@ class BankTransferFragment : Fragment() {
                 R.color.hydrogen_yellow
             )
         )
-        infoTextView.visibility = View.VISIBLE
+        transactionInfoTextViewContainer.visibility = View.VISIBLE
         checkingPaymentProgress.visibility = View.GONE
     }
 
@@ -198,7 +203,7 @@ class BankTransferFragment : Fragment() {
         with(binding) {
             changePaymentMethodButton = changePaymentMethodBtn
             accountNumberTxtView = textView13
-            infoTextView = textView15
+            transactionInfoTextViewContainer = paymentInfoTvContainer
             checkingPaymentProgress = checkingPaymentL
             makePaymentButton = button
             timer = textView2
@@ -206,7 +211,7 @@ class BankTransferFragment : Fragment() {
             customerName = textView4
             merchantRefId = textView6
             transactionAmount = textView5
-            infoIcon = imageView14
+            this@BankTransferFragment.infoIcon = imageView14
         }
     }
 }

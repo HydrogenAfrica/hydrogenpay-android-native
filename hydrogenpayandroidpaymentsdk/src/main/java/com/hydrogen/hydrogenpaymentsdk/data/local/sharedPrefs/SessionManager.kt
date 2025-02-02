@@ -3,6 +3,7 @@ package com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs
 import com.google.gson.Gson
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_PREFS_MODE_TAG
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_PREFS_TOKEN_TAG
 
 internal class SessionManager(
     private val sharedPrefsManagerContract: SharedPrefsManagerContract,
@@ -20,5 +21,15 @@ internal class SessionManager(
 
     override fun clearSessionTransactionCredentials() {
         sharedPrefsManagerContract.deletePrefs(STRING_PREFS_MODE_TAG)
+    }
+
+    override fun saveToken(token: String) {
+        sharedPrefsManagerContract.saveStringToSharedPrefs(STRING_PREFS_TOKEN_TAG, token)
+    }
+
+    override fun getToken(): String? = sharedPrefsManagerContract.retrieveStringFromSharedPrefs(STRING_PREFS_TOKEN_TAG)
+
+    override fun clearToken() {
+        sharedPrefsManagerContract.deletePrefs(STRING_PREFS_TOKEN_TAG)
     }
 }

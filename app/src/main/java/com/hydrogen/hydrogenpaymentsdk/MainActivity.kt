@@ -10,7 +10,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.databinding.CallingAppMainActivityBinding
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
 
@@ -29,11 +29,20 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
-         binding = DataBindingUtil.setContentView(this, R.layout.calling_app_main_activity)
+        binding = DataBindingUtil.setContentView(this, R.layout.calling_app_main_activity)
         initViews()
-        val payByTransferRequest = PayByTransferRequest(5000, "Dev Test", "oloyedeadebayoolawale@gmail.com", "https://hydrogenpay.com")
+        val payByTransferRequest = HydrogenPayPaymentRequest(
+            10,
+            "Dev Test",
+            "devtest@randomuser.com",
+            "https://hydrogenpay.com",
+            meta = "test meta",
+            description = "test desc",
+            currency = "NGN",
+            clientApiKey = AuthToken.LIVE.token
+        )
         button.setOnClickListener {
-         HydrogenPay.launch(paymentLauncher, this, payByTransferRequest)
+            HydrogenPay.launch(paymentLauncher, this, payByTransferRequest)
         }
     }
 

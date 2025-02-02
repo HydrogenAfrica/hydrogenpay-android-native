@@ -7,6 +7,7 @@ import android.text.SpannableString
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -17,13 +18,18 @@ import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.load
 import coil.request.ImageRequest
-import coil.size.Scale
 import coil.transform.CircleCropTransformation
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
-import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.dpToPx
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatNumberWithCommas
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getCustomerNameInitials
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.toSentenceCase
+
+@BindingAdapter("android:setIsTestTransaction")
+fun TextView.setIsTestTransaction(isTestTransaction: Boolean?) {
+    visibility = isTestTransaction?.let {
+        if (it) View.VISIBLE else View.GONE
+    } ?: View.GONE
+}
 
 @BindingAdapter("android:transferTo")
 fun TextView.transferTo(inputString: String?) {

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flatMapConcat
 import kotlinx.coroutines.flow.map
 
-class InitiatePaymentUseCase(
+internal class InitiatePaymentUseCase(
     private val repository: Repository,
     private val networkUtil: NetworkUtil
 ) {

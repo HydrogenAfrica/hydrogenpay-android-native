@@ -1,11 +1,13 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation.viewModels
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.domain.models.BankTransferStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
@@ -36,6 +38,12 @@ internal class AppViewModel(
     private val countdownTimerUseCase: CountdownTimerUseCase,
     private val getBankTransferStatusUseCase: GetBankTransferStatusUseCase
 ) : ViewModel() {
+
+    private val _bankTransferPaymentStatus: MutableLiveData<ViewState<BankTransferStatus?>> =
+        MutableLiveData(ViewState.initialDefault(null))
+    val bankTransferPaymentStatus: LiveData<ViewState<BankTransferStatus?>> get() = _bankTransferPaymentStatus
+
+
     private val _bankTransferStatus: MutableLiveData<ViewState<PaymentConfirmationResponse?>> =
         MutableLiveData(ViewState.initialDefault(null))
     val bankTransferStatus: LiveData<ViewState<PaymentConfirmationResponse?>> get() = _bankTransferStatus
@@ -104,17 +112,18 @@ internal class AppViewModel(
     }
 
     fun getBankTransferStatus() {
-        _bankTransferStatus.value = ViewState.loading(null)
+        _bankTransferPaymentStatus.value = ViewState.loading(null)
         viewModelScope.launch(ioDispatcher) {
             val transactionDetails = _paymentMethodsAndTransactionDetails.value.content!!.second!!
             val initiatePaymentRequest = _bankTransferRequest.value!!
+            Log.d("CURRENT_TRANS_ID", transactionDetails.transactionId)
             getBankTransferStatusUseCase.invoke(
                 transactionDetails.transactionId,
                 transactionDetails,
                 initiatePaymentRequest
             )
                 .collectLatest {
-                    _bankTransferStatus.postValue(it)
+                    _bankTransferPaymentStatus.postValue(it)
                 }
         }
     }

@@ -4,6 +4,7 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferReq
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsRequest
+import com.hydrogen.hydrogenpaymentsdk.domain.models.BankTransferStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
@@ -14,7 +15,7 @@ import kotlinx.coroutines.flow.Flow
 import retrofit2.http.Body
 import retrofit2.http.Query
 
-interface Repository {
+internal interface Repository {
     fun initiatePayment(
         initiatePaymentRequest: PayByTransferRequest
     ): Flow<ViewState<PaymentTransactionCredentials?>>
@@ -31,7 +32,7 @@ interface Repository {
         transactionReference: String,
         transactionDetails: TransactionDetails,
         initiatePaymentRequest: PayByTransferRequest
-    ): Flow<ViewState<PaymentConfirmationResponse?>>
+    ): Flow<ViewState<BankTransferStatus?>>
 
     fun getPaymentMethod(
         transactionId: String

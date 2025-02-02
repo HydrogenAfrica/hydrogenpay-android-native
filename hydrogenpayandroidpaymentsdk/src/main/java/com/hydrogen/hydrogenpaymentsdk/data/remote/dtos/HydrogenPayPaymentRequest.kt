@@ -11,11 +11,12 @@ package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
  * @property [description] Payment Description. This is also optional.
  * @property [meta] Use this field to pass any other information you want to be recorded with the transaction.
  * */
-internal data class PayByTransferRequest(
+data class HydrogenPayPaymentRequest(
     val amount: Int,
     val customerName: String,
     val email: String,
     val callback: String,
+    val clientApiKey: String,
     val transactionRef: String? = null,
     val currency: String? = null,
     val description: String? = null,

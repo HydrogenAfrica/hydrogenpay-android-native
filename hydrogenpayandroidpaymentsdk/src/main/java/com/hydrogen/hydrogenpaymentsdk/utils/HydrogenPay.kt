@@ -5,12 +5,13 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import com.hydrogen.hydrogenpaymentsdk.HydrogenPayPaymentActivity
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
 
 object HydrogenPay {
     const val HYDROGEN_PAY_RESULT_KEY = "hydrogen_pay_result_key"
 
-    fun launch(resultLauncher: ActivityResultLauncher<Intent>, context: Context, payByTransferRequest: PayByTransferRequest?) {
+    fun launch(resultLauncher: ActivityResultLauncher<Intent>, context: Context, payByTransferRequest: HydrogenPayPaymentRequest?) {
         HydrogenPayPaymentActivity.start(resultLauncher, context, payByTransferRequest)
     }
 

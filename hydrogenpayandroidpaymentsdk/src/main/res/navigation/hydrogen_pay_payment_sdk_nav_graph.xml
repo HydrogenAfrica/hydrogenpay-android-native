@@ -22,6 +22,13 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_bankTransferFragment_to_changePaymentMethodConfirmationFragment2"
+            app:destination="@id/changePaymentMethodConfirmationFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_out_right"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/OTPCodeFragment"
@@ -79,7 +86,17 @@
         android:id="@+id/changePaymentMethodConfirmationFragment"
         android:name="com.hydrogen.hydrogenpaymentsdk.presentation.ChangePaymentMethodConfirmationFragment"
         android:label="fragment_change_payment_method_confirmation"
-        tools:layout="@layout/fragment_change_payment_method_confirmation" />
+        tools:layout="@layout/fragment_change_payment_method_confirmation" >
+        <action
+            android:id="@+id/action_changePaymentMethodConfirmationFragment_to_selectPaymentMethodFragment"
+            app:destination="@id/selectPaymentMethodFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right"
+            app:popUpTo="@id/selectPaymentMethodFragment"
+            app:popUpToInclusive="false" />
+    </fragment>
     <fragment
         android:id="@+id/contactDetailsFragment"
         android:name="com.hydrogen.hydrogenpaymentsdk.presentation.ContactDetailsFragment"

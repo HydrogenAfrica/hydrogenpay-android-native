@@ -1,6 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.BankTransferStatusDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiateBankTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePaymentDto
@@ -10,6 +11,7 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentMethodDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsDto
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.PaymentType
+import com.hydrogen.hydrogenpaymentsdk.domain.models.BankTransferStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
@@ -18,8 +20,13 @@ import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentia
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatTransactionDateTime
 
-object ModelMapper {
-    fun PayByTransferResponseDto.toDomain(): PayByTransferResponse =
+internal object ModelMapper {
+    fun HydrogenPayPaymentRequest.toPayByTransferRequestObject(): PayByTransferRequest =
+        PayByTransferRequest(
+            amount, customerName, email, callback, transactionRef, currency
+        )
+
+    fun PayByTransferResponseDto.paymentConfirmationResponse(): PayByTransferResponse =
         PayByTransferResponse(
             amountPaid,
             bankName,
@@ -30,7 +37,7 @@ object ModelMapper {
             virtualAccountNo
         )
 
-    fun PaymentConfirmationDto.toDomain(): PaymentConfirmationResponse =
+    fun PaymentConfirmationDto.paymentConfirmationResponse(): PaymentConfirmationResponse =
         PaymentConfirmationResponse(
             amount.toString(),
             chargedAmount.toString(),
@@ -50,7 +57,7 @@ object ModelMapper {
             vat.toString()
         )
 
-    fun BankTransferStatusDto.toDomain(
+    fun BankTransferStatusDto.paymentConfirmationResponse(
         transactionDetails: TransactionDetails,
         initiatePaymentRequest: PayByTransferRequest
     ): PaymentConfirmationResponse =
@@ -71,6 +78,44 @@ object ModelMapper {
             transactionReference,
             transactionStatus,
             transactionDetails.vatFee
+        )
+
+    fun BankTransferStatusDto.toDomain(
+        transactionDetails: TransactionDetails
+    ): BankTransferStatus =
+        BankTransferStatus(
+            accountName,
+            accountNo,
+            amount.toString(),
+            bank,
+            callBackUrl,
+            canRetry,
+            cardExpiry,
+            channelTransactionReference,
+            clientReferenceInformation,
+            completedTimeUtc,
+            customerName,
+            email,
+            errors,
+            expMonth,
+            expYear,
+            maskedPan,
+            processorResponse,
+            processorTransactionId,
+            reconciliationId,
+            recurringCardToken,
+            remittanceAmount.toString(),
+            responseCode,
+            responseDescription,
+            status,
+            submitTimeUtc,
+            transactionId,
+            transactionReference,
+            transactionStatus,
+            PaymentType.BANK_TRANSFER.typeName,
+            transactionDetails.currencyInfo,
+            transactionDetails.merchantInfo,
+            transactionDetails.description
         )
 
     fun PaymentConfirmationResponse.getReceiptPayload(
@@ -100,10 +145,10 @@ object ModelMapper {
             merchantName
         )
 
-    fun InitiatePaymentDto.toDomain(): PaymentTransactionCredentials =
+    fun InitiatePaymentDto.paymentConfirmationResponse(): PaymentTransactionCredentials =
         PaymentTransactionCredentials(transactionRef, url, getTransactionId(), getTransactionMode())
 
-    fun TransactionDetailsDto.toDomain(): TransactionDetails =
+    fun TransactionDetailsDto.paymentConfirmationResponse(): TransactionDetails =
         TransactionDetails(
             amount,
             bankDiscountValue,
@@ -139,7 +184,7 @@ object ModelMapper {
             vatPercentage
         )
 
-    fun PaymentMethodDto.toDomain(): PaymentMethod = PaymentMethod(
+    fun PaymentMethodDto.paymentConfirmationResponse(): PaymentMethod = PaymentMethod(
         alias,
         description,
         displayOrder,
@@ -153,7 +198,7 @@ object ModelMapper {
         type
     )
 
-    fun InitiateBankTransferResponseDto.toDomain(): InitiatePayByTransferResponse =
+    fun InitiateBankTransferResponseDto.paymentConfirmationResponse(): InitiatePayByTransferResponse =
         InitiatePayByTransferResponse(
             response_data.expiry_datetime,
             response_data.request_id,

@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.result.ActivityResultLauncher
@@ -17,23 +16,27 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dsofttech.dprefs.utils.DPrefs
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.HydrogenPayPaymentActivityBinding
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_TIME_15_MIN
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_EXTRA_TAG
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_TIMER_DONE_VALUE
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
-import kotlinx.coroutines.flow.collect
+import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.toPayByTransferRequestObject
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
 class HydrogenPayPaymentActivity : AppCompatActivity() {
     private lateinit var binding: HydrogenPayPaymentActivityBinding
-    private val viewModel: AppViewModel by viewModels {
+    private val appViewModel: AppViewModel by viewModels {
+        AppViewModelProviderFactory(HydrogenPayDiModule)
+    }
+    private val setUpViewModel: SetUpViewModel by viewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
     }
 
@@ -49,21 +52,22 @@ class HydrogenPayPaymentActivity : AppCompatActivity() {
 //        }
         val payByTransferRequest = try {
             intent.getStringExtra(STRING_EXTRA_TAG)
-                ?.let { providesGson().fromJson(it, PayByTransferRequest::class.java) }
+                ?.let { providesGson().fromJson(it, HydrogenPayPaymentRequest::class.java) }
         } catch (e: Exception) {
             null
         }
         payByTransferRequest?.let {
-            viewModel.setBankTransferRequest(it)
-            viewModel.startTimer(LONG_TIME_15_MIN)
-            viewModel.initiatePayment()
+            setUpViewModel.setUp(it.clientApiKey)
+            appViewModel.setBankTransferRequest(it.toPayByTransferRequestObject())
+            appViewModel.startTimer(LONG_TIME_15_MIN)
+            appViewModel.initiatePayment()
         } ?: cancelByGoingBackToMerchantApp(
             RequestDeclineReasons.INVALID_ARGUMENT_PROVIDED.reason
         )
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.timeLeft.collectLatest {
+                appViewModel.timeLeft.collectLatest {
                     if (it == STRING_TIMER_DONE_VALUE) {
                         Toast.makeText(
                             this@HydrogenPayPaymentActivity,
@@ -78,12 +82,12 @@ class HydrogenPayPaymentActivity : AppCompatActivity() {
 
         lifecycleScope.launch {
             repeatOnLifecycle(Lifecycle.State.STARTED) {
-                viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.collect {
+                appViewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.collect {
                     if (it == -1L) {
                         val intent = Intent()
                         intent.putExtra(
                             HydrogenPay.HYDROGEN_PAY_RESULT_KEY,
-                            providesGson().toJson(viewModel.getReceiptPayload())
+                            providesGson().toJson(appViewModel.getReceiptPayload())
                         )
                         this.apply {
                             setResult(Activity.RESULT_OK, intent)
@@ -99,10 +103,10 @@ class HydrogenPayPaymentActivity : AppCompatActivity() {
         internal fun start(
             resultLauncher: ActivityResultLauncher<Intent>,
             context: Context,
-            payByTransferRequest: PayByTransferRequest?
+            paymentRequest: HydrogenPayPaymentRequest?
         ) {
             val extra =
-                payByTransferRequest?.let { providesGson().toJson(payByTransferRequest) } ?: ""
+                paymentRequest?.let { providesGson().toJson(paymentRequest) } ?: ""
             val intent = Intent(context, HydrogenPayPaymentActivity::class.java)
             intent.putExtra(STRING_EXTRA_TAG, extra)
             resultLauncher.launch(intent)

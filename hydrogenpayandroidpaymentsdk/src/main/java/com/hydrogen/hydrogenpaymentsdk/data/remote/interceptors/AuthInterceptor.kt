@@ -5,7 +5,6 @@ import com.google.gson.Gson
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorisedRequest
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorizedRequestModeHeader
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
-import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.AUTH_TOKEN
 import okhttp3.Interceptor
 import okhttp3.Request
 import okhttp3.Response
@@ -40,7 +39,8 @@ internal class AuthInterceptor(
     ): Request.Builder {
         when (annotation) {
             is AuthorisedRequest -> {
-                requestBuilder.addHeader("Authorization", "Bearer $AUTH_TOKEN")
+                val token = sessionManager.getToken() ?: ""
+                requestBuilder.addHeader("Authorization", "Bearer $token")
             }
 
             is AuthorizedRequestModeHeader -> {

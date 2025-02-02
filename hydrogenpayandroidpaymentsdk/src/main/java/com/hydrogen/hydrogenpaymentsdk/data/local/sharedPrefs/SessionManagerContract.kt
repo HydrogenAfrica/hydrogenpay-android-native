@@ -6,4 +6,7 @@ internal interface SessionManagerContract {
     fun saveSessionTransactionCredentials(transactionCredentials: PaymentTransactionCredentials)
     fun getSessionTransactionCredentials(): PaymentTransactionCredentials?
     fun clearSessionTransactionCredentials()
+    fun saveToken(token: String)
+    fun getToken(): String?
+    fun clearToken()
 }

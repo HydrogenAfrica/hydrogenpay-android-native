@@ -21,7 +21,7 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Query
 
-interface HydrogenPaymentGateWayApiService {
+internal interface HydrogenPaymentGateWayApiService {
     @POST("Merchant/initiate-payment")
     @AuthorisedRequest
     suspend fun initiatePayment(

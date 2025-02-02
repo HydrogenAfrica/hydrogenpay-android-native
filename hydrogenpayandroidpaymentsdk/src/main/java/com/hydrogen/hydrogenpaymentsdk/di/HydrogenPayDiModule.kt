@@ -13,6 +13,7 @@ import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransferStatusUseC
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.SetUpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.BASE_URL
 import com.hydrogen.hydrogenpaymentsdk.utils.NetworkUtil
@@ -93,6 +94,8 @@ internal object HydrogenPayDiModule {
         GetBankTransferStatusUseCase(
             providesRepository()
         )
+
+    fun providesSetUpUseCase(): SetUpUseCase = SetUpUseCase(providesSessionManagerContract())
 
     private fun providesSessionManagerContract(): SessionManagerContract = providesSessionManager()
 }

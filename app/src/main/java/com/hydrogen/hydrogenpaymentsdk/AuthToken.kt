@@ -1,4 +1,4 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
+package com.hydrogen.hydrogenpaymentsdk
 
 internal enum class AuthToken(val token: String) {
     DEV("PK_TEST_cca53e0b3bc7847aff94502b8a585f84"),

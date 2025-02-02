@@ -17,4 +17,7 @@
     <color name="on_success_text_color">#037A7A</color>
     <color name="light_yellow">#FEF9CC</color>
     <color name="on_success_text_color_lighter">#00B2A9</color>
+    <color name="butter_color">#fef1d8</color>
+    <color name="deep_red">#d42929</color>
+    <color name="off_black">#797979</color>
 </resources>

@@ -97,4 +97,6 @@
     <string name="balloon_place_holder_text">Purchase amount:&#160;₦ %1s\nService charge: &#160; ₦ %2s \nVAT &#160; %3s%% : ₦ %4s &#160; \nDiscount: &#160; ₦ %5s </string>
     <string name="balloon_sample_text">Purchase amount:&#160;₦ 35, 000.69 \nService charge: &#160; ₦ 305 \nVAT &#160; 7.5%% : ₦ 287 &#160; \nDiscount: &#160; ₦ 200 </string>
     <string name="payment_is_still_pending">Payment is still pending</string>
+    <string name="setting_up">Setting Up...</string>
+    <string name="sandbox_transaction">SANDBOX TRANSACTION</string>
 </resources>
