@@ -33,11 +33,11 @@ class MainActivity : AppCompatActivity() {
         initViews()
         val payByTransferRequest = HydrogenPayPaymentRequest(
             10,
-            "Dev Test",
-            "devtest@randomuser.com",
+            "Bright Ugwu",
+            "brittugu22@gmail.com",
             "https://hydrogenpay.com",
             meta = "test meta",
-            description = "test desc",
+            description = "Test with bright",
             currency = "NGN",
             clientApiKey = AuthToken.LIVE.token
         )
