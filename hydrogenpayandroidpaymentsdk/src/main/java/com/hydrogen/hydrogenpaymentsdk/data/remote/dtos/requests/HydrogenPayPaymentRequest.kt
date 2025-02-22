@@ -1,4 +1,4 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
+package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests
 
 /**
  * The request to pass to perform payment via transfer.

@@ -1,18 +1,19 @@
-package com.hydrogen.hydrogenpaymentsdk.domain.repository
+package com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl
 
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.HydrogenPaymentGateWayApiService
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.GetBankTransferStatusRequestBody
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferRequest
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationRequestDTO
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsRequest
-import com.hydrogen.hydrogenpaymentsdk.domain.models.BankTransferStatus
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.GetBankTransferStatusRequestBody
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.InitiatePayByTransferRequestDTO
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PaymentConfirmationRequestDTO
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.TransactionDetailsRequestDTO
+import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
+import com.hydrogen.hydrogenpaymentsdk.domain.repository.Repository
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.retryAndCatchExceptions
 import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.paymentConfirmationResponse
@@ -41,7 +42,7 @@ internal class RepositoryImpl(
             ) as ViewState<PaymentTransactionCredentials?>
         }.retryAndCatchExceptions(networkUtil)
 
-    override fun payByTransfer(transferDetails: InitiatePayByTransferRequest): Flow<ViewState<InitiatePayByTransferResponse?>> =
+    override fun payByTransfer(transferDetails: InitiatePayByTransferRequestDTO): Flow<ViewState<InitiatePayByTransferResponseDTO?>> =
         flow {
             val response = apiService.payByTransfer(transferDetails)
             emit(networkUtil.getServerResponse(response))
@@ -51,7 +52,7 @@ internal class RepositoryImpl(
                 status = data.status,
                 content = result,
                 message = data.message
-            ) as ViewState<InitiatePayByTransferResponse?>
+            ) as ViewState<InitiatePayByTransferResponseDTO?>
         }.retryAndCatchExceptions(networkUtil)
 
     override fun confirmPayment(transactionReference: String): Flow<ViewState<PaymentConfirmationResponse?>> =
@@ -72,7 +73,7 @@ internal class RepositoryImpl(
         transactionReference: String,
         transactionDetails: TransactionDetails,
         initiatePaymentRequest: PayByTransferRequest
-    ): Flow<ViewState<BankTransferStatus?>> =
+    ): Flow<ViewState<TransactionStatus?>> =
         flow {
             val request = GetBankTransferStatusRequestBody(transactionReference)
             val response = apiService.checkBankTransferStatus(request)
@@ -83,7 +84,7 @@ internal class RepositoryImpl(
                 status = data.status,
                 content = result,
                 message = data.message
-            ) as ViewState<BankTransferStatus?>
+            ) as ViewState<TransactionStatus?>
         }
 
     override fun getPaymentMethod(transactionId: String): Flow<ViewState<List<PaymentMethod>?>> =
@@ -99,7 +100,7 @@ internal class RepositoryImpl(
             ) as ViewState<List<PaymentMethod>>
         }.retryAndCatchExceptions(networkUtil)
 
-    override fun getTransactionDetails(transactionDetailsRequest: TransactionDetailsRequest): Flow<ViewState<TransactionDetails?>> =
+    override fun getTransactionDetails(transactionDetailsRequest: TransactionDetailsRequestDTO): Flow<ViewState<TransactionDetails?>> =
         flow {
             val response = apiService.getTransactionDetails(transactionDetailsRequest)
             emit(networkUtil.getServerResponse(response))

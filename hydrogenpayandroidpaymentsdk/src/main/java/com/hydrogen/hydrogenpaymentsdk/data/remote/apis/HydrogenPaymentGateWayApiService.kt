@@ -2,19 +2,18 @@ package com.hydrogen.hydrogenpaymentsdk.data.remote.apis
 
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorisedRequest
 import com.hydrogen.hydrogenpaymentsdk.data.annotations.AuthorizedRequestModeHeader
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.BankTransferStatusDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.GetBankTransferStatusRequestBody
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenServerResponse
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiateBankTransferResponseDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferRequest
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePaymentDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferResponseDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentConfirmationRequestDTO
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PaymentMethodDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.BankTransferStatusResponseDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.GetBankTransferStatusRequestBody
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.HydrogenServerResponseResource
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiateBankTransferResponseDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.InitiatePayByTransferRequestDTO
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePaymentResponseDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.PaymentConfirmationResponseDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PaymentConfirmationRequestDTO
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.PaymentMethodDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.TransactionDetailsDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.TransactionDetailsRequestDTO
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -26,41 +25,41 @@ internal interface HydrogenPaymentGateWayApiService {
     @AuthorisedRequest
     suspend fun initiatePayment(
         @Body initiateTransferRequest: PayByTransferRequest
-    ): Response<HydrogenServerResponse<InitiatePaymentDto>>
+    ): Response<HydrogenServerResponseResource<InitiatePaymentResponseDto>>
 
     @GET("Payment/get-payment-methods")
     @AuthorizedRequestModeHeader
     suspend fun getPaymentMethod(
         @Query("transactionId") transactionId: String
-    ): Response<HydrogenServerResponse<List<PaymentMethodDto>>>
+    ): Response<HydrogenServerResponseResource<List<PaymentMethodDto>>>
 
     @POST("payment/transaction-details")
     @AuthorizedRequestModeHeader
     suspend fun getTransactionDetails(
-        @Body transactionDetailsRequest: TransactionDetailsRequest
-    ): Response<HydrogenServerResponse<TransactionDetailsDto>>
+        @Body transactionDetailsRequest: TransactionDetailsRequestDTO
+    ): Response<HydrogenServerResponseResource<TransactionDetailsDto>>
 
     @POST("Payment/initiate-bank-transfer")
     @AuthorizedRequestModeHeader
     suspend fun payByTransfer(
-        @Body transferDetails: InitiatePayByTransferRequest
-    ): Response<HydrogenServerResponse<InitiateBankTransferResponseDto>>
+        @Body transferDetails: InitiatePayByTransferRequestDTO
+    ): Response<HydrogenServerResponseResource<InitiateBankTransferResponseDto>>
 
     @POST("Merchant/initiate-bank-transfer")
     @AuthorisedRequest
     suspend fun initiatePayByTransfer(
         @Body transferDetails: PayByTransferRequest
-    ): Response<HydrogenServerResponse<InitiatePaymentDto>>
+    ): Response<HydrogenServerResponseResource<InitiatePaymentResponseDto>>
 
     @POST("Merchant/confirm-payment")
     @AuthorisedRequest
     suspend fun paymentConfirmation(
         @Body paymentConfirmationRequestDTO: PaymentConfirmationRequestDTO
-    ): Response<HydrogenServerResponse<PaymentConfirmationDto>>
+    ): Response<HydrogenServerResponseResource<PaymentConfirmationResponseDto>>
 
     @POST("Payment/bank-transfer-status")
     @AuthorizedRequestModeHeader
     suspend fun checkBankTransferStatus(
         @Body bankTransferStatusRequestBody: GetBankTransferStatusRequestBody
-    ): Response<HydrogenServerResponse<BankTransferStatusDto>>
+    ): Response<HydrogenServerResponseResource<BankTransferStatusResponseDto>>
 }

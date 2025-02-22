@@ -1,4 +1,6 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
+package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses
+
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.ResponseData
 
 data class InitiateBankTransferResponseDto(
     val response_code: String,

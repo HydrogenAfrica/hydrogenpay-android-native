@@ -10,7 +10,7 @@ import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenPayPaymentRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.databinding.CallingAppMainActivityBinding
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
 
@@ -33,11 +33,11 @@ class MainActivity : AppCompatActivity() {
         initViews()
         val payByTransferRequest = HydrogenPayPaymentRequest(
             10,
-            "Bright Ugwu",
-            "brittugu22@gmail.com",
+            "Adebayo Oloyede",
+            "oloyedeadebayoolawale@gmail.com",
             "https://hydrogenpay.com",
             meta = "test meta",
-            description = "Test with bright",
+            description = "Test by adebayo",
             currency = "NGN",
             clientApiKey = AuthToken.LIVE.token
         )

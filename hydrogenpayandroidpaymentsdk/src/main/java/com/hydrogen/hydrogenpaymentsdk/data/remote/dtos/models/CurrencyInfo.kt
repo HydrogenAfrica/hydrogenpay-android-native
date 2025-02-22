@@ -1,4 +1,4 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
+package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models
 
 data class CurrencyInfo(
     val alpha2Code: String,

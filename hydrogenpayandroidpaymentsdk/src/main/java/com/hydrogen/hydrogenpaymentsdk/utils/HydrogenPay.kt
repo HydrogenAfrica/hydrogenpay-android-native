@@ -5,8 +5,7 @@ import android.content.Context
 import android.content.Intent
 import androidx.activity.result.ActivityResultLauncher
 import com.hydrogen.hydrogenpaymentsdk.HydrogenPayPaymentActivity
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenPayPaymentRequest
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaymentRequest
 
 object HydrogenPay {
     const val HYDROGEN_PAY_RESULT_KEY = "hydrogen_pay_result_key"

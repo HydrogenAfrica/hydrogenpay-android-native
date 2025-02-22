@@ -1,7 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
 import android.util.Log
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenServerResponse
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.HydrogenServerResponseResource
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_SUCCESSFUL_SERVER_OPERATION_STATUS_CODE
 import retrofit2.HttpException
@@ -13,12 +13,12 @@ class NetworkUtil {
     fun <T> getServerResponse(serverResponse: Response<T>): ViewState<T?> {
         return when {
             serverResponse.isSuccessful -> {
-                if (serverResponse.body() != null && (serverResponse.body() as HydrogenServerResponse<*>).statusCode == STRING_SUCCESSFUL_SERVER_OPERATION_STATUS_CODE) {
+                if (serverResponse.body() != null && (serverResponse.body() as HydrogenServerResponseResource<*>).statusCode == STRING_SUCCESSFUL_SERVER_OPERATION_STATUS_CODE) {
                     ViewState.success(serverResponse.body())
                 } else {
                     ViewState.error(
                         null,
-                        (serverResponse.body()!! as HydrogenServerResponse<*>).message
+                        (serverResponse.body()!! as HydrogenServerResponseResource<*>).message
                     )
                 }
             }

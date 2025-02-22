@@ -1,4 +1,4 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
+package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests
 
 data class GetBankTransferStatusRequestBody(
     val transactionId: String,

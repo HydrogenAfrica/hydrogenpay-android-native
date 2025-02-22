@@ -1,9 +1,9 @@
 package com.hydrogen.hydrogenpaymentsdk.domain.models
 
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.CurrencyInfo
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.MerchantInfo
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.CurrencyInfo
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.MerchantInfo
 
-data class BankTransferStatus(
+data class TransactionStatus(
     val accountName: String,
     val accountNo: String,
     val amount: String,

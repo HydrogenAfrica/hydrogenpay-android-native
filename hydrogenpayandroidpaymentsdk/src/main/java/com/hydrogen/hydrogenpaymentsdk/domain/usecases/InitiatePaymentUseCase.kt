@@ -1,9 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.domain.usecases
 
-import android.util.Log
-import com.google.gson.Gson
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.TransactionDetailsRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.TransactionDetailsRequestDTO
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.Repository
@@ -26,7 +24,7 @@ internal class InitiatePaymentUseCase(
                 repository.getPaymentMethod(it.content!!.transactionId)
                     .flatMapConcat { paymentMethod ->
                         val transactionDetailsRequest =
-                            TransactionDetailsRequest(it.content.transactionId)
+                            TransactionDetailsRequestDTO(it.content.transactionId)
                         repository.getTransactionDetails(transactionDetailsRequest)
                             .map { transDetails ->
                                 ViewState(

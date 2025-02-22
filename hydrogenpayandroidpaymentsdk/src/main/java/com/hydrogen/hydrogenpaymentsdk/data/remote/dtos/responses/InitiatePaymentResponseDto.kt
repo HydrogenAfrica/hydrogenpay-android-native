@@ -1,6 +1,6 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
+package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses
 
-data class InitiatePaymentDto(
+data class InitiatePaymentResponseDto(
     val transactionRef: String,
     val url: String
 ) {

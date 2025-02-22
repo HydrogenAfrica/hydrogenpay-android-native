@@ -16,7 +16,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.dsofttech.dprefs.utils.DPrefs
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.HydrogenPayPaymentActivityBinding
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.HydrogenPayPaymentRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson

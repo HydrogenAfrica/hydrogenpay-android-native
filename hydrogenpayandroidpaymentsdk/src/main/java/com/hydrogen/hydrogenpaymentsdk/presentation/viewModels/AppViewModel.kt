@@ -5,14 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.InitiatePayByTransferResponse
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.PayByTransferRequest
-import com.hydrogen.hydrogenpaymentsdk.domain.models.BankTransferStatus
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
-import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransferStatusUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCase
@@ -36,12 +36,12 @@ internal class AppViewModel(
     private val initiatePaymentUseCase: InitiatePaymentUseCase,
     private val ioDispatcher: CoroutineDispatcher,
     private val countdownTimerUseCase: CountdownTimerUseCase,
-    private val getBankTransferStatusUseCase: GetBankTransferStatusUseCase
+    private val getBankTransferStatusUseCase: GetBankTransactionStatusUseCase
 ) : ViewModel() {
 
-    private val _bankTransferPaymentStatus: MutableLiveData<ViewState<BankTransferStatus?>> =
+    private val _bankTransferPaymentStatus: MutableLiveData<ViewState<TransactionStatus?>> =
         MutableLiveData(ViewState.initialDefault(null))
-    val bankTransferPaymentStatus: LiveData<ViewState<BankTransferStatus?>> get() = _bankTransferPaymentStatus
+    val bankTransferPaymentStatus: LiveData<ViewState<TransactionStatus?>> get() = _bankTransferPaymentStatus
 
 
     private val _bankTransferStatus: MutableLiveData<ViewState<PaymentConfirmationResponse?>> =
@@ -64,9 +64,9 @@ internal class AppViewModel(
     private val _bankTransferRequest: MutableLiveData<PayByTransferRequest> = MutableLiveData()
     val bankTransferRequest get() = _bankTransferRequest
 
-    private val _bankTransferResponseState: MutableLiveData<ViewState<InitiatePayByTransferResponse?>> =
+    private val _bankTransferResponseState: MutableLiveData<ViewState<InitiatePayByTransferResponseDTO?>> =
         MutableLiveData(ViewState.initialDefault(null))
-    val bankTransferResponseState: LiveData<ViewState<InitiatePayByTransferResponse?>> get() = _bankTransferResponseState
+    val bankTransferResponseState: LiveData<ViewState<InitiatePayByTransferResponseDTO?>> get() = _bankTransferResponseState
 
     private val _paymentConfirmation =
         MutableLiveData<ViewState<PaymentConfirmationResponse?>>(ViewState.initialDefault(null))

@@ -1,7 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.domain.models
 
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.CurrencyInfo
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.MerchantInfo
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.CurrencyInfo
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.MerchantInfo
 
 data class TransactionDetails(
     val amount: String,

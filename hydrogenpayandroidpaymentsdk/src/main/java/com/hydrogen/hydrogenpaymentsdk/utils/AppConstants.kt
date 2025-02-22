@@ -17,6 +17,12 @@ internal object AppConstants {
     const val STRING_TIME_FORMAT_NO_AM_PM = "yyyy-MM-dd HH:mm:ss"
     const val STRING_TIME_FORMAT_AM_PM = "yyyy-MM-dd HH:mm:ss a"
 
+    const val ENC_KEY = "NdaXdX3rihvlGY0rn2lm+k0ygB9XuKD6odv6hRl8FJo="
+    const val ENC_IV = "wUO6nytYemaLq2Z6tOP+5Q=="
+
     const val STRING_TRANSFER = "Bank transfer"
     const val STRING_CARD_PAYMENT = "Pay by card"
+
+    const val STRING_DEVICE_LANGUAGE = "en-GB"
+    const val STRING_DEVICE_TYPE = "mobile"
 }

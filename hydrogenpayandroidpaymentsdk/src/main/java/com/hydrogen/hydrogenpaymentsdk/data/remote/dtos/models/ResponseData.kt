@@ -1,6 +1,6 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
+package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models
 
-data class InitiateBankTransferDto(
+data class ResponseData(
     val expiry_datetime: String,
     val request_id: String,
     val virtual_acct_name: String,

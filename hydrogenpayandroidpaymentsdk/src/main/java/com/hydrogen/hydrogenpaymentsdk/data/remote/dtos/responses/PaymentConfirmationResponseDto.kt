@@ -1,6 +1,6 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
+package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses
 
-data class PaymentConfirmationDto(
+data class PaymentConfirmationResponseDto(
     val amount: Double,
     val authorizationObject: Any?,
     val chargedAmount: Double,

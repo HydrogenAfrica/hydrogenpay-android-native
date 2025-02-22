@@ -8,8 +8,8 @@ import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SharedPrefsManager
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.HydrogenPaymentGateWayApiService
 import com.hydrogen.hydrogenpaymentsdk.data.remote.interceptors.AuthInterceptor
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.Repository
-import com.hydrogen.hydrogenpaymentsdk.domain.repository.RepositoryImpl
-import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransferStatusUseCase
+import com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl.RepositoryImpl
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCase
@@ -90,8 +90,8 @@ internal object HydrogenPayDiModule {
             providesSessionManagerContract()
         )
 
-    fun providesGetBankTransferStatusUseCase(): GetBankTransferStatusUseCase =
-        GetBankTransferStatusUseCase(
+    fun providesGetBankTransferStatusUseCase(): GetBankTransactionStatusUseCase =
+        GetBankTransactionStatusUseCase(
             providesRepository()
         )
 

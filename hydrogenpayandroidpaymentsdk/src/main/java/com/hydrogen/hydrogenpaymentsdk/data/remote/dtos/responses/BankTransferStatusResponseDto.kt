@@ -1,6 +1,6 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos
+package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses
 
-data class BankTransferStatusDto(
+data class BankTransferStatusResponseDto(
     val accountName: String,
     val accountNo: String,
     val amount: Double,
