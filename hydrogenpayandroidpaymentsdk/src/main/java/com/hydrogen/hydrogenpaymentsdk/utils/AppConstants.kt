@@ -25,4 +25,7 @@ internal object AppConstants {
 
     const val STRING_DEVICE_LANGUAGE = "en-GB"
     const val STRING_DEVICE_TYPE = "mobile"
+
+    const val INT_MASTER_VISA_CARD_LENGTH = 16
+    const val INT_VERVE_CARD_LENGTH = 19
 }

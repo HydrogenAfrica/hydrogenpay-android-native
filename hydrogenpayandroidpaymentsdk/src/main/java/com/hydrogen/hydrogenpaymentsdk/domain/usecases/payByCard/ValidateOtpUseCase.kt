@@ -5,7 +5,7 @@ import com.hydrogen.hydrogenpaymentsdk.domain.repository.PayByCardRepository
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import kotlinx.coroutines.flow.Flow
 
-class ValidateOtpUseCase(private val payByCardRepository: PayByCardRepository) {
+internal class ValidateOtpUseCase(private val payByCardRepository: PayByCardRepository) {
     operator fun invoke(
         otpCode: String,
         providerId: String

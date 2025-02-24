@@ -7,6 +7,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.CardProviderResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
@@ -17,6 +18,10 @@ import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetCardProviderUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.UIEvent
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_TIME_15_SEC
 import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.getReceiptPayload
@@ -36,8 +41,13 @@ internal class AppViewModel(
     private val initiatePaymentUseCase: InitiatePaymentUseCase,
     private val ioDispatcher: CoroutineDispatcher,
     private val countdownTimerUseCase: CountdownTimerUseCase,
-    private val getBankTransferStatusUseCase: GetBankTransactionStatusUseCase
+    private val getBankTransferStatusUseCase: GetBankTransactionStatusUseCase,
+    private val getCardProviderUseCase: GetCardProviderUseCase,
+    private val payByCardUseCase: PayByCardUseCase,
+    private val validateOtpUseCase: ValidateOtpUseCase
 ) : ViewModel() {
+    private val _cardProvider: MutableLiveData<ViewState<UIEvent<CardProviderResponse>?>> = MutableLiveData((ViewState.initialDefault(null)))
+    val cardProvider: LiveData<ViewState<UIEvent<CardProviderResponse>?>> get() = _cardProvider
 
     private val _bankTransferPaymentStatus: MutableLiveData<ViewState<TransactionStatus?>> =
         MutableLiveData(ViewState.initialDefault(null))
@@ -147,6 +157,24 @@ internal class AppViewModel(
             initiatePaymentUseCase.invoke(_bankTransferRequest.value!!)
                 .collect { result ->
                     _paymentMethodsAndTransactionDetails.update { result }
+                }
+        }
+    }
+
+    fun getCardProvider(cardNumber: String) {
+        viewModelScope.launch(ioDispatcher) {
+            getCardProviderUseCase.invoke(cardNumber)
+                .collect { result ->
+                    val status = result.status
+                    val message = result.message
+                    val content = result.content?.let { UIEvent(result.content) }
+                    _cardProvider.postValue(
+                        ViewState(
+                            status = status,
+                            message = message,
+                            content = content
+                        )
+                    )
                 }
         }
     }

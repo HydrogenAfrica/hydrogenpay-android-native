@@ -2,8 +2,10 @@ package com.hydrogen.hydrogenpaymentsdk.presentation.adapters
 
 import android.graphics.Color
 import android.graphics.Typeface
+import android.text.Editable
 import android.text.Spannable
 import android.text.SpannableString
+import android.text.TextWatcher
 import android.text.style.ForegroundColorSpan
 import android.text.style.StyleSpan
 import android.util.Log
@@ -19,6 +21,7 @@ import coil.decode.SvgDecoder
 import coil.load
 import coil.request.ImageRequest
 import coil.transform.CircleCropTransformation
+import com.google.android.material.textfield.TextInputEditText
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatNumberWithCommas
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getCustomerNameInitials
@@ -131,3 +134,77 @@ fun Button.toggleTextColorWithEnabledState(string: String) {
         setTextColor(ContextCompat.getColor(context, R.color.lighter_dark))
     }
 }
+
+@BindingAdapter("android:formatCardNumber")
+fun TextInputEditText.formatCardNumber(optionalString: String? = null) {
+    addTextChangedListener(object : TextWatcher {
+        private var isFormatting: Boolean = false
+        private var deletingHyphen: Boolean = false
+        private var hyphenPosition: Int = 0
+        private val CARD_NUMBER_FORMAT_LENGTH = 4
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            deletingHyphen = count > after && s?.get(start) == ' '
+            hyphenPosition = start
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        override fun afterTextChanged(editable: Editable?) {
+            if (isFormatting || editable == null) return
+            isFormatting = true
+
+            val text = editable.toString().replace(" ", "")
+            val formattedText = StringBuilder()
+
+            for (i in text.indices) {
+                if (i > 0 && i % CARD_NUMBER_FORMAT_LENGTH == 0) {
+                    formattedText.append(" ")
+                }
+                formattedText.append(text[i])
+            }
+
+            removeTextChangedListener(this)
+            setText(formattedText.toString())
+            setSelection(formattedText.length)
+            addTextChangedListener(this)
+
+            isFormatting = false
+        }
+    })
+}
+
+@BindingAdapter("android:formatExpiryDate")
+fun TextInputEditText.formatExpiryDate(optionalString: String? = null) {
+    addTextChangedListener(object : TextWatcher {
+        private var isFormatting: Boolean = false
+        private var deletingSlash: Boolean = false
+
+        override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+            deletingSlash = count > after && s?.get(start) == '/'
+        }
+
+        override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {}
+
+        override fun afterTextChanged(editable: Editable?) {
+            if (isFormatting || editable == null) return
+            isFormatting = true
+
+            val text = editable.toString().replace(" / ", "")
+            val formattedText = StringBuilder()
+
+            for (i in text.indices) {
+                if (i == 2) formattedText.append(" / ")
+                formattedText.append(text[i])
+            }
+
+            removeTextChangedListener(this)
+            setText(formattedText.toString())
+            setSelection(formattedText.length)
+            addTextChangedListener(this)
+
+            isFormatting = false
+        }
+    })
+}
+

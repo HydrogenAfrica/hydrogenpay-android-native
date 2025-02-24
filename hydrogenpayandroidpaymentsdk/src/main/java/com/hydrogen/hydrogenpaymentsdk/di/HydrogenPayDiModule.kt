@@ -6,15 +6,21 @@ import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerCont
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SharedPrefManager
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SharedPrefsManagerContract
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.HydrogenPaymentGateWayApiService
+import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.PayByCardApiService
 import com.hydrogen.hydrogenpaymentsdk.data.remote.interceptors.AuthInterceptor
-import com.hydrogen.hydrogenpaymentsdk.domain.repository.Repository
+import com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl.PayByCardRepositoryImpl
 import com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl.RepositoryImpl
+import com.hydrogen.hydrogenpaymentsdk.domain.repository.PayByCardRepository
+import com.hydrogen.hydrogenpaymentsdk.domain.repository.Repository
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.SetUpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetCardProviderUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.BASE_URL
 import com.hydrogen.hydrogenpaymentsdk.utils.NetworkUtil
 import kotlinx.coroutines.CoroutineDispatcher
@@ -31,6 +37,8 @@ internal object HydrogenPayDiModule {
     private fun providesLoggingInterceptor(): Interceptor = HttpLoggingInterceptor().apply {
         setLevel(HttpLoggingInterceptor.Level.BODY)
     }
+
+    private fun providesSessionManagerContract(): SessionManagerContract = providesSessionManager()
 
     private fun providesAuthInterceptor(): Interceptor =
         AuthInterceptor(providesSessionManagerContract())
@@ -79,6 +87,13 @@ internal object HydrogenPayDiModule {
             providesSessionManagerContract()
         )
 
+    private fun providesPayByCardApiService(): PayByCardApiService =
+        providesRetrofit().create(PayByCardApiService::class.java)
+
+    private fun providesPayByCardRepository(): PayByCardRepository = PayByCardRepositoryImpl(
+        providesPayByCardApiService(), providesNetworkUtil(), providesSessionManagerContract()
+    )
+
     fun providesPayByTransferUseCase(): PayByTransferUseCase = PayByTransferUseCase(
         providesRepository(),
         providesSessionManagerContract()
@@ -97,5 +112,12 @@ internal object HydrogenPayDiModule {
 
     fun providesSetUpUseCase(): SetUpUseCase = SetUpUseCase(providesSessionManagerContract())
 
-    private fun providesSessionManagerContract(): SessionManagerContract = providesSessionManager()
+    fun providesGetCardProviderUseCase(): GetCardProviderUseCase =
+        GetCardProviderUseCase(providesPayByCardRepository())
+
+    fun providesPayByCardUseCase(): PayByCardUseCase =
+        PayByCardUseCase(providesPayByCardRepository())
+
+    fun providesValidateOtpUseCase(): ValidateOtpUseCase =
+        ValidateOtpUseCase(providesPayByCardRepository())
 }

@@ -99,4 +99,6 @@
     <string name="payment_is_still_pending">Payment is still pending</string>
     <string name="setting_up">Setting Up...</string>
     <string name="sandbox_transaction">SANDBOX TRANSACTION</string>
+    <string name="enter_pin">Enter PIN *</string>
+    <string name="card_pin_footer_message">Hydrogen uses industry-standard encryption to protect your information.</string>
 </resources>

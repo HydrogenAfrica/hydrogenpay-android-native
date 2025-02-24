@@ -6,7 +6,7 @@ import com.hydrogen.hydrogenpaymentsdk.domain.repository.PayByCardRepository
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import kotlinx.coroutines.flow.Flow
 
-class PayByCardUseCase(
+internal class PayByCardUseCase(
     private val payByCardRepository: PayByCardRepository
 ) {
     operator fun invoke(
