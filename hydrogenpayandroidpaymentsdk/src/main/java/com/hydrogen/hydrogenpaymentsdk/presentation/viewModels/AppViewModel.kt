@@ -1,18 +1,19 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation.viewModels
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.DeviceInformation
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.CardProviderResponse
-import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
+import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByCardResponseDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
+import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
@@ -46,7 +47,11 @@ internal class AppViewModel(
     private val payByCardUseCase: PayByCardUseCase,
     private val validateOtpUseCase: ValidateOtpUseCase
 ) : ViewModel() {
-    private val _cardProvider: MutableLiveData<ViewState<UIEvent<CardProviderResponse>?>> = MutableLiveData((ViewState.initialDefault(null)))
+    private val _cardPaymentResponse: MutableLiveData<ViewState<PayByCardResponseDomain?>> =
+        MutableLiveData(ViewState.initialDefault(null))
+    val cardPaymentResponse: LiveData<ViewState<PayByCardResponseDomain?>> get() = _cardPaymentResponse
+    private val _cardProvider: MutableLiveData<ViewState<UIEvent<CardProviderResponse>?>> =
+        MutableLiveData((ViewState.initialDefault(null)))
     val cardProvider: LiveData<ViewState<UIEvent<CardProviderResponse>?>> get() = _cardProvider
 
     private val _bankTransferPaymentStatus: MutableLiveData<ViewState<TransactionStatus?>> =
@@ -126,7 +131,6 @@ internal class AppViewModel(
         viewModelScope.launch(ioDispatcher) {
             val transactionDetails = _paymentMethodsAndTransactionDetails.value.content!!.second!!
             val initiatePaymentRequest = _bankTransferRequest.value!!
-            Log.d("CURRENT_TRANS_ID", transactionDetails.transactionId)
             getBankTransferStatusUseCase.invoke(
                 transactionDetails.transactionId,
                 transactionDetails,
@@ -162,20 +166,47 @@ internal class AppViewModel(
     }
 
     fun getCardProvider(cardNumber: String) {
+        _cardProvider.value = ViewState.loading(null)
         viewModelScope.launch(ioDispatcher) {
             getCardProviderUseCase.invoke(cardNumber)
                 .collect { result ->
-                    val status = result.status
-                    val message = result.message
-                    val content = result.content?.let { UIEvent(result.content) }
+                    val newContent = result.content?.let { UIEvent(result.content) }
                     _cardProvider.postValue(
-                        ViewState(
-                            status = status,
-                            message = message,
-                            content = content
-                        )
+                        ViewState(result.status, newContent, result.message)
                     )
                 }
+        }
+    }
+
+    fun resetCardProvider() {
+        _cardProvider.value = ViewState.initialDefault(null)
+    }
+
+    fun payByCard(
+        cardNumber: String,
+        cardExpiration: String,
+        cvv: String,
+        isCardSaved: Boolean,
+        pin: String,
+        deviceInformation: DeviceInformation
+    ) {
+        _cardPaymentResponse.value = ViewState.loading(null)
+        viewModelScope.launch(ioDispatcher) {
+            val payByCardRequest = _bankTransferRequest.value!!
+            val provider = cardProvider.value!!.content!!.peekContent()
+            payByCardUseCase.invoke(
+                payByCardRequest.email,
+                provider.providerId,
+                cardNumber,
+                cardExpiration,
+                cvv,
+                isCardSaved,
+                pin,
+                deviceInformation,
+                _paymentMethodsAndTransactionDetails.value.content!!.second!!.currencyInfo
+            ).collectLatest {
+                _cardPaymentResponse.postValue(it)
+            }
         }
     }
 

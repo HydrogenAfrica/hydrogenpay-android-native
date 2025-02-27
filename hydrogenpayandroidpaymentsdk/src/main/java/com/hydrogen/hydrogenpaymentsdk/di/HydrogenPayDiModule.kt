@@ -1,6 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.di
 
 import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManager
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SharedPrefManager
@@ -10,6 +11,7 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.PayByCardApiService
 import com.hydrogen.hydrogenpaymentsdk.data.remote.interceptors.AuthInterceptor
 import com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl.PayByCardRepositoryImpl
 import com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl.RepositoryImpl
+import com.hydrogen.hydrogenpaymentsdk.domain.repository.DataEncryptionContract
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.PayByCardRepository
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.Repository
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransactionStatusUseCase
@@ -22,6 +24,9 @@ import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetCardProvider
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.BASE_URL
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.ENC_IV
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.ENC_KEY
+import com.hydrogen.hydrogenpaymentsdk.utils.DataEncryption
 import com.hydrogen.hydrogenpaymentsdk.utils.NetworkUtil
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
@@ -55,7 +60,7 @@ internal object HydrogenPayDiModule {
         return Retrofit.Builder()
             .baseUrl(providesBaseUrl())
             .client(providesOkHttpClient())
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(providesGson()))
             .build()
     }
 
@@ -71,7 +76,9 @@ internal object HydrogenPayDiModule {
     fun providesInitiatePaymentUseCase(): InitiatePaymentUseCase =
         InitiatePaymentUseCase(providesRepository(), providesNetworkUtil())
 
-    fun providesGson(): Gson = Gson()
+    fun providesGson(): Gson = GsonBuilder()
+        .disableHtmlEscaping() // Prevents `=` from becoming `\u003d`
+        .create()
 
     private fun providesNetworkUtil(): NetworkUtil = NetworkUtil()
 
@@ -90,8 +97,14 @@ internal object HydrogenPayDiModule {
     private fun providesPayByCardApiService(): PayByCardApiService =
         providesRetrofit().create(PayByCardApiService::class.java)
 
+    private fun providesDataEncryptionContract(): DataEncryptionContract =
+        DataEncryption(ENC_KEY, ENC_IV)
+
     private fun providesPayByCardRepository(): PayByCardRepository = PayByCardRepositoryImpl(
-        providesPayByCardApiService(), providesNetworkUtil(), providesSessionManagerContract()
+        providesPayByCardApiService(),
+        providesNetworkUtil(),
+        providesSessionManagerContract(),
+        providesDataEncryptionContract()
     )
 
     fun providesPayByTransferUseCase(): PayByTransferUseCase = PayByTransferUseCase(
@@ -116,7 +129,11 @@ internal object HydrogenPayDiModule {
         GetCardProviderUseCase(providesPayByCardRepository())
 
     fun providesPayByCardUseCase(): PayByCardUseCase =
-        PayByCardUseCase(providesPayByCardRepository())
+        PayByCardUseCase(
+            providesPayByCardRepository(),
+            providesDataEncryptionContract(),
+            providesGson()
+        )
 
     fun providesValidateOtpUseCase(): ValidateOtpUseCase =
         ValidateOtpUseCase(providesPayByCardRepository())

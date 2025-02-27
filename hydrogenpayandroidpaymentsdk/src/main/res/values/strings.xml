@@ -101,4 +101,7 @@
     <string name="sandbox_transaction">SANDBOX TRANSACTION</string>
     <string name="enter_pin">Enter PIN *</string>
     <string name="card_pin_footer_message">Hydrogen uses industry-standard encryption to protect your information.</string>
+    <string name="pay_amount_place_holder">PAY %1s %2s</string>
+    <string name="invalid_card_number">Invalid Card Number</string>
+    <string name="invalid_card_expiry_date">Invalid date</string>
 </resources>

@@ -1,6 +1,6 @@
 package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models
 
-data class DecryptedCardPaymentResponse(
+data class CardPaymentResponse(
     val accessToken: Any,
     val acsUrl: Any,
     val amount: String,

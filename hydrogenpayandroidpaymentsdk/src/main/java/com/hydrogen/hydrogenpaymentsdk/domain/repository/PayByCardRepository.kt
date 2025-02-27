@@ -19,8 +19,8 @@ internal interface PayByCardRepository {
         expiryYear: String,
         expiryMonth: String,
         cvv: String,
-        isCardSaved: Boolean = false,
-        pin: String = "",
+        isCardSaved: Boolean,
+        pin: String,
         deviceInformation: DeviceInformation,
         currencyInfo: CurrencyInfo
     ): Flow<ViewState<String?>>

@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Base64
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.DeviceInformation
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.CardType
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_EXPIRY_DATE_SPACER
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_DEVICE_LANGUAGE
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_DEVICE_TYPE
 import java.net.InetAddress
@@ -16,52 +17,31 @@ import javax.crypto.spec.IvParameterSpec
 import javax.crypto.spec.SecretKeySpec
 
 internal object CardPaymentUtil {
-    fun encryptText(text: String, key: String, iv: String): String = try {
-        // Convert key and IV from Base64 to byte arrays
-        val keyBytes = Base64.decode(key, Base64.NO_WRAP)
-        val ivBytes = Base64.decode(iv, Base64.NO_WRAP)
-
-        // Create SecretKeySpec and IvParameterSpec
-        val secretKey = SecretKeySpec(keyBytes, "AES")
-        val ivSpec = IvParameterSpec(ivBytes)
-
-        // Initialize Cipher with AES algorithm in CBC mode
+    fun encryptText(text: String, key: String, iv: String): String {
         val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
+        val secretKey = SecretKeySpec(Base64.decode(key, Base64.DEFAULT), "AES")
+        val ivSpec = IvParameterSpec(Base64.decode(iv, Base64.DEFAULT))
         cipher.init(Cipher.ENCRYPT_MODE, secretKey, ivSpec)
+        val encryptedBytes = cipher.doFinal(text.toByteArray(Charsets.UTF_8))
 
-        // Encrypt the text
-        val encryptedBytes = cipher.doFinal(text.toByteArray())
-
-        // Return the encrypted text in Base64 encoding
-        Base64.encodeToString(encryptedBytes, Base64.NO_WRAP)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        ""
+        return Base64.encodeToString(
+            encryptedBytes,
+            Base64.DEFAULT
+        )
     }
 
-    fun decryptText(text: String, key: String, iv: String): String =
-        try {
-            // Convert key and IV from Base64 to byte arrays
-            val keyBytes = Base64.decode(key, Base64.NO_WRAP)
-            val ivBytes = Base64.decode(iv, Base64.NO_WRAP)
+    fun decryptText(encryptedText: String, key: String, iv: String): String {
+        val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
 
-            // Create SecretKeySpec and IvParameterSpec
-            val secretKey = SecretKeySpec(keyBytes, "AES")
-            val ivSpec = IvParameterSpec(ivBytes)
+        val secretKey = SecretKeySpec(Base64.decode(key, Base64.DEFAULT), "AES")
+        val ivSpec = IvParameterSpec(Base64.decode(iv, Base64.DEFAULT))
 
-            // Initialize Cipher with AES algorithm in CBC mode
-            val cipher = Cipher.getInstance("AES/CBC/PKCS5Padding")
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
+        cipher.init(Cipher.DECRYPT_MODE, secretKey, ivSpec)
 
-            // Decrypt the text
-            val decryptedBytes = cipher.doFinal(Base64.decode(text, Base64.NO_WRAP))
+        val decryptedBytes = cipher.doFinal(Base64.decode(encryptedText, Base64.DEFAULT))
 
-            // Convert decrypted bytes to string
-            String(decryptedBytes)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            ""
-        }
+        return String(decryptedBytes, Charsets.UTF_8)
+    }
 
     fun getCardType(cardNumber: String): CardType {
         val visa = Regex("^4[0-9]{12}(?:[0-9]{3})?$")
@@ -77,9 +57,9 @@ internal object CardPaymentUtil {
         }
     }
 
-    fun checkSumCardValidation(value: String?): Boolean {
+    fun checkSumCardValidation(value: String): Boolean {
         var nCheck = 0
-        if (!value.isNullOrEmpty() && value.matches(Regex("[0-9-\\s]+"))) {
+        if (value.isNotEmpty() && value.matches(Regex("[0-9-\\s]+"))) {
             val digits = value.replace("\\D".toRegex(), "") // Remove non-digit characters
 
             digits.forEachIndexed { n, char ->
@@ -99,7 +79,7 @@ internal object CardPaymentUtil {
         val currentYear = dateToday.get(Calendar.YEAR)
         val currentMonth = dateToday.get(Calendar.MONTH) + 1 // Months are 0-based in Calendar
 
-        val parts = expiryDate.split("/")
+        val parts = expiryDate.split(STRING_CARD_EXPIRY_DATE_SPACER)
         if (parts.size == 2 && parts[0].length == 2 && parts[1].length == 2) {
             val month = parts[0].toIntOrNull() ?: return false
             val year = (parts[1].toIntOrNull() ?: return false) + 2000

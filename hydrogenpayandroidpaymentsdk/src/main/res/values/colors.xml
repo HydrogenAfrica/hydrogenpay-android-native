@@ -20,4 +20,6 @@
     <color name="butter_color">#fef1d8</color>
     <color name="deep_red">#d42929</color>
     <color name="off_black">#797979</color>
+    <color name="error_color">#EF4444</color>
+    <color name="error_color_light">#FDEDED</color>
 </resources>

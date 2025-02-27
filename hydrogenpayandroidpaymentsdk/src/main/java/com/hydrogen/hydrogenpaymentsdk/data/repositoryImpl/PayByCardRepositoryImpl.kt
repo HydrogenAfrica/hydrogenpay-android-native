@@ -1,5 +1,8 @@
 package com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl
 
+import android.os.Build
+import android.util.Log
+import androidx.annotation.RequiresApi
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.PayByCardApiService
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.CardDetails
@@ -16,11 +19,14 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.OtpValidationR
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
+import com.hydrogen.hydrogenpaymentsdk.domain.repository.DataEncryptionContract
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.PayByCardRepository
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.ENC_IV
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.ENC_KEY
 import com.hydrogen.hydrogenpaymentsdk.utils.CardPaymentUtil
+import com.hydrogen.hydrogenpaymentsdk.utils.CardPaymentUtil.encryptText
+import com.hydrogen.hydrogenpaymentsdk.utils.DataEncryption
 import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.retryAndCatchExceptions
 import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.toDomain
 import com.hydrogen.hydrogenpaymentsdk.utils.NetworkUtil
@@ -31,7 +37,8 @@ import kotlinx.coroutines.flow.map
 internal class PayByCardRepositoryImpl(
     private val payByCardApiService: PayByCardApiService,
     private val networkUtil: NetworkUtil,
-    private val sessionManager: SessionManagerContract
+    private val sessionManager: SessionManagerContract,
+    private val dataEncryption: DataEncryptionContract
 ) : PayByCardRepository {
     override fun getCardProvider(cardNumber: String): Flow<ViewState<CardProviderResponse?>> =
         flow {
@@ -39,8 +46,7 @@ internal class PayByCardRepositoryImpl(
             transactionId?.let { transId ->
                 val cardDetailsAsString =
                     providesGson().toJson(CardNumberDetails(cardNumber, transId))
-                val encryptedCardDetails =
-                    CardPaymentUtil.encryptText(cardDetailsAsString, ENC_KEY, ENC_IV)
+                val encryptedCardDetails = dataEncryption.encrypt(cardDetailsAsString)
                 val cardProviderRequest = GetCardProviderRequestDto(encryptedCardDetails, transId)
                 val response = payByCardApiService.getCardProvider(cardProviderRequest)
                 emit(networkUtil.getServerResponse(response))
@@ -73,16 +79,16 @@ internal class PayByCardRepositoryImpl(
             transactionId?.let {
                 val cardDetails = CardDetails(
                     cardNumber,
-                    cvv.toInt(),
-                    expiryMonth.toInt(),
-                    expiryYear.toInt(),
+                    cvv,
+                    expiryMonth,
+                    expiryYear,
                     it,
                     pin,
                     CardPaymentUtil.getCardType(cardNumber).code
                 )
                 val cardDetailsAsString = providesGson().toJson(cardDetails)
                 val encryptedCardDetails =
-                    CardPaymentUtil.encryptText(cardDetailsAsString, ENC_KEY, ENC_IV)
+                    dataEncryption.encrypt(cardDetailsAsString)
                 val cardPaymentRequest = CardPaymentRequestDto(
                     encryptedCardDetails,
                     "",

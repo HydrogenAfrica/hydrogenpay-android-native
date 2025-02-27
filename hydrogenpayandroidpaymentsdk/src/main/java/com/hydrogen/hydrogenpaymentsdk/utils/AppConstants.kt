@@ -17,8 +17,15 @@ internal object AppConstants {
     const val STRING_TIME_FORMAT_NO_AM_PM = "yyyy-MM-dd HH:mm:ss"
     const val STRING_TIME_FORMAT_AM_PM = "yyyy-MM-dd HH:mm:ss a"
 
+    const val STRING_ENCRYPTION_ALGORITHM_TYPE = "AES"
+    const val STRING_MESSAGE_DIGEST_ALGORITHM = "SHA-256"
     const val ENC_KEY = "NdaXdX3rihvlGY0rn2lm+k0ygB9XuKD6odv6hRl8FJo="
     const val ENC_IV = "wUO6nytYemaLq2Z6tOP+5Q=="
+    const val ENCYPTION_PADDING_TYPE = "AES/CBC/PKCS5PADDING"
+    const val STRING_CARD_NUMBER_SPACER = " "
+    const val CHAR_CARD_NUMBER_SPACER = ' '
+    const val STRING_CARD_EXPIRY_DATE_SPACER = " / "
+    const val CHAR_CARD_EXPIRY_DATE_SPACER = '/'
 
     const val STRING_TRANSFER = "Bank transfer"
     const val STRING_CARD_PAYMENT = "Pay by card"
@@ -28,4 +35,7 @@ internal object AppConstants {
 
     const val INT_MASTER_VISA_CARD_LENGTH = 16
     const val INT_VERVE_CARD_LENGTH = 19
+    const val INT_CARD_EXPIRY_DATE_LENGTH = 4
+    const val INT_CARD_PIN_LENGTH = 4
+    const val INT_CVV_LENGTH = 3
 }

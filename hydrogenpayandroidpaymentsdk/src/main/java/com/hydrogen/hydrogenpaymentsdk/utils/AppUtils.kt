@@ -16,11 +16,13 @@ import android.text.style.StyleSpan
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.MotionEvent
+import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -35,7 +37,6 @@ import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.CustomFontSpan
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
-import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getPercentage
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -144,9 +145,10 @@ internal object AppUtils {
             val normalizedInputTime = inputTime.replace(Regex("\\.\\d{3}\\d*")) { matchResult ->
                 ".${matchResult.value.substring(1, 4)}"
             }
-            val inputFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault()).apply {
-                timeZone = TimeZone.getTimeZone("UTC")
-            }
+            val inputFormat =
+                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault()).apply {
+                    timeZone = TimeZone.getTimeZone("UTC")
+                }
 
             // Parse the input time
             val date = inputFormat.parse(normalizedInputTime) ?: return "Invalid date"
@@ -233,12 +235,17 @@ internal object AppUtils {
         return ((numerator.toDouble() / denominator.toDouble()) * 100).roundToLong()
     }
 
-    fun Fragment.createAlertModal(rootView: ViewGroup?, timeStateFlow: StateFlow<Long>): AlertDialog? {
-        val dialog = AlertDialog.Builder(requireContext(), R.style.full_screen_dialog_theme).create()
+    fun Fragment.createAlertModal(
+        rootView: ViewGroup?,
+        timeStateFlow: StateFlow<Long>
+    ): AlertDialog? {
+        val dialog =
+            AlertDialog.Builder(requireContext(), R.style.full_screen_dialog_theme).create()
         val dialogView = layoutInflater.inflate(R.layout.alert_modal_layout, rootView)
         val closeIcon = dialogView.findViewById<ImageView>(R.id.close_alert)
         val infoBodyText = dialogView.findViewById<TextView>(R.id.textView52)
-        val progressBar = dialogView.findViewById<CircularProgressIndicator>(R.id.time_left_progress)
+        val progressBar =
+            dialogView.findViewById<CircularProgressIndicator>(R.id.time_left_progress)
         closeIcon.setOnClickListener { dialog.dismiss() }
         dialog.apply {
             setView(dialogView)
@@ -304,8 +311,23 @@ internal object AppUtils {
     | --       17      --|2 |    | --      18      --  =|2| |---    7   ---|  |--4-|2| |---       15           ---|2|
     Purchase amount:&#160;₦ %1s\nService charge: &#160; ₦ %2s \nVAT &#160; %3s%% : ₦ %4s &#160; \nDiscount: &#160; ₦ %5s
     * */
-    fun TextView.boldAmountsInTransactionDetailsBalloonTexts2(purchaseAmount: String, serviceCharge: String, vatPercentage: String, vatAmount: String, discountAmount: String) {
-        val spannableString = SpannableString(this.context.getString(R.string.balloon_place_holder_text, purchaseAmount, serviceCharge, vatPercentage, vatAmount, discountAmount))
+    fun TextView.boldAmountsInTransactionDetailsBalloonTexts2(
+        purchaseAmount: String,
+        serviceCharge: String,
+        vatPercentage: String,
+        vatAmount: String,
+        discountAmount: String
+    ) {
+        val spannableString = SpannableString(
+            this.context.getString(
+                R.string.balloon_place_holder_text,
+                purchaseAmount,
+                serviceCharge,
+                vatPercentage,
+                vatAmount,
+                discountAmount
+            )
+        )
         spannableString.apply {
             // Bold Purchase Amount
             setSpan(
@@ -377,5 +399,4 @@ internal object AppUtils {
 
         this.text = spannableString
     }
-
 }
