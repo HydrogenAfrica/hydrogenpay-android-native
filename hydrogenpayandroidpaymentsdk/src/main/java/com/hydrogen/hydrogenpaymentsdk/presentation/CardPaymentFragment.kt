@@ -30,8 +30,10 @@ import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentCardPayment
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
+import com.hydrogen.hydrogenpaymentsdk.domain.HydrogenPaySdkCallBack
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
+import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setButtonEnabledState
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel
@@ -47,6 +49,7 @@ import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
 import com.hydrogen.hydrogenpaymentsdk.utils.CardPaymentUtil
 import com.hydrogen.hydrogenpaymentsdk.utils.CardPaymentUtil.checkSumCardValidation
 import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.getTransactionInfoBalloon
+import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.toggleProgressBarVisibility
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -73,6 +76,7 @@ class CardPaymentFragment : Fragment() {
     private lateinit var merchantRefId: TextView
     private lateinit var transactionAmount: TextView
     private lateinit var infoIcon: ImageView
+    private lateinit var hydrogenPaySdkCallBack: HydrogenPaySdkCallBack
 
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
@@ -86,6 +90,7 @@ class CardPaymentFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        hydrogenPaySdkCallBack = requireActivity() as HydrogenPaySdkCallBack
         activity?.onBackPressedDispatcher?.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
@@ -214,10 +219,14 @@ class CardPaymentFragment : Fragment() {
             }
         }
 
-        observeLiveData(viewModel.cardProvider, null, { getCardProviderProgressBar.toggleProgressBarVisibility(true) }, {
-            cardNumberTextInputLayout.error = it
-            getCardProviderProgressBar.toggleProgressBarVisibility(false)
-        }) { result ->
+        observeLiveData(
+            viewModel.cardProvider,
+            null,
+            { getCardProviderProgressBar.toggleProgressBarVisibility(true) },
+            {
+                cardNumberTextInputLayout.error = it
+                getCardProviderProgressBar.toggleProgressBarVisibility(false)
+            }) { result ->
             getCardProviderProgressBar.toggleProgressBarVisibility(false)
             result?.getContentIfNotHandled()?.let {
                 cardExpiryTextInputLayout.requestFocus() // Automatically set focus on cardExpiry after getting card provider
@@ -231,27 +240,29 @@ class CardPaymentFragment : Fragment() {
 
         observeLiveData(viewModel.cardPaymentResponse, null, {
             payByCardProgressBar.toggleProgressBarVisibility(true)
-            payButton.isEnabled = false
-        },  {
-            payButton.isEnabled = true
+            payButton.setButtonEnabledState(false)
+        }, {
             payByCardProgressBar.toggleProgressBarVisibility(false)
+            payButton.setButtonEnabledState(true)
             Toast.makeText(requireContext(), it, Toast.LENGTH_SHORT).show()
         }) { result ->
             payByCardProgressBar.toggleProgressBarVisibility(false)
             result?.let {
-                val payByCardResponseAsString = providesGson().toJson(it)
+                Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
+                val responseAsString = providesGson().toJson(it)
                 val action =
-                    CardPaymentFragmentDirections.actionCardPaymentFragmentToOTPCodeFragment(payByCardResponseAsString)
+                    CardPaymentFragmentDirections.actionCardPaymentFragmentToOTPCodeFragment(responseAsString)
                 findNavController().navigate(action)
             }
         }
 
         backToMerchantAppButton.setOnClickListener {
-            cancelByGoingBackToMerchantApp()
+            hydrogenPaySdkCallBack.cancelByGoingBackToMerchantApp()
         }
 
         payButton.setOnClickListener {
-            val userCardPin = if (userCardPinContainer.visibility == View.VISIBLE) cardPin.text.toString() else ""
+            val userCardPin =
+                if (userCardPinContainer.visibility == View.VISIBLE) cardPin.text.toString() else ""
             val deviceInformation = CardPaymentUtil.getDeviceInformation(requireContext())
             viewModel.payByCard(
                 cardNumber.text.toString(),
@@ -261,14 +272,6 @@ class CardPaymentFragment : Fragment() {
                 userCardPin,
                 deviceInformation
             )
-        }
-    }
-
-    private fun ProgressBar.toggleProgressBarVisibility(isVisible: Boolean) {
-        visibility = if (isVisible) {
-            View.VISIBLE
-        } else {
-            View.GONE
         }
     }
 
@@ -294,15 +297,6 @@ class CardPaymentFragment : Fragment() {
             cardExpiryTextInputLayout = cardExpiryTil
             cardPin = cardPinTiet
             payByCardProgressBar = paymentProcessingProgressBar
-        }
-    }
-
-    private fun cancelByGoingBackToMerchantApp(optionalMessage: String = RequestDeclineReasons.CANCELLED.reason) {
-        val intent = Intent()
-        intent.putExtra(HydrogenPay.HYDROGEN_PAY_RESULT_KEY, optionalMessage)
-        requireActivity().apply {
-            setResult(Activity.RESULT_CANCELED, intent)
-            finish()
         }
     }
 }

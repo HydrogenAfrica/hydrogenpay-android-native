@@ -1,6 +1,7 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
 import android.view.View
+import android.widget.ProgressBar
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.findViewTreeLifecycleOwner
@@ -93,14 +94,15 @@ object ExtensionFunctions {
                 transactionDetails.vatFee,
                 transactionDetails.discountAmount
             )
-//        balloonBuild.getContentView().findViewById<TextView>(R.id.balloon_text)
-//            .boldAmountsInTransactionDetailsBalloonTexts(
-//                "500",
-//                "50",
-//                "8.0",
-//                "90900",
-//                "10000"
-//            )
         balloonBuild.showAlignStart(this)
+    }
+
+    fun ProgressBar.toggleProgressBarVisibility(isVisible: Boolean) {
+        visibility = if (isVisible) {
+
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
     }
 }

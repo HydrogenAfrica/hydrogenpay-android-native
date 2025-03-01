@@ -104,4 +104,6 @@
     <string name="pay_amount_place_holder">PAY %1s %2s</string>
     <string name="invalid_card_number">Invalid Card Number</string>
     <string name="invalid_card_expiry_date">Invalid date</string>
+    <string name="pay">PAY</string>
+    <string name="_03attemps">%1s/3 attempts</string>
 </resources>

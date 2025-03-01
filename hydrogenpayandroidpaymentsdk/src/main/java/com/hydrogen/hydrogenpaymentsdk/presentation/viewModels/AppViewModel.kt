@@ -9,9 +9,11 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRe
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.CardProviderResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
+import com.hydrogen.hydrogenpaymentsdk.domain.models.OtpValidationResponseDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByCardResponseDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
+import com.hydrogen.hydrogenpaymentsdk.domain.models.ResendOTPResponseDataDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransactionStatusUseCase
@@ -21,9 +23,11 @@ import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCas
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetCardProviderUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ResendOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.UIEvent
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_MAX_OTP_TRY_COUNT
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.LONG_TIME_15_SEC
 import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.getReceiptPayload
 import kotlinx.coroutines.CoroutineDispatcher
@@ -45,8 +49,17 @@ internal class AppViewModel(
     private val getBankTransferStatusUseCase: GetBankTransactionStatusUseCase,
     private val getCardProviderUseCase: GetCardProviderUseCase,
     private val payByCardUseCase: PayByCardUseCase,
-    private val validateOtpUseCase: ValidateOtpUseCase
+    private val validateOtpUseCase: ValidateOtpUseCase,
+    private val resendOtpUseCase: ResendOtpUseCase
 ) : ViewModel() {
+    private val _otpCodeTryCount: MutableLiveData<String> = MutableLiveData("0")
+    val otpCodeTryCount: LiveData<String> get() = _otpCodeTryCount
+    private val _validateOtpCode: MutableLiveData<ViewState<UIEvent<OtpValidationResponseDomain?>>> =
+        MutableLiveData(ViewState.initialDefault(null))
+    val validateOtpCode: LiveData<ViewState<UIEvent<OtpValidationResponseDomain?>>> get() = _validateOtpCode
+    private val _resendOtpCode: MutableLiveData<ViewState<UIEvent<ResendOTPResponseDataDomain?>>> =
+        MutableLiveData(ViewState.initialDefault(null))
+    val resendOtpCode: LiveData<ViewState<UIEvent<ResendOTPResponseDataDomain?>>> get() = _resendOtpCode
     private val _cardPaymentResponse: MutableLiveData<ViewState<PayByCardResponseDomain?>> =
         MutableLiveData(ViewState.initialDefault(null))
     val cardPaymentResponse: LiveData<ViewState<PayByCardResponseDomain?>> get() = _cardPaymentResponse
@@ -210,11 +223,43 @@ internal class AppViewModel(
         }
     }
 
+    fun validateOtp(otp: String) {
+        _validateOtpCode.value = ViewState.loading(null)
+        incrementOtpTrialCount()
+        viewModelScope.launch(ioDispatcher) {
+            validateOtpUseCase.invoke(otp, cardProvider.value!!.content!!.peekContent().providerId)
+                .collect {
+                    val result = UIEvent(it.content)
+                    _validateOtpCode.postValue(ViewState(it.status, result, it.message))
+                }
+        }
+    }
+
+    fun resendOtp() {
+        _resendOtpCode.value = ViewState.loading(null)
+        viewModelScope.launch(ioDispatcher) {
+            val providerId = cardProvider.value!!.content!!.peekContent().providerId
+            val currency =
+                paymentMethodsAndTransactionDetails.value.content!!.second!!.currencyInfo.alpha2Code
+            resendOtpUseCase.invoke(providerId, currency)
+                .collect {
+                    val result = UIEvent(it.content)
+                    _resendOtpCode.postValue(ViewState(it.status, result, it.message))
+                }
+        }
+    }
+
     fun getReceiptPayload(): HydrogenPayPaymentTransactionReceipt =
         _paymentConfirmation.value!!.content!!.getReceiptPayload(
             _bankTransferResponseState.value!!.content!!,
             _bankTransferRequest.value!!.customerName
         )
+
+    private fun incrementOtpTrialCount() {
+        if (_otpCodeTryCount.value!!.toInt() < INT_MAX_OTP_TRY_COUNT) {
+            _otpCodeTryCount.value = (_otpCodeTryCount.value!!.toInt() + 1).toString()
+        }
+    }
 
     override fun onCleared() {
         super.onCleared()

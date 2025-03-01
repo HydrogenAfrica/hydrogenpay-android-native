@@ -307,10 +307,6 @@ internal object AppUtils {
         return text
     }
 
-    /*
-    | --       17      --|2 |    | --      18      --  =|2| |---    7   ---|  |--4-|2| |---       15           ---|2|
-    Purchase amount:&#160;₦ %1s\nService charge: &#160; ₦ %2s \nVAT &#160; %3s%% : ₦ %4s &#160; \nDiscount: &#160; ₦ %5s
-    * */
     fun TextView.boldAmountsInTransactionDetailsBalloonTexts2(
         purchaseAmount: String,
         serviceCharge: String,

@@ -14,8 +14,10 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.GetBankTransfer
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.GetCardProviderRequestDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.OtpValidationRequestDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.ResendOTPRequestDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.CardProviderResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.OtpValidationResponseDTO
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.ResendOTPResponseDto
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
@@ -24,6 +26,7 @@ import com.hydrogen.hydrogenpaymentsdk.domain.repository.PayByCardRepository
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.ENC_IV
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.ENC_KEY
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_RELAUNCH_SDK_MESSAGE
 import com.hydrogen.hydrogenpaymentsdk.utils.CardPaymentUtil
 import com.hydrogen.hydrogenpaymentsdk.utils.CardPaymentUtil.encryptText
 import com.hydrogen.hydrogenpaymentsdk.utils.DataEncryption
@@ -51,7 +54,7 @@ internal class PayByCardRepositoryImpl(
                 val response = payByCardApiService.getCardProvider(cardProviderRequest)
                 emit(networkUtil.getServerResponse(response))
             } ?: run {
-                emit(ViewState.error(null, "TransactionID is null, kindly re-launch the SDK"))
+                emit(ViewState.error(null, STRING_RELAUNCH_SDK_MESSAGE))
             }
         }.map { data ->
             val result = data.content?.data
@@ -101,7 +104,9 @@ internal class PayByCardRepositoryImpl(
                     transactionId
                 )
                 val response = payByCardApiService.initiateCardPayment(cardPaymentRequest)
-                emit(networkUtil.getServerResponse(response))
+                val serverResponse = networkUtil.getServerResponse(response)
+                val result = ViewState(message = response.body()?.message ?: serverResponse.message, status = serverResponse.status, content = serverResponse.content)
+                emit(result)
             }
         }.map {
             val result = it.content?.data
@@ -121,11 +126,28 @@ internal class PayByCardRepositoryImpl(
             transactionId?.let {
                 val validateOtpRequest = OtpValidationRequestDTO(otpCode, providerId, it)
                 val response = payByCardApiService.validateOtpCode(validateOtpRequest)
-                emit(networkUtil.getServerResponse(response))
-            }
+                val serverResponse = networkUtil.getServerResponse(response)
+                val result = ViewState(message = serverResponse.content?.message ?: serverResponse.message, status = serverResponse.status, content = serverResponse.content)
+                emit(result)
+            } ?: run { ViewState.error(null, STRING_RELAUNCH_SDK_MESSAGE) }
         }.map {
             val result = it.content?.data
             ViewState(it.status, result, it.message) as ViewState<OtpValidationResponseDTO?>
+        }.retryAndCatchExceptions(networkUtil)
+
+    override fun resendOtpCode(currency: String, providerId: String): Flow<ViewState<ResendOTPResponseDto?>> =
+        flow {
+            val transactionId = sessionManager.getSessionTransactionCredentials()?.transactionId
+            transactionId?.let {
+                val resendOTPRequestDto = ResendOTPRequestDto(currency, providerId, it)
+                val result = payByCardApiService.resendOtpCode(resendOTPRequestDto)
+                emit(networkUtil.getServerResponse(result))
+            } ?: run {
+                emit(ViewState.error(null, STRING_RELAUNCH_SDK_MESSAGE))
+            }
+        }.map {
+            val result = it.content?.data
+            ViewState(it.status, result, it.message) as ViewState<ResendOTPResponseDto?>
         }.retryAndCatchExceptions(networkUtil)
 
     override fun getBankTransferStatus(

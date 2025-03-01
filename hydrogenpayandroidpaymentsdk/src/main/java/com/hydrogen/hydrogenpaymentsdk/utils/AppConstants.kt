@@ -26,6 +26,9 @@ internal object AppConstants {
     const val CHAR_CARD_NUMBER_SPACER = ' '
     const val STRING_CARD_EXPIRY_DATE_SPACER = " / "
     const val CHAR_CARD_EXPIRY_DATE_SPACER = '/'
+    const val STRING_DEFAULT_CURRENCY_NGN = "NGN"
+
+    const val STRING_RELAUNCH_SDK_MESSAGE = "TransactionID is null, kindly re-launch the SDK"
 
     const val STRING_TRANSFER = "Bank transfer"
     const val STRING_CARD_PAYMENT = "Pay by card"
@@ -38,4 +41,6 @@ internal object AppConstants {
     const val INT_CARD_EXPIRY_DATE_LENGTH = 4
     const val INT_CARD_PIN_LENGTH = 4
     const val INT_CVV_LENGTH = 3
+    const val INT_MAX_OTP_TRY_COUNT = 3
+    const val INT_OTP_LENGTH = 6
 }

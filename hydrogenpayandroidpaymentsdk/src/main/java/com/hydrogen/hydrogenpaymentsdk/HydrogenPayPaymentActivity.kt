@@ -20,6 +20,7 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaym
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
+import com.hydrogen.hydrogenpaymentsdk.domain.HydrogenPaySdkCallBack
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel
@@ -31,7 +32,7 @@ import com.hydrogen.hydrogenpaymentsdk.utils.ModelMapper.toPayByTransferRequestO
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
-class HydrogenPayPaymentActivity : AppCompatActivity() {
+class HydrogenPayPaymentActivity : AppCompatActivity(), HydrogenPaySdkCallBack {
     private lateinit var binding: HydrogenPayPaymentActivityBinding
     private val appViewModel: AppViewModel by viewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
@@ -125,7 +126,7 @@ class HydrogenPayPaymentActivity : AppCompatActivity() {
         }
     }
 
-    private fun cancelByGoingBackToMerchantApp(optionalMessage: String = RequestDeclineReasons.CANCELLED.reason) {
+    override fun cancelByGoingBackToMerchantApp(optionalMessage: String) {
         val intent = Intent()
         intent.putExtra(HydrogenPay.HYDROGEN_PAY_RESULT_KEY, optionalMessage)
         this.apply {

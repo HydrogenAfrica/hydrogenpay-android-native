@@ -1,23 +1,30 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.BankTransferStatusResponseDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.PaymentMethodDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaymentRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.BankTransferStatusResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiateBankTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePaymentResponseDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.OtpValidationResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.PayByTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.PaymentConfirmationResponseDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.PaymentMethodDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.ResendOTPResponseData
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.TransactionDetailsDto
+import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.PaymentType
-import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
+import com.hydrogen.hydrogenpaymentsdk.domain.models.OTPValidationProcessorResponse
+import com.hydrogen.hydrogenpaymentsdk.domain.models.OtpValidationResponseDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByTransferResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
+import com.hydrogen.hydrogenpaymentsdk.domain.models.ResendOTPProcessorResponse
+import com.hydrogen.hydrogenpaymentsdk.domain.models.ResendOTPResponseDataDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
+import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatTransactionDateTime
 
 internal object ModelMapper {
@@ -204,5 +211,41 @@ internal object ModelMapper {
             response_data.request_id,
             response_data.virtual_acct_name,
             response_data.virtual_acct_no
+        )
+
+    fun OtpValidationResponseDTO.toDomain(): OtpValidationResponseDomain =
+        OtpValidationResponseDomain(
+            amount,
+            errors,
+            message,
+            otpRetryCount,
+            panLast4Digits,
+            providesGson().fromJson(processorResponse, OTPValidationProcessorResponse::class.java),
+            responseCode,
+            token,
+            tokenExpiryDate,
+            transactionId,
+            transactionIdentifier,
+            transactionRef
+        )
+
+    fun ResendOTPResponseData.toDomain(): ResendOTPResponseDataDomain =
+        ResendOTPResponseDataDomain(
+            amount,
+            approvalCode,
+            cardType,
+            clientReferenceInformationCode,
+            errors,
+            message,
+            paymentId,
+            providesGson().fromJson(processorResponse, ResendOTPProcessorResponse::class.java),
+            reConciliationId,
+            resendOtpRetryCount,
+            responseCode,
+            status,
+            supportMessage,
+            terminalId,
+            transactionId,
+            transactionRef
         )
 }

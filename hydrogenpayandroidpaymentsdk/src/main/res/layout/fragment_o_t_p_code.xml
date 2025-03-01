@@ -6,6 +6,13 @@
 
     <data>
 
+        <variable
+            name="appViewModel"
+            type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel" />
+
+        <variable
+            name="setUpViewModel"
+            type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -46,19 +53,53 @@
             app:layout_constraintStart_toStartOf="@+id/imageView"
             app:layout_constraintTop_toBottomOf="@+id/change_payment_method_btn" />
 
-        <TextView
-            android:id="@+id/textView2"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:id="@+id/linearLayout"
+            android:layout_width="@dimen/dimen_120dp"
             android:layout_height="wrap_content"
             android:background="@drawable/grey_drawable_bg"
-            android:fontFamily="@font/exo_bold"
-            android:paddingHorizontal="@dimen/dimen_10dp"
+            android:orientation="horizontal"
             android:paddingVertical="@dimen/dimen_4dp"
-            android:text="@string/expires_in_place_holder"
-            android:textSize="@dimen/dimen_12sp"
+            android:paddingStart="@dimen/dimen_15dp"
+            android:paddingEnd="@dimen/dimen_8dp"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/textView"
-            tools:text="Expires in: 15:00" />
+            app:layout_constraintTop_toTopOf="@+id/textView">
+
+            <TextView
+                android:id="@+id/textView_expires_in"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:layout_weight="1"
+                android:fontFamily="@font/exo_bold"
+                android:text="@string/expires_in"
+                android:textSize="@dimen/dimen_12sp" />
+
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_weight="1"
+                android:fontFamily="@font/exo_bold"
+                android:text="@string/sample_time_left"
+                android:textSize="@dimen/dimen_12sp" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/textView53"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="@drawable/sandbox_txt_view_bg"
+            android:fontFamily="@font/exo_bold"
+            android:setIsTestTransaction="@{setUpViewModel.isSandBoxTransaction}"
+            android:text="@string/sandbox_transaction"
+            android:textAllCaps="true"
+            android:textColor="@color/deep_red"
+            android:textSize="@dimen/dimen_12sp"
+            app:layout_constraintEnd_toEndOf="@+id/linearLayout"
+            app:layout_constraintTop_toBottomOf="@+id/textView"
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/horizontal_line"
@@ -69,7 +110,7 @@
             android:background="@color/grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/textView" />
+            app:layout_constraintTop_toBottomOf="@+id/textView53" />
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cardView"
@@ -136,6 +177,30 @@
                     tools:text="₦ 32,556.06" />
 
                 <TextView
+                    android:id="@+id/textView46"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_10dp"
+                    android:text="@string/incl_service_charge_vat"
+                    android:textSize="@dimen/dimen_10sp"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                    app:layout_constraintStart_toEndOf="@+id/textView5"
+                    app:layout_constraintTop_toTopOf="@+id/textView5"
+                    app:layout_constraintVertical_bias="1.0" />
+
+                <ImageView
+                    android:id="@+id/imageView14"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_20dp"
+                    android:contentDescription="@string/click_for_more_info"
+                    android:src="@drawable/info_green_color"
+                    app:layout_constraintBottom_toBottomOf="@+id/textView5"
+                    app:layout_constraintStart_toEndOf="@+id/textView46"
+                    app:layout_constraintTop_toTopOf="@+id/textView5" />
+
+                <TextView
                     android:id="@+id/textView6"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -158,8 +223,10 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_20dp"
+            android:textAlignment="textStart"
             android:text="@string/please_enter_otp_here"
             android:textSize="@dimen/dimen_11sp"
+            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/cardView"
             app:layout_constraintTop_toBottomOf="@+id/cardView"
             tools:text="Please enter the OTP sent to your phone number ending with (...5633) here " />
@@ -179,6 +246,7 @@
             style="@style/sub_heading_poppins"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:text="@{String.format(@string/_03attemps, appViewModel.otpCodeTryCount)}"
             app:layout_constraintEnd_toEndOf="@+id/otp_view"
             app:layout_constraintTop_toTopOf="@+id/textView38"
             tools:text="0/3 attempts" />
@@ -188,17 +256,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dimen_3dp"
-            android:inputType="numberPassword"
+            android:inputType="number"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
             android:itemBackground="@drawable/bg_otp_item"
+            android:enabled="true"
+            app:errorEnabled="true"
+            app:errorTextColor="@color/error_color"
+            app:cursorErrorColor="@color/error_color"
+            app:errorTextAppearance="@style/ErrorTextAppearance"
             android:textAllCaps="true"
             android:textColor="@color/darker_grey"
-            app:OtpHideLineWhenFilled="true"
             app:OtpItemCount="6"
             app:OtpItemRadius="@dimen/dimen_5dp"
+            android:textSize="@dimen/dimen_24sp"
             app:OtpItemSpacing="@dimen/dimen_12dp"
-            app:OtpLineColor="@color/otp_line_color_state"
-            app:OtpMaskingChar="*"
-            app:OtpState_filled="true"
+            app:OtpLineColor="@color/lighter_dark"
             app:OtpViewType="rectangle"
             app:layout_constraintEnd_toEndOf="@+id/cardView"
             app:layout_constraintHorizontal_bias="0.0"
@@ -225,12 +298,28 @@
             android:layout_marginTop="@dimen/dimen_20dp"
             android:background="@drawable/simple_btn_bg"
             android:fontFamily="@font/poppins_bold"
-            android:textSize="@dimen/dimen_14sp"
-            android:text="@string/i_have_made_this_payment"
+            android:text="@string/pay"
+            android:textAllCaps="true"
+            android:enabled="false"
+            android:textStyle="bold"
             android:textColor="@color/hydrogen_yellow"
+            android:textSize="@dimen/dimen_16sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/resend_otp" />
+
+        <ProgressBar
+            android:id="@+id/payment_processing_progress_bar"
+            style="?android:attr/progressBarStyle"
+            android:layout_width="@dimen/dimen_20dp"
+            android:layout_height="@dimen/dimen_20dp"
+            android:indeterminateDrawable="@drawable/progress_bar_bg_drawable_green_color"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="@id/button"
+            app:layout_constraintTop_toTopOf="@+id/button"
+            app:layout_constraintEnd_toEndOf="@+id/button"
+            app:layout_constraintBottom_toBottomOf="@+id/button"
+            tools:visibility="visible" />
 
         <ImageView
             android:id="@+id/imageView11"

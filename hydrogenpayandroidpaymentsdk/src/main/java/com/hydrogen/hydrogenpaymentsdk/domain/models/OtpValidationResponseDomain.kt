@@ -1,12 +1,14 @@
-package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses
+package com.hydrogen.hydrogenpaymentsdk.domain.models
 
-data class OtpValidationResponseDTO(
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.OTPError
+
+data class OtpValidationResponseDomain(
     val amount: String,
     val errors: List<OTPError>,
     val message: String,
     val otpRetryCount: Int?,
     val panLast4Digits: String,
-    val processorResponse: String,
+    val processorResponse: OTPValidationProcessorResponse,
     val responseCode: String,
     val token: String,
     val tokenExpiryDate: String,

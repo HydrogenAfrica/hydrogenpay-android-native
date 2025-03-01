@@ -5,6 +5,7 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.DeviceInformation
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.CardProviderResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.OtpValidationResponseDTO
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.ResendOTPResponseDto
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
@@ -25,7 +26,14 @@ internal interface PayByCardRepository {
         currencyInfo: CurrencyInfo
     ): Flow<ViewState<String?>>
 
-    fun validateOtpCode(otpCode: String, providerId: String): Flow<ViewState<OtpValidationResponseDTO?>>
+    fun validateOtpCode(
+        otpCode: String,
+        providerId: String
+    ): Flow<ViewState<OtpValidationResponseDTO?>>
+
+    fun resendOtpCode(
+        currency: String, providerId: String
+    ): Flow<ViewState<ResendOTPResponseDto?>>
 
     fun getBankTransferStatus(
         transactionReference: String,

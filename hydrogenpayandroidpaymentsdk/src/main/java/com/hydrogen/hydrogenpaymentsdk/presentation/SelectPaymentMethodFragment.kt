@@ -1,8 +1,6 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation
 
-import android.app.Activity
 import android.app.Dialog
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -24,7 +22,7 @@ import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentSelectPaymentMethodBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
-import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
+import com.hydrogen.hydrogenpaymentsdk.domain.HydrogenPaySdkCallBack
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.PaymentMethodsAdapter
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
@@ -37,7 +35,6 @@ import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldSomeParts
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getLoadingAlertDialog
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
-import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay.HYDROGEN_PAY_RESULT_KEY
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -55,6 +52,8 @@ class SelectPaymentMethodFragment : Fragment() {
     private lateinit var merchantName: TextView
     private lateinit var shimmerMerchantName: ShimmerFrameLayout
     private lateinit var customerNameInitials: TextView
+    private lateinit var hydrogenPaySdkCallBack: HydrogenPaySdkCallBack
+
     private val viewModel: AppViewModel by activityViewModels {
         AppViewModelProviderFactory(HydrogenPayDiModule)
     }
@@ -66,11 +65,12 @@ class SelectPaymentMethodFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        hydrogenPaySdkCallBack = requireActivity() as HydrogenPaySdkCallBack
         activity?.onBackPressedDispatcher?.addCallback(
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    cancelByGoingBackToMerchantApp()
+                    hydrogenPaySdkCallBack.cancelByGoingBackToMerchantApp()
                 }
             })
         paymentMethodsAdapter = PaymentMethodsAdapter {
@@ -127,7 +127,7 @@ class SelectPaymentMethodFragment : Fragment() {
 
         // Cancel by clicking backToMerchantButton
         backToMerchantAppBtn.setOnClickListener {
-            cancelByGoingBackToMerchantApp()
+            hydrogenPaySdkCallBack.cancelByGoingBackToMerchantApp()
         }
 
         paymentMethodRv.apply {
@@ -207,15 +207,6 @@ class SelectPaymentMethodFragment : Fragment() {
             customerNameInitials = textView3
             shimmerMerchantName = shimmerCustomerNameTextView
             merchantName = textView4
-        }
-    }
-
-    private fun cancelByGoingBackToMerchantApp(optionalMessage: String = RequestDeclineReasons.CANCELLED.reason) {
-        val intent = Intent()
-        intent.putExtra(HYDROGEN_PAY_RESULT_KEY, optionalMessage)
-        requireActivity().apply {
-            setResult(Activity.RESULT_CANCELED, intent)
-            finish()
         }
     }
 }

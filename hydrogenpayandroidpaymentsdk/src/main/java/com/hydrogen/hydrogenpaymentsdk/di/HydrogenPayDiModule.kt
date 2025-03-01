@@ -22,6 +22,7 @@ import com.hydrogen.hydrogenpaymentsdk.domain.usecases.SetUpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetCardProviderUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ResendOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.BASE_URL
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.ENC_IV
@@ -137,4 +138,7 @@ internal object HydrogenPayDiModule {
 
     fun providesValidateOtpUseCase(): ValidateOtpUseCase =
         ValidateOtpUseCase(providesPayByCardRepository())
+
+    fun providesResendOtpUseCase(): ResendOtpUseCase =
+        ResendOtpUseCase(providesPayByCardRepository())
 }
