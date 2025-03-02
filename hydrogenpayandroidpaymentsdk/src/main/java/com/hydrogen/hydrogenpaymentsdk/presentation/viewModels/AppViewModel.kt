@@ -19,9 +19,9 @@ import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
-import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetCardProviderUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ResendOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
@@ -42,7 +42,6 @@ import kotlinx.coroutines.launch
 
 internal class AppViewModel(
     private val payByTransferUseCase: PayByTransferUseCase,
-    private val paymentConfirmationUseCase: PaymentConfirmationUseCase,
     private val initiatePaymentUseCase: InitiatePaymentUseCase,
     private val ioDispatcher: CoroutineDispatcher,
     private val countdownTimerUseCase: CountdownTimerUseCase,
@@ -50,7 +49,8 @@ internal class AppViewModel(
     private val getCardProviderUseCase: GetCardProviderUseCase,
     private val payByCardUseCase: PayByCardUseCase,
     private val validateOtpUseCase: ValidateOtpUseCase,
-    private val resendOtpUseCase: ResendOtpUseCase
+    private val resendOtpUseCase: ResendOtpUseCase,
+    private val payByCardTransactionStatusUseCase: PayByCardTransactionStatusUseCase
 ) : ViewModel() {
     private val _otpCodeTryCount: MutableLiveData<String> = MutableLiveData("0")
     val otpCodeTryCount: LiveData<String> get() = _otpCodeTryCount
@@ -67,9 +67,9 @@ internal class AppViewModel(
         MutableLiveData((ViewState.initialDefault(null)))
     val cardProvider: LiveData<ViewState<UIEvent<CardProviderResponse>?>> get() = _cardProvider
 
-    private val _bankTransferPaymentStatus: MutableLiveData<ViewState<TransactionStatus?>> =
+    private val _transactionStatus: MutableLiveData<ViewState<TransactionStatus?>> =
         MutableLiveData(ViewState.initialDefault(null))
-    val bankTransferPaymentStatus: LiveData<ViewState<TransactionStatus?>> get() = _bankTransferPaymentStatus
+    val transactionStatus: LiveData<ViewState<TransactionStatus?>> get() = _transactionStatus
 
 
     private val _bankTransferStatus: MutableLiveData<ViewState<PaymentConfirmationResponse?>> =
@@ -95,10 +95,6 @@ internal class AppViewModel(
     private val _bankTransferResponseState: MutableLiveData<ViewState<InitiatePayByTransferResponseDTO?>> =
         MutableLiveData(ViewState.initialDefault(null))
     val bankTransferResponseState: LiveData<ViewState<InitiatePayByTransferResponseDTO?>> get() = _bankTransferResponseState
-
-    private val _paymentConfirmation =
-        MutableLiveData<ViewState<PaymentConfirmationResponse?>>(ViewState.initialDefault(null))
-    val paymentConfirmation get() = _paymentConfirmation
 
     init {
         observeTimer()
@@ -129,18 +125,8 @@ internal class AppViewModel(
         }
     }
 
-    fun confirmPayment() {
-        _paymentConfirmation.value = ViewState.loading(null)
-        viewModelScope.launch(ioDispatcher) {
-            paymentConfirmationUseCase.invoke()
-                .collectLatest {
-                    _paymentConfirmation.postValue(it)
-                }
-        }
-    }
-
     fun getBankTransferStatus() {
-        _bankTransferPaymentStatus.value = ViewState.loading(null)
+        _transactionStatus.value = ViewState.loading(null)
         viewModelScope.launch(ioDispatcher) {
             val transactionDetails = _paymentMethodsAndTransactionDetails.value.content!!.second!!
             val initiatePaymentRequest = _bankTransferRequest.value!!
@@ -150,7 +136,7 @@ internal class AppViewModel(
                 initiatePaymentRequest
             )
                 .collectLatest {
-                    _bankTransferPaymentStatus.postValue(it)
+                    _transactionStatus.postValue(it)
                 }
         }
     }
@@ -249,15 +235,28 @@ internal class AppViewModel(
         }
     }
 
-    fun getReceiptPayload(): HydrogenPayPaymentTransactionReceipt =
-        _paymentConfirmation.value!!.content!!.getReceiptPayload(
-            _bankTransferResponseState.value!!.content!!,
-            _bankTransferRequest.value!!.customerName
-        )
+    fun getPayByCardTransactionStatus(){
+        _transactionStatus.value = ViewState.loading(null)
+        viewModelScope.launch(ioDispatcher) {
+            val transactionDetails = _paymentMethodsAndTransactionDetails.value.content!!.second!!
+            val initiatePaymentRequest = _bankTransferRequest.value!!
+            payByCardTransactionStatusUseCase.invoke(
+                transactionDetails.transactionId,
+                transactionDetails,
+                initiatePaymentRequest
+            )
+                .collectLatest {
+                    _transactionStatus.postValue(it)
+                }
+        }
+    }
+
+    fun getReceiptPayload(paymentType: String): HydrogenPayPaymentTransactionReceipt =
+        transactionStatus.value!!.content!!.getReceiptPayload(paymentType)
 
     private fun incrementOtpTrialCount() {
         if (_otpCodeTryCount.value!!.toInt() < INT_MAX_OTP_TRY_COUNT) {
-            _otpCodeTryCount.value = ((_otpCodeTryCount.value!!.toInt() + 1).toString())
+            _otpCodeTryCount.postValue(((_otpCodeTryCount.value!!.toInt() + 1).toString()))
         }
     }
 

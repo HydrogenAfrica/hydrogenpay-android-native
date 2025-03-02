@@ -7,7 +7,7 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.GetBankTransfer
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.GetCardProviderRequestDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.OtpValidationRequestDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.ResendOTPRequestDto
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.BankTransferStatusResponseDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.TransactionStatusResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.CardProviderResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.OtpValidationResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.ResendOTPResponseDto
@@ -37,5 +37,5 @@ interface PayByCardApiService {
     @POST("Payment/confirm-status")
     suspend fun confirmStatus(
         @Body bankTransferStatusRequestBody: GetBankTransferStatusRequestBody
-    ): Response<HydrogenServerResponseResource<BankTransferStatusResponseDto>>
+    ): Response<HydrogenServerResponseResource<TransactionStatusResponseDto>>
 }

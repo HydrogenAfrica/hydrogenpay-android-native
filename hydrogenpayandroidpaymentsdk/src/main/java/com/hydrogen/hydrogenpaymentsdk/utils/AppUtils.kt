@@ -226,7 +226,7 @@ internal object AppUtils {
         this.text = spannableString
     }
 
-    fun getPercentage(numerator: Long, denominator: Long): Long {
+    private fun getPercentage(numerator: Long, denominator: Long): Long {
         // Handle case where denominator is 0 to avoid division by zero
         if (denominator == 0L) {
             throw IllegalArgumentException("Denominator cannot be zero")

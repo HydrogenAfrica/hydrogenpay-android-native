@@ -110,4 +110,7 @@
     <string name="puchase_amount">Purchase amount</string>
     <string name="service_charge">Service charge</string>
     <string name="vat_place_holder">VAT(%1s%%)</string>
+    <string name="otp_successful_getting_trans_status">OTP Successful, getting Transaction Status…</string>
+    <string name="transaction_status_failed">Getting transaction status failed</string>
+    <string name="transaction_successful">Transaction Successful</string>
 </resources>

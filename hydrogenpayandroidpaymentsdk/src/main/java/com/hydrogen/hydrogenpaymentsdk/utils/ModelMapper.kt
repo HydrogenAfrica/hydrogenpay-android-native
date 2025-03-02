@@ -3,7 +3,7 @@ package com.hydrogen.hydrogenpaymentsdk.utils
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.PaymentMethodDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.BankTransferStatusResponseDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.TransactionStatusResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiateBankTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePaymentResponseDto
@@ -64,44 +64,21 @@ internal object ModelMapper {
             vat.toString()
         )
 
-    fun BankTransferStatusResponseDto.paymentConfirmationResponse(
-        transactionDetails: TransactionDetails,
-        initiatePaymentRequest: PayByTransferRequest
-    ): PaymentConfirmationResponse =
-        PaymentConfirmationResponse(
-            transactionDetails.amount,
-            transactionDetails.totalAmount,
-            submitTimeUtc,
-            transactionDetails.currencyInfo.currencySymbol,
-            transactionDetails.customerEmail,
-            transactionDetails.description,
-            transactionDetails.serviceFees,
-            transactionDetails.transactionId,
-            initiatePaymentRequest.description ?: "",
-            completedTimeUtc,
-            PaymentType.BANK_TRANSFER.typeName,
-            recurringCardToken ?: "",
-            "$status<==>$responseDescription",
-            transactionReference,
-            transactionStatus,
-            transactionDetails.vatFee
-        )
-
-    fun BankTransferStatusResponseDto.toDomain(
+    fun TransactionStatusResponseDto.toDomain(
         transactionDetails: TransactionDetails
     ): TransactionStatus =
         TransactionStatus(
-            accountName,
-            accountNo,
+            accountName ?: "",
+            accountNo ?: "",
             amount.toString(),
             bank,
             callBackUrl,
             canRetry,
             cardExpiry,
             channelTransactionReference,
-            clientReferenceInformation,
+            clientReferenceInformation ?: "",
             completedTimeUtc,
-            customerName,
+            customerName ?: "",
             email,
             errors,
             expMonth,
@@ -109,47 +86,38 @@ internal object ModelMapper {
             maskedPan,
             processorResponse,
             processorTransactionId,
-            reconciliationId,
+            reconciliationId ?: "",
             recurringCardToken,
             remittanceAmount.toString(),
             responseCode,
             responseDescription,
-            status,
+            status ?: "",
             submitTimeUtc,
             transactionId,
             transactionReference,
-            transactionStatus,
+            transactionStatus ?: "",
             PaymentType.BANK_TRANSFER.typeName,
             transactionDetails.currencyInfo,
             transactionDetails.merchantInfo,
             transactionDetails.description
         )
 
-    fun PaymentConfirmationResponse.getReceiptPayload(
-        payByTransferResponse: InitiatePayByTransferResponseDTO,
-        merchantName: String
+    fun TransactionStatus.getReceiptPayload(
+        paymentType: String
     ): HydrogenPayPaymentTransactionReceipt =
         HydrogenPayPaymentTransactionReceipt(
             amount,
-            chargedAmount,
-            createdAt,
-            currency,
-            customerEmail,
-            description ?: "",
-            fees,
-            id,
-            narration,
-            paidAt,
+            submitTimeUtc,
+            completedTimeUtc,
+            transactionReference,
             paymentType,
+            responseDescription,
+            responseCode,
+            bank,
+            processorResponse,
             recurringCardToken,
-            status,
-            transactionRef,
-            transactionStatus,
-            vat,
-            "",
-            payByTransferResponse.virtualAcctName,
-            payByTransferResponse.virtualAcctName,
-            merchantName
+            accountName,
+            accountNo
         )
 
     fun InitiatePaymentResponseDto.paymentConfirmationResponse(): PaymentTransactionCredentials =

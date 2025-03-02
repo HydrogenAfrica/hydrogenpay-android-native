@@ -13,7 +13,6 @@ internal class AppViewModelProviderFactory(
         if (modelClass.isAssignableFrom(AppViewModel::class.java)) {
             return AppViewModel(
                 hydrogenPayDiModule.providesPayByTransferUseCase(),
-                hydrogenPayDiModule.providesPaymentConfirmationUseCase(),
                 hydrogenPayDiModule.providesInitiatePaymentUseCase(),
                 hydrogenPayDiModule.providesIoDispatchers(),
                 hydrogenPayDiModule.providesCountdownTimerUseCase(),
@@ -21,7 +20,8 @@ internal class AppViewModelProviderFactory(
                 hydrogenPayDiModule.providesGetCardProviderUseCase(),
                 hydrogenPayDiModule.providesPayByCardUseCase(),
                 hydrogenPayDiModule.providesValidateOtpUseCase(),
-                hydrogenPayDiModule.providesResendOtpUseCase()
+                hydrogenPayDiModule.providesResendOtpUseCase(),
+                hydrogenPayDiModule.providesPayByCardTransactionStatusUseCase()
             ) as T
         }
         else if (modelClass.isAssignableFrom(SetUpViewModel::class.java)) {

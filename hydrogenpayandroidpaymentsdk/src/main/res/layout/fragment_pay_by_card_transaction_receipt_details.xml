@@ -9,6 +9,9 @@
         <variable
             name="appViewModel"
             type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel" />
+        <variable
+            name="transactionStatus"
+            type="com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus" />
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -41,7 +44,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="@dimen/dimen_10dp"
-                android:customerNameInSentenceCase="@{appViewModel.bankTransferPaymentStatus.content.responseDescription}"
+                android:customerNameInSentenceCase="@{@string/transaction_successful}"
                 android:fontFamily="@font/exo_bold"
                 android:gravity="top"
                 android:textSize="@dimen/dimen_16sp"
@@ -56,7 +59,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/poppins"
-                android:text="@{appViewModel.bankTransferPaymentStatus.content.completedTimeUtc}"
+                android:text="@{appViewModel.transactionStatus.content.completedTimeUtc}"
                 android:textSize="@dimen/dimen_10sp"
                 app:layout_constraintBottom_toBottomOf="@+id/imageView6"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -108,7 +111,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_20dp"
-                    android:customerNameInSentenceCase="@{appViewModel.bankTransferPaymentStatus.content.customerName}"
+                    android:customerNameInSentenceCase="@{appViewModel.transactionStatus.content.customerName}"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -141,7 +144,7 @@
                     style="@style/heading_poppins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{appViewModel.bankTransferPaymentStatus.content.transactionReference}"
+                    android:text="@{appViewModel.transactionStatus.content.transactionReference}"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
@@ -175,7 +178,7 @@
                     style="@style/heading_poppins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{appViewModel.bankTransferPaymentStatus.content.transactionReference}"
+                    android:text="@{appViewModel.transactionStatus.content.amount}"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
@@ -209,7 +212,6 @@
                     style="@style/sub_heading_poppins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{appViewModel.bankTransferPaymentStatus.content.transactionReference}"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
@@ -243,7 +245,6 @@
                     style="@style/sub_heading_poppins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{appViewModel.bankTransferPaymentStatus.content.transactionReference}"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
@@ -277,7 +278,6 @@
                     style="@style/heading_poppins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{String.format(@string/amount_in_naira_place_holder, appViewModel.bankTransferPaymentStatus.content.remittanceAmount)}"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
@@ -310,7 +310,6 @@
                     style="@style/sub_heading_poppins"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@{appViewModel.bankTransferPaymentStatus.content.narration}"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"

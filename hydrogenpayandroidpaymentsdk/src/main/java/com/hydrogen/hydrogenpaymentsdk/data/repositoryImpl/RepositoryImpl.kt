@@ -42,51 +42,6 @@ internal class RepositoryImpl(
             ) as ViewState<PaymentTransactionCredentials?>
         }.retryAndCatchExceptions(networkUtil)
 
-    override fun payByTransfer(transferDetails: InitiatePayByTransferRequestDTO): Flow<ViewState<InitiatePayByTransferResponseDTO?>> =
-        flow {
-            val response = apiService.payByTransfer(transferDetails)
-            emit(networkUtil.getServerResponse(response))
-        }.map { data ->
-            val result = data.content?.data?.paymentConfirmationResponse()
-            ViewState(
-                status = data.status,
-                content = result,
-                message = data.message
-            ) as ViewState<InitiatePayByTransferResponseDTO?>
-        }.retryAndCatchExceptions(networkUtil)
-
-    override fun confirmPayment(transactionReference: String): Flow<ViewState<PaymentConfirmationResponse?>> =
-        flow {
-            val request = PaymentConfirmationRequestDTO(transactionReference)
-            val response = apiService.paymentConfirmation(request)
-            emit(networkUtil.getServerResponse(response))
-        }.map { data ->
-            val result = data.content?.data?.paymentConfirmationResponse()
-            ViewState(
-                status = data.status,
-                content = result,
-                message = data.message
-            ) as ViewState<PaymentConfirmationResponse?>
-        }.retryAndCatchExceptions(networkUtil)
-
-    override fun getBankTransferStatus(
-        transactionReference: String,
-        transactionDetails: TransactionDetails,
-        initiatePaymentRequest: PayByTransferRequest
-    ): Flow<ViewState<TransactionStatus?>> =
-        flow {
-            val request = GetBankTransferStatusRequestBody(transactionReference)
-            val response = apiService.checkBankTransferStatus(request)
-            emit(networkUtil.getServerResponse(response))
-        }.map { data ->
-            val result = data.content?.data?.toDomain(transactionDetails)
-            ViewState(
-                status = data.status,
-                content = result,
-                message = data.message
-            ) as ViewState<TransactionStatus?>
-        }
-
     override fun getPaymentMethod(transactionId: String): Flow<ViewState<List<PaymentMethod>?>> =
         flow {
             val response = apiService.getPaymentMethod(transactionId)

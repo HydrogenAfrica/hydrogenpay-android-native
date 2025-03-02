@@ -88,7 +88,7 @@ class HydrogenPayPaymentActivity : AppCompatActivity(), HydrogenPaySdkCallBack {
                         val intent = Intent()
                         intent.putExtra(
                             HydrogenPay.HYDROGEN_PAY_RESULT_KEY,
-                            providesGson().toJson(appViewModel.getReceiptPayload())
+                            "" //providesGson().toJson(/*appViewModel.getReceiptPayload()*/)
                         )
                         this.apply {
                             setResult(Activity.RESULT_OK, intent)

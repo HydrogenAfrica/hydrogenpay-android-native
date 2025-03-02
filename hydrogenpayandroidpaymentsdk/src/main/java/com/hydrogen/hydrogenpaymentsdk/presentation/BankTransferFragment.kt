@@ -100,7 +100,7 @@ class BankTransferFragment : Fragment() {
         }
 
         // Start checking for transaction status
-        observeLiveData(viewModel.bankTransferPaymentStatus, null, {
+        observeLiveData(viewModel.transactionStatus, null, {
             makePaymentButton.isEnabled = false
             makePaymentButton.setTextColor(
                 ContextCompat.getColor(

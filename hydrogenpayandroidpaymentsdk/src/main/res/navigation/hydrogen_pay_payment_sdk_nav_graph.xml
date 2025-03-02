@@ -159,5 +159,9 @@
         android:id="@+id/payByCardTransactionReceiptDetailsFragment"
         android:name="com.hydrogen.hydrogenpaymentsdk.presentation.PayByCardTransactionReceiptDetailsFragment"
         android:label="fragment_pay_by_card_transaction_receipt_details"
-        tools:layout="@layout/fragment_pay_by_card_transaction_receipt_details" />
+        tools:layout="@layout/fragment_pay_by_card_transaction_receipt_details" >
+        <argument
+            android:name="transactionStatus"
+            app:argType="string" />
+    </fragment>
 </navigation>

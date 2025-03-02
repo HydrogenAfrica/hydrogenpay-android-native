@@ -6,21 +6,24 @@ import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManager
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SessionManagerContract
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SharedPrefManager
 import com.hydrogen.hydrogenpaymentsdk.data.local.sharedPrefs.SharedPrefsManagerContract
+import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.BankTransferApiService
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.HydrogenPaymentGateWayApiService
 import com.hydrogen.hydrogenpaymentsdk.data.remote.apis.PayByCardApiService
 import com.hydrogen.hydrogenpaymentsdk.data.remote.interceptors.AuthInterceptor
+import com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl.BankTransferRepositoryImpl
 import com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl.PayByCardRepositoryImpl
 import com.hydrogen.hydrogenpaymentsdk.data.repositoryImpl.RepositoryImpl
+import com.hydrogen.hydrogenpaymentsdk.domain.repository.BankTransferRepository
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.DataEncryptionContract
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.PayByCardRepository
 import com.hydrogen.hydrogenpaymentsdk.domain.repository.Repository
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
-import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PaymentConfirmationUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.SetUpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetCardProviderUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ResendOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
@@ -74,6 +77,9 @@ internal object HydrogenPayDiModule {
     private fun providesApiService(): HydrogenPaymentGateWayApiService =
         providesRetrofit().create(HydrogenPaymentGateWayApiService::class.java)
 
+    private fun providesBankTransferApiService(): BankTransferApiService =
+        providesRetrofit().create(BankTransferApiService::class.java)
+
     fun providesInitiatePaymentUseCase(): InitiatePaymentUseCase =
         InitiatePaymentUseCase(providesRepository(), providesNetworkUtil())
 
@@ -95,6 +101,12 @@ internal object HydrogenPayDiModule {
             providesSessionManagerContract()
         )
 
+    private fun providesBankTransferRepository(): BankTransferRepository =
+        BankTransferRepositoryImpl(
+            providesBankTransferApiService(),
+            providesNetworkUtil()
+        )
+
     private fun providesPayByCardApiService(): PayByCardApiService =
         providesRetrofit().create(PayByCardApiService::class.java)
 
@@ -109,19 +121,13 @@ internal object HydrogenPayDiModule {
     )
 
     fun providesPayByTransferUseCase(): PayByTransferUseCase = PayByTransferUseCase(
-        providesRepository(),
+        providesBankTransferRepository(),
         providesSessionManagerContract()
     )
 
-    fun providesPaymentConfirmationUseCase(): PaymentConfirmationUseCase =
-        PaymentConfirmationUseCase(
-            providesRepository(),
-            providesSessionManagerContract()
-        )
-
     fun providesGetBankTransferStatusUseCase(): GetBankTransactionStatusUseCase =
         GetBankTransactionStatusUseCase(
-            providesRepository()
+            providesBankTransferRepository()
         )
 
     fun providesSetUpUseCase(): SetUpUseCase = SetUpUseCase(providesSessionManagerContract())
@@ -141,4 +147,9 @@ internal object HydrogenPayDiModule {
 
     fun providesResendOtpUseCase(): ResendOtpUseCase =
         ResendOtpUseCase(providesPayByCardRepository())
+
+    fun providesPayByCardTransactionStatusUseCase(): PayByCardTransactionStatusUseCase =
+        PayByCardTransactionStatusUseCase(
+            providesPayByCardRepository()
+        )
 }
