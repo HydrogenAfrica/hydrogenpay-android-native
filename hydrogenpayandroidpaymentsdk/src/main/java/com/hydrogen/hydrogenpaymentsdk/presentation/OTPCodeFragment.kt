@@ -184,12 +184,13 @@ class OTPCodeFragment : Fragment() {
 
         observeLiveData(applicationViewModel.validateOtpCode, null, {
             payButton.setButtonEnabledState(false)
-            validateOtpProgressBar.toggleProgressBarVisibility(false)
+            validateOtpProgressBar.toggleProgressBarVisibility(true)
         }, {
             payButton.setButtonEnabledState(true)
-            validateOtpProgressBar.toggleProgressBarVisibility(true)
+            validateOtpProgressBar.toggleProgressBarVisibility(false)
             otpCodeView.error = it
         }) {
+            validateOtpProgressBar.toggleProgressBarVisibility(false)
             Toast.makeText(requireContext(), "SUCCESSFUL", Toast.LENGTH_SHORT).show()
         }
     }

@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.hydrogen.hydrogenpaymentsdk.presentation.PayByCardTransactionReceiptDetailsFragment">
+
+    <data>
+
+        <variable
+            name="appViewModel"
+            type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/white">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout2"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/hydrogen_yellow"
+            android:padding="@dimen/dimen_30dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <ImageView
+                android:id="@+id/imageView6"
+                android:layout_width="wrap_content"
+                android:layout_height="@dimen/dimen_40dp"
+                android:contentDescription="@string/hydrogen_logo"
+                android:src="@drawable/hydrogen_logo"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/textView14"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_10dp"
+                android:customerNameInSentenceCase="@{appViewModel.bankTransferPaymentStatus.content.responseDescription}"
+                android:fontFamily="@font/exo_bold"
+                android:gravity="top"
+                android:textSize="@dimen/dimen_16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toEndOf="@+id/imageView6"
+                app:layout_constraintTop_toTopOf="@+id/imageView6"
+                tools:text="Transaction Successful" />
+
+            <TextView
+                android:id="@+id/transaction_date_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:fontFamily="@font/poppins"
+                android:text="@{appViewModel.bankTransferPaymentStatus.content.completedTimeUtc}"
+                android:textSize="@dimen/dimen_10sp"
+                app:layout_constraintBottom_toBottomOf="@+id/imageView6"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="@+id/textView14"
+                tools:text="12th Sep. 2023 | 12:23 pm" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <androidx.core.widget.NestedScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:fillViewport="true"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout2"
+            app:layout_constraintVertical_bias="0.0">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginHorizontal="@dimen/dimen_15dp">
+
+                <TextView
+                    android:id="@+id/textView20"
+                    style="@style/heading_exo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_20dp"
+                    android:layout_marginTop="@dimen/dimen_35dp"
+                    android:text="@string/transaction_details"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <TextView
+                    android:id="@+id/textView21"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/merchant"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView20"
+                    app:layout_constraintTop_toBottomOf="@+id/textView20" />
+
+                <TextView
+                    android:id="@+id/textView22"
+                    style="@style/heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dimen_20dp"
+                    android:customerNameInSentenceCase="@{appViewModel.bankTransferPaymentStatus.content.customerName}"
+                    android:textAlignment="textEnd"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView21"
+                    tools:text="Damilola groceries" />
+
+                <View
+                    android:id="@+id/horizontal_line_2"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/textView21" />
+
+                <TextView
+                    android:id="@+id/textView19"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:text="@string/transaction_id"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_2" />
+
+                <TextView
+                    android:id="@+id/textView23"
+                    style="@style/heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{appViewModel.bankTransferPaymentStatus.content.transactionReference}"
+                    android:textAlignment="textEnd"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintTop_toTopOf="@+id/textView19"
+                    tools:text="5635768926" />
+
+                <View
+                    android:id="@+id/horizontal_line_3"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/textView19" />
+
+
+                <TextView
+                    android:id="@+id/purchase_amount_label"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:text="@string/puchase_amount"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_3" />
+
+                <TextView
+                    android:id="@+id/purchase_amount"
+                    style="@style/heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{appViewModel.bankTransferPaymentStatus.content.transactionReference}"
+                    android:textAlignment="textEnd"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintTop_toTopOf="@+id/purchase_amount_label"
+                    tools:text="5635768926" />
+
+                <View
+                    android:id="@+id/horizontal_line_7"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/purchase_amount_label" />
+
+
+                <TextView
+                    android:id="@+id/service_charge_label"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:text="@string/service_charge"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_7" />
+
+                <TextView
+                    android:id="@+id/service_charge"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{appViewModel.bankTransferPaymentStatus.content.transactionReference}"
+                    android:textAlignment="textEnd"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintTop_toTopOf="@+id/service_charge_label"
+                    tools:text="5635768926" />
+
+                <View
+                    android:id="@+id/horizontal_line_8"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/service_charge_label" />
+
+                <TextView
+                    android:id="@+id/vat_label"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:text="@{String.format(@string/vat_place_holder, `7.5`)}"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_8"
+                    tools:text="VAT(7.5%)" />
+
+                <TextView
+                    android:id="@+id/vat"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{appViewModel.bankTransferPaymentStatus.content.transactionReference}"
+                    android:textAlignment="textEnd"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintTop_toTopOf="@+id/vat_label"
+                    tools:text="5635768926" />
+
+                <View
+                    android:id="@+id/horizontal_line_9"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/vat_label" />
+
+
+                <TextView
+                    android:id="@+id/textView24"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:text="@string/total_amount_paid"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_9" />
+
+                <TextView
+                    android:id="@+id/textView25"
+                    style="@style/heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{String.format(@string/amount_in_naira_place_holder, appViewModel.bankTransferPaymentStatus.content.remittanceAmount)}"
+                    android:textAlignment="textEnd"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintTop_toTopOf="@+id/textView24"
+                    tools:text="₦ 35,000" />
+
+                <View
+                    android:id="@+id/horizontal_line_5"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/textView24" />
+
+                <TextView
+                    android:id="@+id/textView26"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_10dp"
+                    android:text="@string/description"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_5" />
+
+                <TextView
+                    android:id="@+id/textView27"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{appViewModel.bankTransferPaymentStatus.content.narration}"
+                    android:textAlignment="textEnd"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintTop_toTopOf="@+id/textView26"
+                    tools:text="Description provided by merchant" />
+
+                <View
+                    android:id="@+id/horizontal_line_6"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_20dp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintEnd_toEndOf="@+id/textView22"
+                    app:layout_constraintStart_toStartOf="@+id/textView21"
+                    app:layout_constraintTop_toBottomOf="@+id/textView26" />
+
+                <TextView
+                    android:id="@+id/textView35"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_45dp"
+                    android:text="@string/a_copy_of_this_receipt_has_been_sent_your_email"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_6" />
+
+                <ImageView
+                    android:id="@+id/imageView5"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_2dp"
+                    android:layout_marginBottom="@dimen/dimen_10dp"
+                    android:contentDescription="@string/powered_by_hydrogen"
+                    android:paddingHorizontal="0dp"
+                    android:scaleType="fitStart"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textView35"
+                    app:layout_constraintVertical_bias="1.0"
+                    app:srcCompat="@drawable/powered_by_hydrogen" />
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </androidx.core.widget.NestedScrollView>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

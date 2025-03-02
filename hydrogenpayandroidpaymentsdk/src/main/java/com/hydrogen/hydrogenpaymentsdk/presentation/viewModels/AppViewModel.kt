@@ -257,7 +257,7 @@ internal class AppViewModel(
 
     private fun incrementOtpTrialCount() {
         if (_otpCodeTryCount.value!!.toInt() < INT_MAX_OTP_TRY_COUNT) {
-            _otpCodeTryCount.value = (_otpCodeTryCount.value!!.toInt() + 1).toString()
+            _otpCodeTryCount.value = ((_otpCodeTryCount.value!!.toInt() + 1).toString())
         }
     }
 

@@ -1,0 +1,32 @@
+package com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses
+
+data class PayByCardTransactionStatusResponseDto(
+    val accountName: String?,
+    val accountNo: String?,
+    val amount: Int,
+    val bank: String,
+    val callBackUrl: String,
+    val canRetry: Boolean,
+    val cardExpiry: String,
+    val channelTransactionReference: String,
+    val clientReferenceInformation: String?,
+    val completedTimeUtc: String,
+    val customerName: String?,
+    val email: String?,
+    val errors: List<Any>?,
+    val expMonth: String?,
+    val expYear: String?,
+    val maskedPan: String,
+    val processorResponse: String,
+    val processorTransactionId: String?,
+    val reconciliationId: String?,
+    val recurringCardToken: String?,
+    val remittanceAmount: Int,
+    val responseCode: String,
+    val responseDescription: String,
+    val status: String?,
+    val submitTimeUtc: String,
+    val transactionId: String,
+    val transactionReference: String,
+    val transactionStatus: String?
+)

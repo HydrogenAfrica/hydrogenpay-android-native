@@ -49,17 +49,17 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
-        <action
-            android:id="@+id/action_OTPCodeFragment_to_transactionReceiptDetailsFragment"
-            app:destination="@id/transactionReceiptDetailsFragment"
-            app:enterAnim="@android:anim/slide_in_left"
-            app:exitAnim="@android:anim/slide_out_right"
-            app:popEnterAnim="@android:anim/slide_in_left"
-            app:popExitAnim="@android:anim/slide_out_right" />
         <argument
             android:name="payByCardResponseAsString"
             app:argType="string"
             android:defaultValue="testing" />
+        <action
+            android:id="@+id/action_OTPCodeFragment_to_payByCardTransactionReceiptDetailsFragment"
+            app:destination="@id/payByCardTransactionReceiptDetailsFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/selectPaymentMethodFragment"
@@ -102,10 +102,18 @@
         tools:layout="@layout/fragment_card_payment" >
         <action
             android:id="@+id/action_cardPaymentFragment_to_OTPCodeFragment"
-            app:destination="@id/OTPCodeFragment" />
+            app:destination="@id/OTPCodeFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
         <action
             android:id="@+id/action_cardPaymentFragment_to_changePaymentMethodConfirmationFragment"
-            app:destination="@id/changePaymentMethodConfirmationFragment" />
+            app:destination="@id/changePaymentMethodConfirmationFragment"
+            app:enterAnim="@android:anim/slide_in_left"
+            app:exitAnim="@android:anim/slide_out_right"
+            app:popEnterAnim="@android:anim/slide_in_left"
+            app:popExitAnim="@android:anim/slide_out_right" />
     </fragment>
     <fragment
         android:id="@+id/changePaymentMethodConfirmationFragment"
@@ -147,4 +155,9 @@
         android:name="com.hydrogen.hydrogenpaymentsdk.presentation.TransactionReceiptDetailsFragment"
         android:label="fragment_transaction_receipt_details"
         tools:layout="@layout/fragment_transaction_receipt_details" />
+    <fragment
+        android:id="@+id/payByCardTransactionReceiptDetailsFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.PayByCardTransactionReceiptDetailsFragment"
+        android:label="fragment_pay_by_card_transaction_receipt_details"
+        tools:layout="@layout/fragment_pay_by_card_transaction_receipt_details" />
 </navigation>

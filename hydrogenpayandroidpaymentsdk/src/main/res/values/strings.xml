@@ -106,4 +106,8 @@
     <string name="invalid_card_expiry_date">Invalid date</string>
     <string name="pay">PAY</string>
     <string name="_03attemps">%1s/3 attempts</string>
+    <string name="total_amount_paid">Total Amount paid</string>
+    <string name="puchase_amount">Purchase amount</string>
+    <string name="service_charge">Service charge</string>
+    <string name="vat_place_holder">VAT(%1s%%)</string>
 </resources>

@@ -32,7 +32,7 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.calling_app_main_activity)
         initViews()
         val payByTransferRequest = HydrogenPayPaymentRequest(
-            5,
+            2,
             "Adebayo Oloyede",
             "oloyedeadebayoolawale@gmail.com",
             "https://hydrogenpay.com",
