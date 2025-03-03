@@ -32,14 +32,14 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.calling_app_main_activity)
         initViews()
         val payByTransferRequest = HydrogenPayPaymentRequest(
-            2,
-            "Adebayo Oloyede",
-            "oloyedeadebayoolawale@gmail.com",
-            "https://hydrogenpay.com",
+            amount = 2,
+            customerName = "Adebayo Oloyede",
+            email = "oloyedeadebayoolawale@gmail.com",
+            callback = "https://hydrogenpay.com",
             meta = "test meta",
             description = "Test by adebayo",
             currency = "NGN",
-            clientApiKey = AuthToken.LIVE.token
+            clientApiKey = AuthToken.LIVE.token,
         )
         button.setOnClickListener {
             HydrogenPay.launch(paymentLauncher, this, payByTransferRequest)

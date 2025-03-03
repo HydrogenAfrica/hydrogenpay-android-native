@@ -105,4 +105,7 @@ object ExtensionFunctions {
             View.GONE
         }
     }
+
+    fun Number.toDecimalPlace(decimalPlace: Int = AppConstants.INT_2_DECIMAL_PLACE): String =
+        String.format("%.${decimalPlace}f", this)
 }

@@ -43,4 +43,5 @@ internal object AppConstants {
     const val INT_CVV_LENGTH = 3
     const val INT_MAX_OTP_TRY_COUNT = 3
     const val INT_OTP_LENGTH = 6
+    const val INT_2_DECIMAL_PLACE = 2
 }

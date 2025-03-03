@@ -48,7 +48,6 @@ import kotlinx.coroutines.launch
 class OTPCodeFragment : Fragment() {
     private lateinit var binding: FragmentOTPCodeBinding
     private lateinit var validateOtpProgressBar: ProgressBar
-    private var loaderAlertDialog: Dialog? = null
     private lateinit var payButton: Button
     private lateinit var backToMerchantAppButton: ImageView
     private lateinit var changePaymentMethodButton: ImageView
@@ -97,7 +96,6 @@ class OTPCodeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
-        loaderAlertDialog = AppUtils.getLoadingAlertDialog(requireContext())
         val payByCardResponse = providesGson().fromJson(args.payByCardResponseAsString,  PayByCardResponseDomain::class.java)
         verifyOtpInfoText.text = payByCardResponse.payByCardResponseMessage
         changePaymentMethodButton.setOnClickListener {
@@ -183,20 +181,23 @@ class OTPCodeFragment : Fragment() {
         }
 
         observeLiveData(applicationViewModel.validateOtpCode, null, {
-            payButton.setButtonEnabledState(false)
-            validateOtpProgressBar.toggleProgressBarVisibility(true)
+            processingRequest(true)
         }, {
-            payButton.setButtonEnabledState(true)
-            validateOtpProgressBar.toggleProgressBarVisibility(false)
+            processingRequest(false)
             otpCodeView.error = it
         }) {
+            processingRequest(false)
             applicationViewModel.getPayByCardTransactionStatus()
-            validateOtpProgressBar.toggleProgressBarVisibility(false)
-            payButton.setButtonEnabledState(true)
             Toast.makeText(requireContext(), getString(R.string.otp_successful_getting_trans_status), Toast.LENGTH_SHORT).show()
         }
 
-        observeLiveData(applicationViewModel.transactionStatus, loaderAlertDialog!!, null, null) { transStatus ->
+        observeLiveData(applicationViewModel.transactionStatus, null, {
+            processingRequest(true)
+        }, {
+            processingRequest(false)
+            otpCodeView.error = it
+        }) { transStatus ->
+            processingRequest(false)
             transStatus?.let {
                 val transactionStatusString = providesGson().toJson(it)
                 val action = OTPCodeFragmentDirections.actionOTPCodeFragmentToPayByCardTransactionReceiptDetailsFragment(transactionStatusString)
@@ -207,8 +208,18 @@ class OTPCodeFragment : Fragment() {
         }
     }
 
+    private fun processingRequest(isOnGoing: Boolean) {
+        if (isOnGoing) {
+            validateOtpProgressBar.toggleProgressBarVisibility(true)
+            payButton.setButtonEnabledState(false)
+        } else {
+            validateOtpProgressBar.toggleProgressBarVisibility(false)
+            payButton.setButtonEnabledState(true)
+        }
+    }
+
     private fun goBack(isChangePaymentMethodNotGoBackToMerchantApp: Boolean = false) {
-        if (applicationViewModel.canGoBackFromCardPayment()) {
+        if (applicationViewModel.canGoBackFromOTPCodeFragment()) {
             if (isChangePaymentMethodNotGoBackToMerchantApp) {
                 val action = OTPCodeFragmentDirections.actionOTPCodeFragmentToChangePaymentMethodConfirmationFragment()
                 findNavController().navigate(action)

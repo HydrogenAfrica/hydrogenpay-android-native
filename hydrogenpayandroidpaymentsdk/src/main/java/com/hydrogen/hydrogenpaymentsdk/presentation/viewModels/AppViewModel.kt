@@ -267,6 +267,9 @@ internal class AppViewModel(
     fun canGoBackFromCardPayment(): Boolean =
         _cardPaymentResponse.value!!.status != Status.LOADING && _transactionStatus.value!!.status != Status.LOADING
 
+    fun canGoBackFromOTPCodeFragment(): Boolean =
+        _validateOtpCode.value!!.status != Status.LOADING && _transactionStatus.value!!.status != Status.LOADING
+
     fun canGoBackFromBankTransfer(): Boolean =
         _bankTransferResponseState.value!!.status != Status.LOADING && _transactionStatus.value!!.status != Status.LOADING
 

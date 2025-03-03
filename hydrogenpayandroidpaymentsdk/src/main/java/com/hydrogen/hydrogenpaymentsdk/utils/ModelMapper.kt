@@ -3,7 +3,6 @@ package com.hydrogen.hydrogenpaymentsdk.utils
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.PaymentMethodDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
-import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.TransactionStatusResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiateBankTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePaymentResponseDto
@@ -12,6 +11,7 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.PayByTransferR
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.PaymentConfirmationResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.ResendOTPResponseData
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.TransactionDetailsDto
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.TransactionStatusResponseDto
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.enums.PaymentType
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
@@ -25,12 +25,14 @@ import com.hydrogen.hydrogenpaymentsdk.domain.models.ResendOTPProcessorResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.ResendOTPResponseDataDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
+import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatNumberWithCommas
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatTransactionDateTime
+import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.toDecimalPlace
 
 internal object ModelMapper {
     fun HydrogenPayPaymentRequest.toPayByTransferRequestObject(): PayByTransferRequest =
         PayByTransferRequest(
-            amount, customerName, email, callback, transactionRef, currency
+            amount, customerName, email, callback, transactionRef, currency, description, meta
         )
 
     fun PayByTransferResponseDto.paymentConfirmationResponse(): PayByTransferResponse =
@@ -65,12 +67,13 @@ internal object ModelMapper {
         )
 
     fun TransactionStatusResponseDto.toDomain(
-        transactionDetails: TransactionDetails
+        transactionDetails: TransactionDetails,
+        isPayByCard: Boolean = false
     ): TransactionStatus =
         TransactionStatus(
             accountName ?: "",
             accountNo ?: "",
-            amount.toString(),
+            if (isPayByCard) formatNumberWithCommas(amount.toDecimalPlace().toDouble()) else amount.toString(),
             bank,
             callBackUrl,
             canRetry,
