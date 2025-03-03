@@ -64,9 +64,7 @@ class BankTransferFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val action =
-                        BankTransferFragmentDirections.actionBankTransferFragmentToChangePaymentMethodConfirmationFragment2()
-                    findNavController().navigate(action)
+                    goBack()
                 }
             })
         // Inflate the layout for this fragment
@@ -83,15 +81,7 @@ class BankTransferFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         changePaymentMethodButton.setOnClickListener {
-            viewModel.transactionStatus.observe(viewLifecycleOwner) {
-                if (it!!.status != Status.LOADING) {
-                    val action =
-                        BankTransferFragmentDirections.actionBankTransferFragmentToChangePaymentMethodConfirmationFragment2()
-                    findNavController().navigate(action)
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.transaction_in_progress), Toast.LENGTH_SHORT).show()
-                }
-            }
+            goBack()
         }
 
         makePaymentButton.setOnClickListener {
@@ -204,6 +194,20 @@ class BankTransferFragment : Fragment() {
         )
         transactionInfoTextViewContainer.visibility = View.VISIBLE
         checkingPaymentProgress.visibility = View.GONE
+    }
+
+    private fun goBack() {
+        if (viewModel.canGoBackFromBankTransfer()) {
+            val action =
+                BankTransferFragmentDirections.actionBankTransferFragmentToChangePaymentMethodConfirmationFragment2()
+            findNavController().navigate(action)
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.transaction_in_progress),
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun initViews() {

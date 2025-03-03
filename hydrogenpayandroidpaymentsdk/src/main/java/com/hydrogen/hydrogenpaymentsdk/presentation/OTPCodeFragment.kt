@@ -81,11 +81,8 @@ class OTPCodeFragment : Fragment() {
         activity?.onBackPressedDispatcher?.addCallback(
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val action =
-                        OTPCodeFragmentDirections.actionOTPCodeFragmentToChangePaymentMethodConfirmationFragment()
-                    findNavController().navigate(action)
+                    goBack(true)
                 }
-
             }
         )
         // Inflate the layout for this fragment
@@ -104,17 +101,7 @@ class OTPCodeFragment : Fragment() {
         val payByCardResponse = providesGson().fromJson(args.payByCardResponseAsString,  PayByCardResponseDomain::class.java)
         verifyOtpInfoText.text = payByCardResponse.payByCardResponseMessage
         changePaymentMethodButton.setOnClickListener {
-            applicationViewModel.validateOtpCode.value?.let { otpValidation ->
-                applicationViewModel.transactionStatus.value?.let { transStatus ->
-                    if (otpValidation.status != Status.LOADING && transStatus.status != Status.LOADING) {
-                        val action =
-                            OTPCodeFragmentDirections.actionOTPCodeFragmentToChangePaymentMethodConfirmationFragment()
-                        findNavController().navigate(action)
-                    } else {
-                        Toast.makeText(requireContext(), getString(R.string.transaction_in_progress), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+            goBack(true)
         }
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
@@ -168,15 +155,7 @@ class OTPCodeFragment : Fragment() {
         }
 
         backToMerchantAppButton.setOnClickListener {
-            applicationViewModel.validateOtpCode.value?.let { otpValidation ->
-                applicationViewModel.transactionStatus.value?.let { transStatus ->
-                    if (otpValidation.status != Status.LOADING && transStatus.status != Status.LOADING) {
-                        hydrogenPaySdkCallBack.cancelByGoingBackToMerchantApp()
-                    } else {
-                        Toast.makeText(requireContext(), getString(R.string.transaction_in_progress), Toast.LENGTH_SHORT).show()
-                    }
-                }
-            }
+            goBack()
         }
 
         resendOtpText.setOnClickListener {
@@ -225,6 +204,23 @@ class OTPCodeFragment : Fragment() {
             } ?: run {
                 Toast.makeText(requireContext(), getString(R.string.transaction_status_failed), Toast.LENGTH_SHORT).show()
             }
+        }
+    }
+
+    private fun goBack(isChangePaymentMethodNotGoBackToMerchantApp: Boolean = false) {
+        if (applicationViewModel.canGoBackFromCardPayment()) {
+            if (isChangePaymentMethodNotGoBackToMerchantApp) {
+                val action = OTPCodeFragmentDirections.actionOTPCodeFragmentToChangePaymentMethodConfirmationFragment()
+                findNavController().navigate(action)
+            } else {
+                hydrogenPaySdkCallBack.cancelByGoingBackToMerchantApp(getString(R.string.transaction_cancelled))
+            }
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.transaction_in_progress),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

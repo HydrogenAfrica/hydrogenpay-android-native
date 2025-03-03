@@ -1,7 +1,5 @@
 package com.hydrogen.hydrogenpaymentsdk.presentation
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -14,7 +12,6 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.constraintlayout.widget.ConstraintLayout
-import androidx.core.view.isVisible
 import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
@@ -31,7 +28,6 @@ import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.HydrogenPaySdkCallBack
-import com.hydrogen.hydrogenpaymentsdk.domain.enums.RequestDeclineReasons
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setButtonEnabledState
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
@@ -39,7 +35,6 @@ import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_CARD_EXPIRY_DATE_LENGTH
-import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_CVV_LENGTH
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_MASTER_VISA_CARD_LENGTH
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_VERVE_CARD_LENGTH
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_EXPIRY_DATE_SPACER
@@ -51,7 +46,6 @@ import com.hydrogen.hydrogenpaymentsdk.utils.CardPaymentUtil
 import com.hydrogen.hydrogenpaymentsdk.utils.CardPaymentUtil.checkSumCardValidation
 import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.getTransactionInfoBalloon
 import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.toggleProgressBarVisibility
-import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -96,9 +90,7 @@ class CardPaymentFragment : Fragment() {
             viewLifecycleOwner,
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
-                    val action =
-                        CardPaymentFragmentDirections.actionCardPaymentFragmentToChangePaymentMethodConfirmationFragment()
-                    findNavController().navigate(action)
+                    goBack(true)
                 }
             }
         )
@@ -116,9 +108,7 @@ class CardPaymentFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         changePaymentMethodButton.setOnClickListener {
-            val action =
-                CardPaymentFragmentDirections.actionCardPaymentFragmentToChangePaymentMethodConfirmationFragment()
-            findNavController().navigate(action)
+            goBack(true)
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -242,19 +232,15 @@ class CardPaymentFragment : Fragment() {
                 Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
                 val responseAsString = providesGson().toJson(it)
                 val action =
-                    CardPaymentFragmentDirections.actionCardPaymentFragmentToOTPCodeFragment(responseAsString)
+                    CardPaymentFragmentDirections.actionCardPaymentFragmentToOTPCodeFragment(
+                        responseAsString
+                    )
                 findNavController().navigate(action)
             }
         }
 
         backToMerchantAppButton.setOnClickListener {
-            viewModel.cardPaymentResponse.observe(viewLifecycleOwner) {
-                if (it!!.status != Status.LOADING) {
-                    hydrogenPaySdkCallBack.cancelByGoingBackToMerchantApp()
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.transaction_in_progress), Toast.LENGTH_SHORT).show()
-                }
-            }
+            goBack()
         }
 
         payButton.setOnClickListener {
@@ -269,6 +255,24 @@ class CardPaymentFragment : Fragment() {
                 userCardPin,
                 deviceInformation
             )
+        }
+    }
+
+    private fun goBack(isChangePaymentMethodNotGoBackToMerchantApp: Boolean = false) {
+        if (viewModel.canGoBackFromCardPayment()) {
+            if (isChangePaymentMethodNotGoBackToMerchantApp) {
+                val navAction =
+                    CardPaymentFragmentDirections.actionCardPaymentFragmentToChangePaymentMethodConfirmationFragment()
+                findNavController().navigate(navAction)
+            } else {
+                hydrogenPaySdkCallBack.cancelByGoingBackToMerchantApp(getString(R.string.transaction_cancelled))
+            }
+        } else {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.transaction_in_progress),
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 

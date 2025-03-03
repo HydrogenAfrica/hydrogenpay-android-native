@@ -114,4 +114,5 @@
     <string name="transaction_status_failed">Getting transaction status failed</string>
     <string name="transaction_successful">Transaction Successful</string>
     <string name="card_number_without_asterisks">Card number</string>
+    <string name="transaction_cancelled">Transaction Cancelled</string>
 </resources>

@@ -26,6 +26,7 @@ import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardTransa
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ResendOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.UIEvent
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_MAX_OTP_TRY_COUNT
@@ -262,6 +263,12 @@ internal class AppViewModel(
             _otpCodeTryCount.postValue(((_otpCodeTryCount.value!!.toInt() + 1).toString()))
         }
     }
+
+    fun canGoBackFromCardPayment(): Boolean =
+        _cardPaymentResponse.value!!.status != Status.LOADING && _transactionStatus.value!!.status != Status.LOADING
+
+    fun canGoBackFromBankTransfer(): Boolean =
+        _bankTransferResponseState.value!!.status != Status.LOADING && _transactionStatus.value!!.status != Status.LOADING
 
     override fun onCleared() {
         super.onCleared()
