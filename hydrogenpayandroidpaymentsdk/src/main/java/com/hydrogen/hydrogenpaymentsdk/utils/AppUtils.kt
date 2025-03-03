@@ -72,7 +72,7 @@ internal object AppUtils {
         liveData: LiveData<ViewState<T>>,
         loaderDialog: Dialog?,
         doWhenLoading: (() -> Unit)?,
-        doOnError: (errorMessage: String) -> Unit,
+        doOnError: ((errorMessage: String) -> Unit)?,
         doOnSuccess: (result: T?) -> Unit
     ) {
         liveData.observe(this) {
@@ -85,7 +85,7 @@ internal object AppUtils {
                 Status.ERROR -> {
                     loaderDialog?.cancel()
                     loaderDialog?.dismiss()
-                    doOnError.invoke(it.message)
+                    doOnError?.invoke(it.message)
                 }
 
                 Status.SUCCESS -> {
@@ -98,7 +98,7 @@ internal object AppUtils {
                     if (it.status != Status.INITIAL_DEFAULT) {
                         loaderDialog?.cancel()
                         loaderDialog?.dismiss()
-                        doOnError.invoke(it.message)
+                        doOnError?.invoke(it.message)
                     }
                 }
             }

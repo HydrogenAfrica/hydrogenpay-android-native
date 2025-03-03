@@ -189,16 +189,6 @@ class CardPaymentFragment : Fragment() {
             }
         }
 
-        cvv.doOnTextChanged { text, _, _, _ ->
-            text?.let {
-                if (it.toString().length == INT_CVV_LENGTH) {
-                    if (userCardPinContainer.isVisible) {
-                        cardPin.requestFocus()
-                    }
-                }
-            }
-        }
-
         cardNumber.doOnTextChanged { text, _, _, _ ->
             text?.let {
                 val inputtedCardNumber = text.toString().replace(STRING_CARD_NUMBER_SPACER, "")

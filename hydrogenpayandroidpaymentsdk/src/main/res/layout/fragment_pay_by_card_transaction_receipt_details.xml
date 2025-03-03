@@ -9,6 +9,7 @@
         <variable
             name="appViewModel"
             type="com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel" />
+
         <variable
             name="transactionStatus"
             type="com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus" />
@@ -111,7 +112,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="@dimen/dimen_20dp"
-                    android:customerNameInSentenceCase="@{appViewModel.transactionStatus.content.customerName}"
+                    android:customerNameInSentenceCase="@{appViewModel.bankTransferRequest.customerName}"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -183,7 +184,7 @@
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
                     app:layout_constraintTop_toTopOf="@+id/purchase_amount_label"
-                    tools:text="5635768926" />
+                    tools:text="₦ 5,350" />
 
                 <View
                     android:id="@+id/horizontal_line_7"
@@ -234,7 +235,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="@dimen/dimen_10dp"
-                    android:text="@{String.format(@string/vat_place_holder, `7.5`)}"
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintStart_toStartOf="@+id/textView21"
                     app:layout_constraintTop_toBottomOf="@+id/horizontal_line_8"
@@ -312,6 +312,7 @@
                     android:layout_height="wrap_content"
                     android:textAlignment="textEnd"
                     android:textSize="@dimen/dimen_12sp"
+                    android:text="@{appViewModel.bankTransferRequest.description}"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
                     app:layout_constraintTop_toTopOf="@+id/textView26"
                     tools:text="Description provided by merchant" />
@@ -327,6 +328,52 @@
                     app:layout_constraintTop_toBottomOf="@+id/textView26" />
 
                 <TextView
+                    android:id="@+id/textView28"
+                    style="@style/heading_exo"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/dimen_20dp"
+                    android:layout_marginTop="@dimen/dimen_35dp"
+                    android:text="@string/receiver_s_bank_information"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_6" />
+
+
+                <TextView
+                    android:id="@+id/textView29"
+                    style="@style/sub_heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/dimen_25dp"
+                    android:text="@string/card_number_without_asterisks"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintStart_toStartOf="@+id/textView20"
+                    app:layout_constraintTop_toBottomOf="@+id/textView28" />
+
+                <TextView
+                    android:id="@+id/textView30"
+                    style="@style/heading_poppins"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="@dimen/dimen_20dp"
+                    android:text="@{appViewModel.transactionStatus.content.maskedPan}"
+                    android:textAlignment="textEnd"
+                    android:textSize="@dimen/dimen_12sp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@+id/textView29"
+                    tools:text="123456******7890" />
+
+                <View
+                    android:id="@+id/horizontal_line_10"
+                    android:layout_width="0dp"
+                    android:layout_height="@dimen/dimen_2dp"
+                    android:layout_marginTop="@dimen/dimen_20dp"
+                    android:background="@color/light_grey"
+                    app:layout_constraintEnd_toEndOf="@+id/textView30"
+                    app:layout_constraintStart_toStartOf="@+id/textView29"
+                    app:layout_constraintTop_toBottomOf="@+id/textView29" />
+
+                <TextView
                     android:id="@+id/textView35"
                     style="@style/sub_heading_poppins"
                     android:layout_width="wrap_content"
@@ -336,7 +383,7 @@
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_6" />
+                    app:layout_constraintTop_toBottomOf="@+id/horizontal_line_10" />
 
                 <ImageView
                     android:id="@+id/imageView5"

@@ -212,17 +212,12 @@ class OTPCodeFragment : Fragment() {
             otpCodeView.error = it
         }) {
             applicationViewModel.getPayByCardTransactionStatus()
-            validateOtpProgressBar.toggleProgressBarVisibility(true)
+            validateOtpProgressBar.toggleProgressBarVisibility(false)
             payButton.setButtonEnabledState(true)
             Toast.makeText(requireContext(), getString(R.string.otp_successful_getting_trans_status), Toast.LENGTH_SHORT).show()
         }
 
-        observeLiveData(applicationViewModel.transactionStatus, loaderAlertDialog!!, null,
-            {
-                loaderAlertDialog?.cancel()
-                loaderAlertDialog?.dismiss()
-            }
-        ) { transStatus ->
+        observeLiveData(applicationViewModel.transactionStatus, loaderAlertDialog!!, null, null) { transStatus ->
             transStatus?.let {
                 val transactionStatusString = providesGson().toJson(it)
                 val action = OTPCodeFragmentDirections.actionOTPCodeFragmentToPayByCardTransactionReceiptDetailsFragment(transactionStatusString)

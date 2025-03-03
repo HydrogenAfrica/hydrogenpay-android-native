@@ -8,6 +8,7 @@ import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.DeviceInformation
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.CardProviderResponse
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
+import com.hydrogen.hydrogenpaymentsdk.domain.enums.PaymentType
 import com.hydrogen.hydrogenpaymentsdk.domain.models.HydrogenPayPaymentTransactionReceipt
 import com.hydrogen.hydrogenpaymentsdk.domain.models.OtpValidationResponseDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByCardResponseDomain
@@ -52,6 +53,7 @@ internal class AppViewModel(
     private val resendOtpUseCase: ResendOtpUseCase,
     private val payByCardTransactionStatusUseCase: PayByCardTransactionStatusUseCase
 ) : ViewModel() {
+    private val currentPaymentType: MutableLiveData<PaymentType> = MutableLiveData(PaymentType.BANK_TRANSFER)
     private val _otpCodeTryCount: MutableLiveData<String> = MutableLiveData("0")
     val otpCodeTryCount: LiveData<String> get() = _otpCodeTryCount
     private val _validateOtpCode: MutableLiveData<ViewState<UIEvent<OtpValidationResponseDomain?>>> =
@@ -145,7 +147,8 @@ internal class AppViewModel(
         _bankTransferRequest.value = bankTransferRequest
     }
 
-    fun startRedirectTimer(redirectTime: Long = LONG_TIME_15_SEC) {
+    fun startRedirectTimer(paymentType: PaymentType, redirectTime: Long = LONG_TIME_15_SEC) {
+        currentPaymentType.postValue(paymentType)
         viewModelScope.launch(Dispatchers.Default) {
             _timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.update { redirectTime }
             while (_timeLeftToRedirectToMerchantAppAfterSuccessfulPayment.value >= 0) {
@@ -251,8 +254,8 @@ internal class AppViewModel(
         }
     }
 
-    fun getReceiptPayload(paymentType: String): HydrogenPayPaymentTransactionReceipt =
-        transactionStatus.value!!.content!!.getReceiptPayload(paymentType)
+    fun getReceiptPayload(): HydrogenPayPaymentTransactionReceipt =
+        transactionStatus.value!!.content!!.getReceiptPayload(currentPaymentType.value!!.typeName)
 
     private fun incrementOtpTrialCount() {
         if (_otpCodeTryCount.value!!.toInt() < INT_MAX_OTP_TRY_COUNT) {

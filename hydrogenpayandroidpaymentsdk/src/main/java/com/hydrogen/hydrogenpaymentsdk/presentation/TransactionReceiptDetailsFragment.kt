@@ -17,6 +17,7 @@ import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpayandroidpaymentsdk.databinding.FragmentTransactionReceiptDetailsBinding
 import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
+import com.hydrogen.hydrogenpaymentsdk.domain.enums.PaymentType
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.createAlertModal
@@ -82,7 +83,7 @@ class TransactionReceiptDetailsFragment : Fragment() {
             }
         }
 
-        viewModel.startRedirectTimer()
+        viewModel.startRedirectTimer(PaymentType.BANK_TRANSFER)
         val infoModal =
             createAlertModal(null, viewModel.timeLeftToRedirectToMerchantAppAfterSuccessfulPayment)
         infoModal?.show()
