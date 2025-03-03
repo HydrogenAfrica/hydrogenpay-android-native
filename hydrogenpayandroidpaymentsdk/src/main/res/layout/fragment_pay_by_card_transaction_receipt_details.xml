@@ -184,7 +184,7 @@
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
                     app:layout_constraintTop_toTopOf="@+id/purchase_amount_label"
-                    tools:text="₦ 5,350" />
+                    tools:text="₦ 5,000" />
 
                 <View
                     android:id="@+id/horizontal_line_7"
@@ -217,7 +217,7 @@
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
                     app:layout_constraintTop_toTopOf="@+id/service_charge_label"
-                    tools:text="5635768926" />
+                    tools:text="₦ 25" />
 
                 <View
                     android:id="@+id/horizontal_line_8"
@@ -249,7 +249,7 @@
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
                     app:layout_constraintTop_toTopOf="@+id/vat_label"
-                    tools:text="5635768926" />
+                    tools:text="₦ 375" />
 
                 <View
                     android:id="@+id/horizontal_line_9"
@@ -282,7 +282,7 @@
                     android:textSize="@dimen/dimen_12sp"
                     app:layout_constraintEnd_toEndOf="@+id/textView22"
                     app:layout_constraintTop_toTopOf="@+id/textView24"
-                    tools:text="₦ 35,000" />
+                    tools:text="₦ 5,400" />
 
                 <View
                     android:id="@+id/horizontal_line_5"
@@ -334,7 +334,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/dimen_20dp"
                     android:layout_marginTop="@dimen/dimen_35dp"
-                    android:text="@string/receiver_s_bank_information"
+                    android:text="@string/your_card_information"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@+id/horizontal_line_6" />
 
