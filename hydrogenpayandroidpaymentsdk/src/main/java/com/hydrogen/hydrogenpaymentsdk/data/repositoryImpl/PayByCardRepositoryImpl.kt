@@ -160,7 +160,7 @@ internal class PayByCardRepositoryImpl(
             val response = payByCardApiService.confirmStatus(request)
             emit(networkUtil.getServerResponse(response))
         }.map { data ->
-            val result = data.content?.data?.toDomain(transactionDetails)
+            val result = data.content?.data?.toDomain(transactionDetails, true)
             ViewState(
                 status = data.status,
                 content = result,

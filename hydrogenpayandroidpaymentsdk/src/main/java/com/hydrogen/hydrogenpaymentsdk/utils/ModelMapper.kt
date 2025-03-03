@@ -73,7 +73,7 @@ internal object ModelMapper {
         TransactionStatus(
             accountName ?: "",
             accountNo ?: "",
-            if (isPayByCard) formatNumberWithCommas(amount.toDecimalPlace().toDouble()) else amount.toString(),
+            if (isPayByCard) formatNumberWithCommas((amount/100).toDecimalPlace().toDouble()) else amount.toString(),
             bank,
             callBackUrl,
             canRetry,

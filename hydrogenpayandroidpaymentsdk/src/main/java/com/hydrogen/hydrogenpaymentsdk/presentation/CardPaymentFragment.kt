@@ -229,7 +229,7 @@ class CardPaymentFragment : Fragment() {
         }) { result ->
             payByCardProgressBar.toggleProgressBarVisibility(false)
             result?.let {
-                Toast.makeText(requireContext(), it.data.message, Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), it.data.message ?: "", Toast.LENGTH_SHORT).show()
                 val responseAsString = providesGson().toJson(it)
                 val action =
                     CardPaymentFragmentDirections.actionCardPaymentFragmentToOTPCodeFragment(
