@@ -37,6 +37,7 @@ import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setButtonEnabledSta
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_CARD_EXPIRY_DATE_LENGTH
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_CVV_LENGTH
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_MASTER_VISA_CARD_LENGTH
@@ -247,7 +248,13 @@ class CardPaymentFragment : Fragment() {
         }
 
         backToMerchantAppButton.setOnClickListener {
-            hydrogenPaySdkCallBack.cancelByGoingBackToMerchantApp()
+            viewModel.cardPaymentResponse.observe(viewLifecycleOwner) {
+                if (it!!.status != Status.LOADING) {
+                    hydrogenPaySdkCallBack.cancelByGoingBackToMerchantApp()
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.transaction_in_progress), Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         payButton.setOnClickListener {

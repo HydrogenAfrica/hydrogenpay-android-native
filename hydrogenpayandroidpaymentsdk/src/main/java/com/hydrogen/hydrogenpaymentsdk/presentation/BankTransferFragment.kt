@@ -26,6 +26,7 @@ import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSente
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.AppViewModel
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewModels.SetUpViewModel
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldSomeParts
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.copyToClipboard
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
@@ -82,9 +83,15 @@ class BankTransferFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         initViews()
         changePaymentMethodButton.setOnClickListener {
-            val action =
-                BankTransferFragmentDirections.actionBankTransferFragmentToChangePaymentMethodConfirmationFragment2()
-            findNavController().navigate(action)
+            viewModel.transactionStatus.observe(viewLifecycleOwner) {
+                if (it!!.status != Status.LOADING) {
+                    val action =
+                        BankTransferFragmentDirections.actionBankTransferFragmentToChangePaymentMethodConfirmationFragment2()
+                    findNavController().navigate(action)
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.transaction_in_progress), Toast.LENGTH_SHORT).show()
+                }
+            }
         }
 
         makePaymentButton.setOnClickListener {
