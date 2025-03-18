@@ -3,8 +3,6 @@ package com.hydrogen.hydrogenpaymentsdk
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
-import android.view.View
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
@@ -15,7 +13,6 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.databinding.CallingAppMainActivityBinding
 import com.hydrogen.hydrogenpaymentsdk.utils.HydrogenPay
@@ -44,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         binding = DataBindingUtil.setContentView(this, R.layout.calling_app_main_activity)
+        binding.lifecycleOwner = this
+        binding.executePendingBindings()
         initViews()
         environments = resources.getStringArray(R.array.environments)
         dropDownAdapter = ArrayAdapter(this, R.layout.env_drop_down_menu_item_layout, environments)

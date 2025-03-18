@@ -12,11 +12,14 @@ import android.util.Log
 import android.view.View
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ProgressBar
+import android.widget.RadioButton
 import android.widget.TextView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.databinding.BindingAdapter
+import androidx.recyclerview.widget.RecyclerView
 import coil.ImageLoader
 import coil.decode.SvgDecoder
 import coil.load
@@ -26,6 +29,10 @@ import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.hydrogen.hydrogenpayandroidpaymentsdk.R
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.CardProviderResponse
+import com.hydrogen.hydrogenpaymentsdk.domain.enums.CardType
+import com.hydrogen.hydrogenpaymentsdk.domain.models.SavedCard
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
+import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.ViewState
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.CHAR_CARD_EXPIRY_DATE_SPACER
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.CHAR_CARD_NUMBER_SPACER
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_CARD_PIN_LENGTH
@@ -37,6 +44,7 @@ import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_NUMBER_SPA
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatNumberWithCommas
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.getCustomerNameInitials
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.toSentenceCase
+import com.hydrogen.hydrogenpaymentsdk.utils.CardPaymentUtil.getCardTypeFromTypeName
 
 @BindingAdapter("android:setIsTestTransaction")
 fun TextView.setIsTestTransaction(isTestTransaction: Boolean?) {
@@ -285,3 +293,62 @@ fun Button.setButtonEnabledState(shouldBeEnabled: Boolean) {
     }
 }
 
+@BindingAdapter("android:enableChooseSavedCardsButton")
+fun Button.enableChooseSavedCardsButton(savedCards: List<SavedCard>?) {
+    savedCards?.let {
+        setButtonEnabledState(savedCards.any { it.isSelected })
+    } ?: setButtonEnabledState(false)
+}
+
+@BindingAdapter("android:toggleVisibilityWithSavedCards")
+fun RecyclerView.toggleVisibilityWithSavedCards(viewState: ViewState<List<SavedCard>?>?) {
+    visibility = viewState?.let {
+        if (it.status == Status.SUCCESS && !it.content.isNullOrEmpty()) {
+            View.VISIBLE
+        } else {
+            View.GONE
+        }
+    } ?: run { View.GONE }
+}
+
+@BindingAdapter("android:toggleVisibility")
+fun ProgressBar.toggleVisibility(viewState: ViewState<List<SavedCard>?>?) {
+    visibility = viewState?.let {
+        if (it.status == Status.SUCCESS && !it.content.isNullOrEmpty()) {
+            View.GONE
+        } else {
+            View.VISIBLE
+        }
+    } ?: run { View.VISIBLE }
+}
+
+@BindingAdapter("android:setRadioButtonIsSelected")
+fun RadioButton.setRadioButtonIsSelected(savedCard: SavedCard?) {
+    savedCard?.let {
+        this.isChecked = it.isSelected
+        this.isSelected = it.isSelected
+    }
+}
+
+@BindingAdapter("android:setAppropriateCardSchemeIcon")
+fun ImageView.setAppropriateCardSchemeIcon(savedCard: SavedCard?) {
+    savedCard?.let {
+        val cardSchemeIcon = getCardTypeFromTypeName(it.cardScheme).icon
+        this.setImageResource(cardSchemeIcon)
+    }
+}
+
+@BindingAdapter("android:setAppropriateDeleteIcon")
+fun ImageView.setAppropriateDeleteIcon(savedCard: SavedCard?) {
+    savedCard?.let {
+        val deleteIcon = if (it.isSelected) R.drawable.delete_icon else R.drawable.delete_icon_fade
+        this.setImageResource(deleteIcon)
+    }
+}
+
+@BindingAdapter("android:setLastUsed")
+fun TextView.setLastUsed(savedCard: SavedCard?) {
+    savedCard?.let {
+        visibility = if (it.isLastUsed) View.VISIBLE else View.INVISIBLE
+    }
+}

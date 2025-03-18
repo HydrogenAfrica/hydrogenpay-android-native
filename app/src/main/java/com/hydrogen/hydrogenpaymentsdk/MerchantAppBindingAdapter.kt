@@ -13,8 +13,8 @@ fun Button.enablePayButton(
     description: TextInputEditText,
     env: AutoCompleteTextView
 ) {
-    this.isEnabled = customerName.text.toString().isNotEmpty()
-            && email.text.toString().isNotEmpty()
-            && amount.text.toString().isNotEmpty()
-            && description.text.toString().isNotEmpty()
+    this.isEnabled = customerName.text.toString().isNotBlank()
+            && email.text.toString().isNotBlank()
+            && amount.text.toString().isNotBlank()
+            && description.text.toString().isNotBlank()
 }

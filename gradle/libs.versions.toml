@@ -27,6 +27,7 @@ ballon_version = "1.6.11"
 shimmer_effect_version = "0.5.0"
 firebaseCrashlyticsBuildtools = "3.0.3"
 google_messaging_service_version = "4.4.2"
+recyclerview = "1.4.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -72,6 +73,7 @@ otp-view = { group = "com.github.mukeshsolanki.android-otpview-pinview", name = 
 nav-args-dependency = { group = "androidx.navigation", name = "navigation-safe-args-gradle-plugin", version.ref = "navArgsVersion"}
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 gms-dependency = { group = "com.google.gms", name = "google-services", version.ref = "google_messaging_service_version" }
+androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

@@ -114,6 +114,11 @@
             app:exitAnim="@android:anim/slide_out_right"
             app:popEnterAnim="@android:anim/slide_in_left"
             app:popExitAnim="@android:anim/slide_out_right" />
+        <action
+            android:id="@+id/action_cardPaymentFragment_to_savedCardsBottomSheetDialogFragment"
+            app:destination="@id/savedCardsBottomSheetDialogFragment"
+            app:exitAnim="@anim/slide_down_from_top_anim"
+            app:popExitAnim="@anim/slide_down_from_top_anim" />
     </fragment>
     <fragment
         android:id="@+id/changePaymentMethodConfirmationFragment"
@@ -164,4 +169,9 @@
             android:name="transactionStatus"
             app:argType="string" />
     </fragment>
+    <fragment
+        android:id="@+id/savedCardsBottomSheetDialogFragment"
+        android:name="com.hydrogen.hydrogenpaymentsdk.presentation.dailog.SavedCardsBottomSheetDialogFragment"
+        android:label="fragment_saved_cards_bottom_sheet_dailog_list_dialog"
+        tools:layout="@layout/fragment_saved_cards_bottom_sheet_dailog_list_dialog" />
 </navigation>

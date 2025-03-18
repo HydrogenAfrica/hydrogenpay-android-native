@@ -42,4 +42,7 @@
     <dimen name="dimen_32dp">32dp</dimen>
     <dimen name="dimen_120dp">120dp</dimen>
     <dimen name="dimen_150dp">150dp</dimen>
+    <dimen name="list_item_spacing">16dp</dimen>
+    <dimen name="list_item_spacing_half">8dp</dimen>
+    <dimen name="dimen_24dp">24dp</dimen>
 </resources>

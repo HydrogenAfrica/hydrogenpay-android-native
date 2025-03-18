@@ -22,10 +22,13 @@ import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.SetUpUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.DeleteSavedCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetCardProviderUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetSavedCardsUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ResendOtpUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.SelectASavedCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.BASE_URL
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.ENC_IV
@@ -152,4 +155,9 @@ internal object HydrogenPayDiModule {
         PayByCardTransactionStatusUseCase(
             providesPayByCardRepository()
         )
+
+    fun providesGetSavedCardsUseCase(): GetSavedCardsUseCase = GetSavedCardsUseCase(providesPayByCardRepository())
+
+    fun providesSelectCardUseCase(): SelectASavedCardUseCase = SelectASavedCardUseCase()
+    fun providesDeleteASavedCardUseCase(): DeleteSavedCardUseCase = DeleteSavedCardUseCase()
 }

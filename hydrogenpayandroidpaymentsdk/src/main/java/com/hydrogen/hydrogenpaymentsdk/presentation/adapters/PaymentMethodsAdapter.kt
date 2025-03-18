@@ -79,17 +79,4 @@ class PaymentMethodsAdapter(
             bindingInterface.bindData(view)
         }
     }
-
-    companion object {
-        private val COMPARATOR = object : DiffUtil.ItemCallback<PaymentMethod>() {
-            override fun areItemsTheSame(oldItem: PaymentMethod, newItem: PaymentMethod): Boolean =
-                oldItem.alias == newItem.alias
-
-            override fun areContentsTheSame(
-                oldItem: PaymentMethod,
-                newItem: PaymentMethod
-            ): Boolean =
-                oldItem == newItem
-        }
-    }
 }

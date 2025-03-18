@@ -116,4 +116,8 @@
     <string name="card_number_without_asterisks">Card number</string>
     <string name="transaction_cancelled">Transaction Cancelled</string>
     <string name="your_card_information">Your card information</string>
+    <string name="delete">Delete</string>
+    <string name="last_used">(Last used)</string>
+    <string name="card_icon">Card Icon</string>
+    <string name="choose_and_proceed">Choose And Proceed</string>
 </resources>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="savedCard"
+            type="com.hydrogen.hydrogenpaymentsdk.domain.models.SavedCard" />
+    </data>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radioButton"
+            android:layout_width="wrap_content"
+            android:setRadioButtonIsSelected="@{savedCard}"
+            android:layout_height="wrap_content"
+            android:buttonTint="@color/light_green" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/dimen_8dp"
+            android:layout_weight="1"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/cardLogo"
+                android:layout_width="@dimen/dimen_24dp"
+                android:layout_height="@dimen/dimen_24dp"
+                android:setAppropriateCardSchemeIcon="@{savedCard}"
+                android:layout_marginEnd="@dimen/dimen_5dp"
+                android:contentDescription="@string/card_icon"
+                tools:src="@drawable/unknown_card_scheme" />
+
+            <TextView
+                android:id="@+id/cardNumber"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_8dp"
+                android:text="@{savedCard.maskedPan}"
+                android:textSize="@dimen/dimen_14sp"
+                tools:text="6247 83XX XXXX 3578" />
+
+            <TextView
+                android:id="@+id/lastUsed"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/dimen_4dp"
+                android:text="@string/last_used"
+                android:textSize="@dimen/dimen_12sp"
+                android:textStyle="bold"
+                android:setLastUsed="@{savedCard}"
+                tools:visibility="visible" />
+        </LinearLayout>
+
+        <ImageView
+            android:id="@+id/deleteIcon"
+            android:layout_width="@dimen/dimen_24dp"
+            android:layout_height="@dimen/dimen_24dp"
+            android:layout_marginStart="@dimen/dimen_8dp"
+            android:setAppropriateDeleteIcon="@{savedCard}"
+            android:contentDescription="@string/delete"
+            tools:src="@drawable/delete_icon" />
+    </LinearLayout>
+</layout>

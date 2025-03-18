@@ -16,6 +16,7 @@ import androidx.core.widget.doOnTextChanged
 import androidx.databinding.DataBindingUtil
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.setFragmentResultListener
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
@@ -28,6 +29,7 @@ import com.hydrogen.hydrogenpaymentsdk.di.AppViewModelProviderFactory
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule
 import com.hydrogen.hydrogenpaymentsdk.di.HydrogenPayDiModule.providesGson
 import com.hydrogen.hydrogenpaymentsdk.domain.HydrogenPaySdkCallBack
+import com.hydrogen.hydrogenpaymentsdk.domain.models.SavedCard
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.customerNameInSentenceCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setButtonEnabledState
 import com.hydrogen.hydrogenpaymentsdk.presentation.adapters.setCustomerInitials
@@ -39,6 +41,8 @@ import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_MASTER_VISA_CARD_L
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.INT_VERVE_CARD_LENGTH
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_EXPIRY_DATE_SPACER
 import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_CARD_NUMBER_SPACER
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_SET_SELECTED_CARD_BUNDLE_KEY
+import com.hydrogen.hydrogenpaymentsdk.utils.AppConstants.STRING_SET_SELECTED_CARD_REQUEST_KEY
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.boldSomeParts
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.expiresIn
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.observeLiveData
@@ -81,6 +85,24 @@ class CardPaymentFragment : Fragment() {
     }
     private var hasGottenCardProvider = false
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setFragmentResultListener(STRING_SET_SELECTED_CARD_REQUEST_KEY) { _, bundle ->
+            bundle.getString(STRING_SET_SELECTED_CARD_BUNDLE_KEY)?.let {
+                val selectedCard = providesGson().fromJson(it, SavedCard::class.java)
+                selectedCard?.let { card ->
+                    cardNumber.setText(card.maskedPan)
+                    val expiryDate = card.expiryMonth + STRING_CARD_EXPIRY_DATE_SPACER + card.expiryYear
+                    cardExp.setText(expiryDate)
+                    cvv.setText(card.cvv)
+                    if (card.isPinRequired) {
+                        userCardPinContainer.visibility = View.VISIBLE
+                    }
+                }
+            }
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -107,6 +129,12 @@ class CardPaymentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initViews()
+        savedCardsTextView.setOnClickListener {
+            viewModel.getSavedCards()
+            val navAction =
+                CardPaymentFragmentDirections.actionCardPaymentFragmentToSavedCardsBottomSheetDialogFragment()
+            findNavController().navigate(navAction)
+        }
         changePaymentMethodButton.setOnClickListener {
             goBack(true)
         }

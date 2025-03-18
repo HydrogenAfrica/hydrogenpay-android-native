@@ -15,16 +15,20 @@ import com.hydrogen.hydrogenpaymentsdk.domain.models.PayByCardResponseDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentConfirmationResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.ResendOTPResponseDataDomain
+import com.hydrogen.hydrogenpaymentsdk.domain.models.SavedCard
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.GetBankTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.InitiatePaymentUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.PayByTransferUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.countdownTimer.CountdownTimerUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.DeleteSavedCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetCardProviderUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.GetSavedCardsUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardTransactionStatusUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.PayByCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ResendOtpUseCase
+import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.SelectASavedCardUseCase
 import com.hydrogen.hydrogenpaymentsdk.domain.usecases.payByCard.ValidateOtpUseCase
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.Status
 import com.hydrogen.hydrogenpaymentsdk.presentation.viewStates.UIEvent
@@ -52,9 +56,16 @@ internal class AppViewModel(
     private val payByCardUseCase: PayByCardUseCase,
     private val validateOtpUseCase: ValidateOtpUseCase,
     private val resendOtpUseCase: ResendOtpUseCase,
-    private val payByCardTransactionStatusUseCase: PayByCardTransactionStatusUseCase
+    private val payByCardTransactionStatusUseCase: PayByCardTransactionStatusUseCase,
+    private val getSavedCardsUseCase: GetSavedCardsUseCase,
+    private val selectASavedCardUseCase: SelectASavedCardUseCase,
+    private val deleteCardUseCase: DeleteSavedCardUseCase
 ) : ViewModel() {
-    private val currentPaymentType: MutableLiveData<PaymentType> = MutableLiveData(PaymentType.BANK_TRANSFER)
+    private val _savedCards: MutableLiveData<ViewState<List<SavedCard>?>> =
+        MutableLiveData(ViewState.initialDefault(null))
+    val savedCard: LiveData<ViewState<List<SavedCard>?>> get() = _savedCards
+    private val currentPaymentType: MutableLiveData<PaymentType> =
+        MutableLiveData(PaymentType.BANK_TRANSFER)
     private val _otpCodeTryCount: MutableLiveData<String> = MutableLiveData("0")
     val otpCodeTryCount: LiveData<String> get() = _otpCodeTryCount
     private val _validateOtpCode: MutableLiveData<ViewState<UIEvent<OtpValidationResponseDomain?>>> =
@@ -239,7 +250,7 @@ internal class AppViewModel(
         }
     }
 
-    fun getPayByCardTransactionStatus(){
+    fun getPayByCardTransactionStatus() {
         _transactionStatus.value = ViewState.loading(null)
         viewModelScope.launch(ioDispatcher) {
             val transactionDetails = _paymentMethodsAndTransactionDetails.value.content!!.second!!
@@ -251,6 +262,40 @@ internal class AppViewModel(
             )
                 .collectLatest {
                     _transactionStatus.postValue(it)
+                }
+        }
+    }
+
+    fun getSavedCards() {
+        _savedCards.value = ViewState.loading(null)
+        viewModelScope.launch(ioDispatcher) {
+            val transactionDetails = _paymentMethodsAndTransactionDetails.value.content!!.second!!
+            getSavedCardsUseCase.invoke(
+                transactionDetails.merchantRef,
+                transactionDetails.customerEmail,
+                transactionDetails.transactionId
+            ).collect {
+                _savedCards.postValue(it)
+            }
+        }
+    }
+
+    fun selectASavedCard(savedCard: SavedCard) {
+        viewModelScope.launch(ioDispatcher) {
+            selectASavedCardUseCase.invoke(savedCard, _savedCards.value!!.content!!)
+                .collect {
+                    _savedCards.postValue(it)
+                }
+        }
+    }
+
+    fun getSelectedCard(): SavedCard? = savedCard.value?.content?.firstOrNull { it.isSelected }
+
+    fun deleteCard(savedCard: SavedCard) {
+        viewModelScope.launch(ioDispatcher) {
+            deleteCardUseCase.invoke(savedCard, _savedCards.value!!.content!!)
+                .collect {
+                    _savedCards.postValue(it)
                 }
         }
     }

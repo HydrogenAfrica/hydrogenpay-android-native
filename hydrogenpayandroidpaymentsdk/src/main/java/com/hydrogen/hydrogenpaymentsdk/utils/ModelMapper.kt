@@ -3,6 +3,7 @@ package com.hydrogen.hydrogenpaymentsdk.utils
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.PaymentMethodDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
+import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.GetSavedCardsResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiateBankTransferResponseDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePayByTransferResponseDTO
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.responses.InitiatePaymentResponseDto
@@ -23,6 +24,7 @@ import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentMethod
 import com.hydrogen.hydrogenpaymentsdk.domain.models.PaymentTransactionCredentials
 import com.hydrogen.hydrogenpaymentsdk.domain.models.ResendOTPProcessorResponse
 import com.hydrogen.hydrogenpaymentsdk.domain.models.ResendOTPResponseDataDomain
+import com.hydrogen.hydrogenpaymentsdk.domain.models.SavedCard
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatNumberWithCommas
@@ -73,7 +75,9 @@ internal object ModelMapper {
         TransactionStatus(
             accountName ?: "",
             accountNo ?: "",
-            if (isPayByCard) formatNumberWithCommas((amount/100).toDecimalPlace().toDouble()) else amount.toString(),
+            if (isPayByCard) formatNumberWithCommas(
+                (amount / 100).toDecimalPlace().toDouble()
+            ) else amount.toString(),
             bank,
             callBackUrl,
             canRetry,
@@ -219,4 +223,20 @@ internal object ModelMapper {
             transactionId,
             transactionRef
         )
+
+    fun GetSavedCardsResponseDTO.toDomain(): SavedCard = SavedCard(
+        cardScheme,
+        cardToken,
+        cvv,
+        discountPercentage,
+        expiryMonth,
+        expiryYear,
+        id,
+        isCardExpired,
+        isCardSpecificDiscount,
+        isLastUsed,
+        isPinRequired,
+        maskedPan,
+        providerId
+    )
 }

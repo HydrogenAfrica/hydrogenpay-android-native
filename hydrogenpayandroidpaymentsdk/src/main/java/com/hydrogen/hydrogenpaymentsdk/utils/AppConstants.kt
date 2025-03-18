@@ -35,6 +35,9 @@ internal object AppConstants {
 
     const val STRING_DEVICE_LANGUAGE = "en-GB"
     const val STRING_DEVICE_TYPE = "mobile"
+    const val STRING_SERVER_RESPONSE_SUCCESS = "successfully"
+    const val STRING_SET_SELECTED_CARD_REQUEST_KEY = "string_set_selected_card_request_key"
+    const val STRING_SET_SELECTED_CARD_BUNDLE_KEY = "string_set_selected_card_bundle_key"
 
     const val INT_MASTER_VISA_CARD_LENGTH = 16
     const val INT_VERVE_CARD_LENGTH = 19

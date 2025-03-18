@@ -128,4 +128,6 @@ internal object CardPaymentUtil {
             ex.printStackTrace()
             null
         }
+    fun getCardTypeFromTypeName(typeName: String): CardType =
+        CardType.entries.firstOrNull { it.typeName.contains(typeName, true) } ?: CardType.UNKNOWN
 }
