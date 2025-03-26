@@ -302,24 +302,24 @@ fun Button.enableChooseSavedCardsButton(savedCards: List<SavedCard>?) {
 
 @BindingAdapter("android:toggleVisibilityWithSavedCards")
 fun RecyclerView.toggleVisibilityWithSavedCards(viewState: ViewState<List<SavedCard>?>?) {
-    visibility = viewState?.let {
-        if (it.status == Status.SUCCESS && !it.content.isNullOrEmpty()) {
+    viewState?.let {
+        visibility = if (it.status == Status.SUCCESS && !(it.content.isNullOrEmpty())) {
             View.VISIBLE
         } else {
             View.GONE
         }
-    } ?: run { View.GONE }
+    }
 }
 
 @BindingAdapter("android:toggleVisibility")
 fun ProgressBar.toggleVisibility(viewState: ViewState<List<SavedCard>?>?) {
-    visibility = viewState?.let {
-        if (it.status == Status.SUCCESS && !it.content.isNullOrEmpty()) {
+    viewState?.let {
+        visibility = if (it.status == Status.SUCCESS && !it.content.isNullOrEmpty()) {
             View.GONE
         } else {
             View.VISIBLE
         }
-    } ?: run { View.VISIBLE }
+    }
 }
 
 @BindingAdapter("android:setRadioButtonIsSelected")

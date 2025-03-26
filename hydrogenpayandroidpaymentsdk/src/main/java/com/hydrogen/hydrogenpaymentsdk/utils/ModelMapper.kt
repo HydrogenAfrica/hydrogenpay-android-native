@@ -1,5 +1,6 @@
 package com.hydrogen.hydrogenpaymentsdk.utils
 
+import android.util.Log
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.models.PaymentMethodDto
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.HydrogenPayPaymentRequest
 import com.hydrogen.hydrogenpaymentsdk.data.remote.dtos.requests.PayByTransferRequest
@@ -27,6 +28,7 @@ import com.hydrogen.hydrogenpaymentsdk.domain.models.ResendOTPResponseDataDomain
 import com.hydrogen.hydrogenpaymentsdk.domain.models.SavedCard
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionDetails
 import com.hydrogen.hydrogenpaymentsdk.domain.models.TransactionStatus
+import com.hydrogen.hydrogenpaymentsdk.domain.repository.DataEncryptionContract
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatNumberWithCommas
 import com.hydrogen.hydrogenpaymentsdk.utils.AppUtils.formatTransactionDateTime
 import com.hydrogen.hydrogenpaymentsdk.utils.ExtensionFunctions.toDecimalPlace
@@ -224,19 +226,24 @@ internal object ModelMapper {
             transactionRef
         )
 
-    fun GetSavedCardsResponseDTO.toDomain(): SavedCard = SavedCard(
-        cardScheme,
-        cardToken,
-        cvv,
-        discountPercentage,
-        expiryMonth,
-        expiryYear,
-        id,
-        isCardExpired,
-        isCardSpecificDiscount,
-        isLastUsed,
-        isPinRequired,
-        maskedPan,
-        providerId
-    )
+    fun GetSavedCardsResponseDTO.toDomain(dataEncryption: DataEncryptionContract): SavedCard {
+        Log.d("INCOMING_CVV", cvv)
+        val newCvv = dataEncryption.decrypt(cvv)
+        Log.d("INCOMING_CVV_2", newCvv)
+        return SavedCard(
+            cardScheme,
+            cardToken,
+            dataEncryption.decrypt(cvv),
+            discountPercentage,
+            dataEncryption.decrypt(expiryMonth),
+            dataEncryption.decrypt(expiryYear),
+            id,
+            isCardExpired,
+            isCardSpecificDiscount,
+            isLastUsed,
+            isPinRequired,
+            maskedPan,
+            providerId
+        )
+    }
 }

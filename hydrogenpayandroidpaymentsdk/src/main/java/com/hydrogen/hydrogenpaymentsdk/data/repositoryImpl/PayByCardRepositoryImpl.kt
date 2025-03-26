@@ -192,7 +192,7 @@ internal class PayByCardRepositoryImpl(
                 )
             )
         }.map { data ->
-            val result = data.content?.data?.map { it.toDomain() }
+            val result = data.content?.data?.map { it.toDomain(dataEncryption) }
             ViewState(
                 status = data.status,
                 content = result,

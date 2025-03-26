@@ -3,6 +3,8 @@ package com.hydrogen.hydrogenpaymentsdk.presentation.adapters
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.RadioButton
 import androidx.databinding.DataBindingUtil
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +17,7 @@ class SavedCardsRecyclerViewAdapter(
     private val savedCardSelectListener: SavedCardsSelectListener
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    private var data: ArrayList<SavedCard> = ArrayList()
+    private val data: ArrayList<SavedCard> = arrayListOf()
 
     @SuppressLint("NotifyDataSetChanged")
     fun updateData(newData: List<SavedCard>) {
@@ -42,10 +44,17 @@ class SavedCardsRecyclerViewAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         val bindingData: SavedCardsRecyclerViewBindingInterfaceImpl? =
-            SavedCardsRecyclerViewBindingInterfaceImpl(data[position], savedCardSelectListener)
+            SavedCardsRecyclerViewBindingInterfaceImpl(data[position])
         bindingData?.let {
             (holder as SavedCardsRecyclerViewViewHolder).apply {
                 bind(it)
+                holder.itemView.findViewById<RadioButton>(R.id.radioButton).setOnClickListener {
+                    savedCardSelectListener.onCardSelected(data[position])
+                }
+
+                holder.itemView.findViewById<ImageView>(R.id.deleteIcon).setOnClickListener {
+                    savedCardSelectListener.onDeleteCard(data[position])
+                }
             }
         }
     }

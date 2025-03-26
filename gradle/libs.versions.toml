@@ -28,6 +28,7 @@ shimmer_effect_version = "0.5.0"
 firebaseCrashlyticsBuildtools = "3.0.3"
 google_messaging_service_version = "4.4.2"
 recyclerview = "1.4.0"
+wduDatePickerVersion = "4.2.3"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -74,6 +75,8 @@ nav-args-dependency = { group = "androidx.navigation", name = "navigation-safe-a
 firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 gms-dependency = { group = "com.google.gms", name = "google-services", version.ref = "google_messaging_service_version" }
 androidx-recyclerview = { group = "androidx.recyclerview", name = "recyclerview", version.ref = "recyclerview" }
+# Date Picker
+wdu-date-time-picker = { group = "com.wdullaer", name = "materialdatetimepicker", version.ref = "wduDatePickerVersion"}
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

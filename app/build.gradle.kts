@@ -56,4 +56,5 @@ dependencies {
 
     implementation(libs.coil.dependency)
     implementation(libs.coil.svg.dependency)
+    implementation(libs.wdu.date.time.picker)
 }
